@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/boot/bin/bootloader.elf",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": false,
+            "miDebuggerServerAddress": "localhost:3333",
+            "MIMode": "gdb",
+            "miDebuggerPath": "riscv32-unknown-elf-gdb",
+            "preLaunchTask": "Debug",
+            "postDebugTask": "Terminate All Tasks"
+        }
+    ]
+}
