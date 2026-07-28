@@ -9,7 +9,25 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 project(bootloader LANGUAGES C ASM)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
-add_compile_options(-march=rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp -mabi=ilp32 -g)
-add_link_options(-T ${CMAKE_SOURCE_DIR}/memmap.ld -nostartfiles)
+include_directories(${CMAKE_SOURCE_DIR}/lib/littlefs/src)
 
-add_executable(bootloader.elf src/main.c src/image.s)
+add_compile_options(-march=rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp -mabi=ilp32 -g)
+add_definitions(
+    -DLFS_NO_MALLOC 
+    -DLFS_NO_ASSERT 
+    -DLFS_NO_DEBUG 
+    -DLFS_NO_WARN 
+    -DLFS_NO_ERROR 
+    -DLFS_READONLY
+)
+
+add_link_options(-T ${CMAKE_SOURCE_DIR}/memmap.ld -nostartfiles -Wl,-Map=${CMAKE_BINARY_DIR}/bootloader.map)
+
+add_executable(
+    bootloader.elf
+    src/main.c
+    src/asm/image.s
+    src/asm/startup.s
+    lib/littlefs/src/lfs.c
+    lib/littlefs/src/lfs_util.c
+)
