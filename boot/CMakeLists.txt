@@ -11,8 +11,9 @@ project(bootloader LANGUAGES C ASM)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/lib/littlefs/src)
 
-add_compile_options(-march=rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp -mabi=ilp32 -g)
+add_compile_options(-march=rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp -mabi=ilp32 -Wall -g)
 add_definitions(
+    -DFS_LFS
     -DLFS_NO_MALLOC 
     -DLFS_NO_ASSERT 
     -DLFS_NO_DEBUG 
@@ -26,6 +27,7 @@ add_link_options(-T ${CMAKE_SOURCE_DIR}/memmap.ld -nostartfiles -Wl,-Map=${CMAKE
 add_executable(
     bootloader.elf
     src/main.c
+    src/fs/fs_lfs.c
     src/asm/image.s
     src/asm/startup.s
     lib/littlefs/src/lfs.c

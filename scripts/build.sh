@@ -8,7 +8,7 @@ cmake --build .
 cd ../..
 
 # Filesystem
-rm ./build/fs/fs_img.bin
+rm ./bin/fs_img.bin
 mklittlefs -c ./build/fs ./bin/fs_img.bin -b 4096 -s 0x20000
 
 # Final image
