@@ -1,7 +1,4 @@
-# Bootloader
+/bin
+/build
 /boot/bin/
 /boot/build/
-
-# Other
-/build
-/filesystem

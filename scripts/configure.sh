@@ -1,10 +1,12 @@
 #!/bin/sh
 
-# Filesystem
-mkdir ../build
-mkdir ../fs
+cd ..
+
+mkdir ./bin
+mkdir ./build
+mkdir ./build/fs
 
 # Bootloader
-mkdir ../boot/build
-cd ../boot/build
+mkdir ./boot/build
+cd ./boot/build
 cmake ..

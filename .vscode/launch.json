@@ -5,7 +5,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/boot/bin/bootloader.elf",
+            "program": "${workspaceFolder}/bin/bootloader.elf",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
@@ -14,6 +14,7 @@
             "miDebuggerServerAddress": "localhost:3333",
             "MIMode": "gdb",
             "miDebuggerPath": "riscv32-unknown-elf-gdb",
+            "useExtendedRemote": true,
             "preLaunchTask": "Debug",
             "postDebugTask": "Terminate All Tasks"
         }

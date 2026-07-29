@@ -1,8 +1,7 @@
 OUTPUT_FORMAT(elf32-littleriscv)
 MEMORY
 {
-    BOOT(rx) : ORIGIN = 0x10000000, LENGTH = 1M
-    FS(rw) : ORIGIN = 0x10100000, LENGTH = 3M
+    FLASH(rx) : ORIGIN = 0x10000000, LENGTH = 4M
     RAM(rwx) : ORIGIN = 0x20000000, LENGTH = 520k
 }
 ENTRY(_entry_point)
@@ -12,7 +11,7 @@ SECTIONS
         . = ALIGN(4);
         KEEP (*(.image_def))
         . = ALIGN(4);
-    } > BOOT
+    } > FLASH
 
     .text : {
         . = ALIGN(4);
@@ -20,13 +19,13 @@ SECTIONS
         . = ALIGN(4);
         *(.text*)
         . = ALIGN(4);
-    } > BOOT
+    } > FLASH
 
     .rodata : {
         . = ALIGN(4);
         *(.rodata*)
         . = ALIGN(4);
-    } > BOOT
+    } > FLASH
 
     .data : {
         . = ALIGN(4);
@@ -36,7 +35,7 @@ SECTIONS
         *(.sdata*)
         . = ALIGN(4);
         __data_end = .;
-    } > RAM AT> BOOT
+    } > RAM AT> FLASH
 
     __data_pointer = LOADADDR(.data);
 
@@ -49,8 +48,4 @@ SECTIONS
         . = ALIGN(4);
         __bss_end = .;
     } > RAM
-
-    .filesystem : {
-        KEEP (*(.filesystem))
-    } > FS
 }

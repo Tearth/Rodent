@@ -51,7 +51,3 @@ blocks_end:
 
 # Footer
 .word 0xab123579
-
-# Filesystem
-.section .filesystem
-.incbin "../../build/fs.lfs"
