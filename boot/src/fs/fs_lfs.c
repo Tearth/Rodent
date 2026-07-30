@@ -55,7 +55,7 @@ bool fs_file_open(const char* path, fs_fhandle_t *handle)
     {
         handle->config.buffer = handle->buffer;
     }
-
+    
     return lfs_file_opencfg(&lfs, &handle->file, path, LFS_O_RDONLY, &handle->config) == LFS_ERR_OK;
 }
 

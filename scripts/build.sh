@@ -1,15 +1,14 @@
 #!/bin/sh
 
+cd ..
+
 # Bootloader
-cd ../boot
-rm ./bin/bootloader.elf
-cd ./build
+cd ./boot/build
 cmake --build .
 cd ../..
 
 # Filesystem
-rm ./bin/fs_img.bin
-mklittlefs -c ./build/fs ./bin/fs_img.bin -b 4096 -s 0x20000
+mklittlefs -c ./build/fs ./bin/fs_img.bin -b 4096 -s $FS_SIZE >/dev/null
 
 # Final image
 cp ./boot/bin/bootloader.elf ./bin/bootloader.elf

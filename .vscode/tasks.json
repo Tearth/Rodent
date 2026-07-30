@@ -86,5 +86,19 @@
             "command": "workbench.action.tasks.terminate",
             "args": "terminateAll"
         }
-    ]
+    ],
+    "options": {
+      "env": {
+        // Filesystem
+        "FS_TYPE": "LFS",
+        "FS_BASE_ADDR": "0x10100000",
+        "FS_SIZE": "0x20000",
+
+        // Kernel
+        "KERNEL_FILENAME": "kernel.bin",
+
+        // OpenOCD
+        "ADAPTER_SPEED": "30000"
+      }
+   },
 }
