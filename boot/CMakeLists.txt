@@ -23,11 +23,11 @@ configure_file(${CMAKE_SOURCE_DIR}/src/cfg/config.h.in ${CMAKE_SOURCE_DIR}/src/c
 if($ENV{FS_TYPE} STREQUAL "LFS")
     add_definitions(
         -DFS_LFS
-        -DLFS_NO_MALLOC 
-        -DLFS_NO_ASSERT 
-        -DLFS_NO_DEBUG 
-        -DLFS_NO_WARN 
-        -DLFS_NO_ERROR 
+        -DLFS_NO_MALLOC
+        -DLFS_NO_ASSERT
+        -DLFS_NO_DEBUG
+        -DLFS_NO_WARN
+        -DLFS_NO_ERROR
         -DLFS_READONLY
     )
 endif()
