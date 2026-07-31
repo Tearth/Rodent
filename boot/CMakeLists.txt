@@ -7,21 +7,27 @@ set(CMAKE_SYSTEM_PROCESSOR riscv)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 
 project(bootloader LANGUAGES C ASM)
+add_executable(
+    bootloader.elf
+    src/main.c
+    src/asm/image.s
+    src/asm/startup.s
+)
 
-include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/lib/littlefs/src)
 
-add_compile_options(-march=rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp -mabi=ilp32 -Wall -g)
-add_link_options(-T ${CMAKE_SOURCE_DIR}/memmap.ld -nostartfiles -Wl,-Map=${CMAKE_BINARY_DIR}/bootloader.map)
-add_definitions(-DFS_$ENV{FS_TYPE})
-
-set (FS_BASE_ADDR $ENV{FS_BASE_ADDR})
-set (KERNEL_FILENAME $ENV{KERNEL_FILENAME})
-
-configure_file(${CMAKE_SOURCE_DIR}/src/cfg/config.h.in ${CMAKE_SOURCE_DIR}/src/cfg/config.h)
+target_compile_options(bootloader.elf PRIVATE -march=rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp -mabi=ilp32 -Wall -g)
+target_link_options(bootloader.elf PRIVATE -T ${CMAKE_SOURCE_DIR}/memmap.ld -nostartfiles -Wl,-Map=${CMAKE_BINARY_DIR}/bootloader.map)
+target_compile_definitions(bootloader.elf PRIVATE -DFS_$ENV{FS_TYPE})
 
 if($ENV{FS_TYPE} STREQUAL "LFS")
-    add_definitions(
+    target_sources(bootloader.elf PRIVATE
+        src/fs/fs_lfs.c
+        lib/littlefs/src/lfs.c
+        lib/littlefs/src/lfs_util.c
+    )
+
+    target_compile_definitions(bootloader.elf PRIVATE
         -DFS_LFS
         -DLFS_NO_MALLOC
         -DLFS_NO_ASSERT
@@ -32,12 +38,7 @@ if($ENV{FS_TYPE} STREQUAL "LFS")
     )
 endif()
 
-add_executable(
-    bootloader.elf
-    src/main.c
-    src/fs/fs_lfs.c
-    src/asm/image.s
-    src/asm/startup.s
-    lib/littlefs/src/lfs.c
-    lib/littlefs/src/lfs_util.c
-)
+set (FS_BASE_ADDR $ENV{FS_BASE_ADDR})
+set (KERNEL_FILENAME $ENV{KERNEL_FILENAME})
+
+configure_file(${CMAKE_SOURCE_DIR}/src/cfg/config.h.in ${CMAKE_SOURCE_DIR}/src/cfg/config.h)

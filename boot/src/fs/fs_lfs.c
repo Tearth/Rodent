@@ -1,4 +1,3 @@
-#ifdef FS_LFS
 #include "fs_lfs.h"
 
 lfs_t lfs;
@@ -78,5 +77,3 @@ int lfs_sync(const struct lfs_config *c)
 {
     return LFS_ERR_OK;
 }
-
-#endif
