@@ -1,30 +1,50 @@
 #include "clock.h"
 
-static clk_info_t clk_info[] =
+static const clk_info_t clk_info[] =
 {
+    // CLK_REF
     {
         .reg_ctrl = CLK_REG_REF_CTRL,
-        .reg_div = CLK_REG_REF_DIV,
         .reg_sel = CLK_REG_REF_SEL,
         .src_mask = CLK_REF_SRC_MASK,
         .aux_mask = CLK_REF_AUX_MASK,
         .sel_mask = CLK_REF_SEL_MASK
     },
+    // CLK_SYS
     {
         .reg_ctrl = CLK_REG_SYS_CTRL,
-        .reg_div = CLK_REG_SYS_DIV,
         .reg_sel = CLK_REG_SYS_SEL,
         .src_mask = CLK_SYS_SRC_MASK,
         .aux_mask = CLK_SYS_AUX_MASK,
         .sel_mask = CLK_SYS_SEL_MASK
     },
+    // CLK_PERI
     {
         .reg_ctrl = CLK_REG_PERI_CTRL,
-        .reg_div = CLK_REG_PERI_DIV,
         .reg_sel = CLK_REG_PERI_SEL,
         .src_mask = CLK_PERI_SRC_MASK,
         .sel_mask = CLK_PERI_SEL_MASK
     }
+};
+
+static const clk_src_info_t clk_src_info[] =
+{
+    // CLK_SRC_REF
+    { },
+    // CLK_SRC_SYS
+    { },
+    // CLK_SRC_ROSC
+    {
+        .reg_ctrl = CLK_SRC_ROSC_REG_CTRL,
+        .reg_status = CLK_SRC_ROSC_REG_STATUS
+    },
+    // CLK_SRC_XOSC
+    {
+        .reg_ctrl = CLK_SRC_XOSC_REG_CTRL,
+        .reg_status = CLK_SRC_XOSC_REG_STATUS
+    },
+    // CLK_SRC_LPOSC
+    { }
 };
 
 static bool clk_set_src_internal(clk_t clk, clk_src_t src, uint32_t mask);
@@ -37,7 +57,7 @@ bool clk_enable(clk_t clk)
     // Enable clock (ENABLE bit)
     *clk_sel->reg_ctrl |= 1 << 11;
 
-    // Wait for confirmation (ENABLED bit)
+    // Wait for confirmation
     WAIT(!clk_is_enabled(clk), 100);
 
     return true;
@@ -50,7 +70,7 @@ bool clk_disable(clk_t clk)
     // Disable clock (ENABLE bit)
     *clk_sel->reg_ctrl &= ~(1 << 11);
 
-    // Wait for confirmation (ENABLED bit)
+    // Wait for confirmation
     WAIT(clk_is_enabled(clk), 100);
 
     return true;
@@ -60,6 +80,68 @@ bool clk_is_enabled(clk_t clk)
 {
     // Check if clock is enabled (ENABLED bit)
     return (*clk_info[clk].reg_ctrl & (1 << 28)) != 0;
+}
+
+bool clk_src_enable(clk_src_t src)
+{
+    clk_src_info_t *clk_src_sel = &clk_src_info[src];
+
+    if (clk_src_sel->reg_ctrl == nullptr)
+    {
+        return false;
+    }
+
+    // Enable clock (bits 12-23, code 0xfab)
+    *clk_src_sel->reg_ctrl = (*clk_src_sel->reg_ctrl & ~0xfff000) | (0xfab << 12);
+
+    // Wait for confirmation, stabilization might take a bit of time so timeout is higher than usual
+    WAIT(!clk_src_is_enabled(src) && !clk_src_is_stable(src), 100000);
+
+    return true;
+}
+
+bool clk_src_disable(clk_src_t src)
+{
+    clk_src_info_t *clk_src_sel = &clk_src_info[src];
+
+    if (clk_src_sel->reg_ctrl == nullptr)
+    {
+        return false;
+    }
+
+    // Disable clock (bits 12-23, code 0xd1e)
+    *clk_src_sel->reg_ctrl = (*clk_src_sel->reg_ctrl & ~0xfff000) | (0xd1e << 12);
+
+    // Wait for confirmation
+    WAIT(clk_src_is_enabled(src), 100);
+
+    return true;
+}
+
+bool clk_src_is_enabled(clk_src_t src)
+{
+    clk_src_info_t *clk_src_sel = &clk_src_info[src];
+
+    if (clk_src_sel->reg_ctrl == nullptr)
+    {
+        return false;
+    }
+
+    // Check if clock is enabled (ENABLED bit)
+    return (*clk_src_sel->reg_status & (1 << 12)) != 0;
+}
+
+bool clk_src_is_stable(clk_src_t src)
+{
+    clk_src_info_t *clk_src_sel = &clk_src_info[src];
+
+    if (clk_src_sel->reg_ctrl == nullptr)
+    {
+        return false;
+    }
+
+    // Check if clock is stable (STABLE bit)
+    return (*clk_src_sel->reg_status & (1 << 31)) != 0;
 }
 
 clk_src_t clk_get_src(clk_t clk)
@@ -211,4 +293,17 @@ static bool clk_is_aux_ready(clk_t clk)
 
     // Check if aux finished switching its source
     return (*clk_sel->reg_sel & clk_sel->sel_mask) != 0;
+}
+
+uint32_t clk_get_freq(clk_t clk)
+{
+    switch (clk_get_src(clk))
+    {
+        case CLK_SRC_REF: return clk_get_freq(CLK_REF);
+        case CLK_SRC_SYS: return clk_get_freq(CLK_SYS);
+        case CLK_SRC_ROSC: return CLK_SRC_ROSC_FREQ;
+        case CLK_SRC_XOSC: return CLK_SRC_XOSC_FREQ;
+        case CLK_SRC_LPOSC: return CLK_SRC_ROSC_LPOSC;
+        default: return 0;
+    }
 }
