@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**"
             ],
             "defines": [
-                "FS_LFS"
+                "FS_LFS",
+                "CPU_RP2350"
             ],
             "compilerPath": "riscv32-unknown-elf-gcc",
             "cStandard": "c23"

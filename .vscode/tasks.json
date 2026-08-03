@@ -18,7 +18,9 @@
             "label": "Build",
             "command": "./build.sh",
             "type": "shell",
-            "problemMatcher": [],
+            "problemMatcher": [
+                "$gcc"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -88,17 +90,21 @@
         }
     ],
     "options": {
-      "env": {
-        // Filesystem
-        "FS_TYPE": "LFS",
-        "FS_BASE_ADDR": "0x10100000",
-        "FS_SIZE": "0x20000",
+        "env": {
+            // Target
+            "TARGET_ARCH": "riscv",
+            "TARGET_CPU": "rp2350",
 
-        // Kernel
-        "KERNEL_FILENAME": "kernel.bin",
+            // Filesystem
+            "FS_TYPE": "lfs",
+            "FS_BASE_ADDR": "0x10100000",
+            "FS_SIZE": "0x20000",
 
-        // OpenOCD
-        "ADAPTER_SPEED": "30000"
-      }
-   },
+            // Kernel
+            "KERNEL_FILENAME": "kernel.bin",
+
+            // OpenOCD
+            "ADAPTER_SPEED": "30000"
+        }
+    },
 }
