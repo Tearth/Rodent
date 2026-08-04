@@ -39,6 +39,6 @@ typedef enum reset_subsys {
     RESET_SUBSYS_USBCTRL = 28
 } reset_subsys_t;
 
-void reset_subsys(reset_subsys_t subsys);
+bool reset_subsys(reset_subsys_t subsys);
 
 #endif
