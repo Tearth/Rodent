@@ -23,6 +23,7 @@ static const clk_info_t clk_info[] =
         .reg_ctrl = CLK_REG_PERI_CTRL,
         .reg_sel = CLK_REG_PERI_SEL,
         .src_mask = CLK_PERI_SRC_MASK,
+        .aux_mask = CLK_PERI_AUX_MASK,
         .sel_mask = CLK_PERI_SEL_MASK
     }
 };
@@ -92,7 +93,7 @@ bool clk_src_enable(clk_src_t src)
     }
 
     // Enable clock (bits 12-23, code 0xfab)
-    *clk_src_sel->reg_ctrl = (*clk_src_sel->reg_ctrl & ~0xfff000) | (0xfab << 12);
+    *clk_src_sel->reg_ctrl = (*clk_src_sel->reg_ctrl & ~CLK_SRC_MASK) | (0xfab << 12);
 
     // Wait for confirmation, stabilization might take a bit of time so timeout is higher than usual
     WAIT(!clk_src_is_enabled(src) && !clk_src_is_stable(src), 100000);
@@ -110,7 +111,7 @@ bool clk_src_disable(clk_src_t src)
     }
 
     // Disable clock (bits 12-23, code 0xd1e)
-    *clk_src_sel->reg_ctrl = (*clk_src_sel->reg_ctrl & ~0xfff000) | (0xd1e << 12);
+    *clk_src_sel->reg_ctrl = (*clk_src_sel->reg_ctrl & ~CLK_SRC_MASK) | (0xd1e << 12);
 
     // Wait for confirmation
     WAIT(clk_src_is_enabled(src), 100);
@@ -217,7 +218,7 @@ bool clk_set_src(clk_t clk, clk_src_t src)
         {
             case CLK_REF: result = clk_set_src_internal(clk, CLK_SRC_LPOSC, (clk_sel->src_mask & ~clk_sel->aux_mask)); break;
             case CLK_SYS: result = clk_set_src_internal(clk, CLK_SRC_REF, (clk_sel->src_mask & ~clk_sel->aux_mask)); break;
-            default: return false;
+            default: result = true;
         }
 
         if (!result)
@@ -225,7 +226,7 @@ bool clk_set_src(clk_t clk, clk_src_t src)
             return false;
         }
 
-        // Change clock source of aux, leave glitchless mux one for now
+        // Change clock source of aux, leave glitchless mux for now
         if (!clk_set_src_internal(clk, src, (clk_sel->src_mask & clk_sel->aux_mask)))
         {
             return false;
