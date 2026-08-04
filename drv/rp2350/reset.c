@@ -4,15 +4,15 @@ void reset_subsys(reset_subsys_t subsys)
 {
     uint32_t bit = (1 << subsys);
 
-    // Reset the subsystem
+    // Assert subsystem reset
     *RESET_REG_RESET |= bit;
+
+    // Wait for flag to clear
+    while ((*RESET_REG_RESET_DONE & bit) != 0);
+
+    // Deassert subsystem reset
+    *RESET_REG_RESET &= ~bit;
 
     // Wait for reset to complete
     while ((*RESET_REG_RESET_DONE & bit) == 0);
-
-    // Unreset the subsystem
-    *RESET_REG_RESET &= ~bit;
-
-    // Wait for unreset to complete
-    while ((*RESET_REG_RESET_DONE & bit) != 0);
 }

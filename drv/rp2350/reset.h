@@ -4,8 +4,8 @@
 #include "common.h"
 
 #define RESET_REG_BASE 0x40020000
-#define RESET_REG_RESET REG(RESET_REG_BASE + 0x00)
-#define RESET_REG_RESET_DONE REG(RESET_REG_BASE + 0x08)
+#define RESET_REG_RESET REG((RESET_REG_BASE + 0x00))
+#define RESET_REG_RESET_DONE REG((RESET_REG_BASE + 0x08))
 
 typedef enum reset_subsys {
     RESET_SUBSYS_ADC = 0,
