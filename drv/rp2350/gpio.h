@@ -5,9 +5,9 @@
 #include "common.h"
 
 #define GPIO_REG_BASE 0x40028000
-#define GPIO_REG_CTRL(gpio) REG((GPIO_REG_BASE + 0x04 + gpio * 0x10))
+#define GPIO_REG_CTRL(gpio) REG((GPIO_REG_BASE + 0x04 + gpio * 0x08))
 
-#define GPIO_FUNC_MASK 0x0000000f
+#define GPIO_FUNC_MASK 0x0000001f
 
 typedef enum gpio_func
 {
