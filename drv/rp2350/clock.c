@@ -49,16 +49,16 @@ static const clk_src_info_t clk_src_info[] =
 };
 
 static bool clk_set_src_internal(clk_t clk, clk_src_t src, uint32_t mask);
-static bool clk_is_aux_ready(clk_t clk);
+static bool clk_is_aux_ready_internal(clk_t clk);
 
 bool clk_enable(clk_t clk)
 {
     clk_info_t* clk_sel = &clk_info[clk];
 
-    // Enable clock (ENABLE bit)
-    *clk_sel->reg_ctrl |= 1 << 11;
+    // Set ENABLE
+    *clk_sel->reg_ctrl |= 1u << 11;
 
-    // Wait for confirmation
+    // Wait for ENABLED to set
     WAIT(!clk_is_enabled(clk), 100);
 
     return true;
@@ -68,10 +68,10 @@ bool clk_disable(clk_t clk)
 {
     clk_info_t* clk_sel = &clk_info[clk];
 
-    // Disable clock (ENABLE bit)
-    *clk_sel->reg_ctrl &= ~(1 << 11);
+    // Clear ENABLE
+    *clk_sel->reg_ctrl &= ~(1u << 11);
 
-    // Wait for confirmation
+    // Wait for ENABLED to clear
     WAIT(clk_is_enabled(clk), 100);
 
     return true;
@@ -79,8 +79,8 @@ bool clk_disable(clk_t clk)
 
 bool clk_is_enabled(clk_t clk)
 {
-    // Check if clock is enabled (ENABLED bit)
-    return (*clk_info[clk].reg_ctrl & (1 << 28)) != 0;
+    // Read ENABLED
+    return (*clk_info[clk].reg_ctrl & (1u << 28)) != 0;
 }
 
 bool clk_src_enable(clk_src_t src)
@@ -92,10 +92,10 @@ bool clk_src_enable(clk_src_t src)
         return false;
     }
 
-    // Enable clock (bits 12-23, code 0xfab)
+    // Set ENABLE, code 0xfab enables clock source
     *clk_src_sel->reg_ctrl = (*clk_src_sel->reg_ctrl & ~CLK_SRC_MASK) | (0xfab << 12);
 
-    // Wait for confirmation, stabilization might take a bit of time so timeout is higher than usual
+    // Wait for ENABLED and STABLE to set, stabilization might take a bit of time so timeout is higher than usual
     WAIT(!clk_src_is_enabled(src) && !clk_src_is_stable(src), 100000);
 
     return true;
@@ -110,10 +110,10 @@ bool clk_src_disable(clk_src_t src)
         return false;
     }
 
-    // Disable clock (bits 12-23, code 0xd1e)
+    // Set ENABLE, code 0xd1e disables clock source
     *clk_src_sel->reg_ctrl = (*clk_src_sel->reg_ctrl & ~CLK_SRC_MASK) | (0xd1e << 12);
 
-    // Wait for confirmation
+    // Wait for ENABLED to clear
     WAIT(clk_src_is_enabled(src), 100);
 
     return true;
@@ -128,8 +128,8 @@ bool clk_src_is_enabled(clk_src_t src)
         return false;
     }
 
-    // Check if clock is enabled (ENABLED bit)
-    return (*clk_src_sel->reg_status & (1 << 12)) != 0;
+    // Read ENABLED
+    return (*clk_src_sel->reg_status & (1u << 12)) != 0;
 }
 
 bool clk_src_is_stable(clk_src_t src)
@@ -141,8 +141,8 @@ bool clk_src_is_stable(clk_src_t src)
         return false;
     }
 
-    // Check if clock is stable (STABLE bit)
-    return (*clk_src_sel->reg_status & (1 << 31)) != 0;
+    // Read STABLE
+    return (*clk_src_sel->reg_status & (1u << 31)) != 0;
 }
 
 clk_src_t clk_get_src(clk_t clk)
@@ -190,7 +190,7 @@ bool clk_set_src(clk_t clk, clk_src_t src)
         return true;
     }
 
-    // Check if switching the source can be done using only glitchless mux
+    // Check if clock source switch can be done using only glitchless mux
     bool glitchless = false;
     switch (clk)
     {
@@ -232,8 +232,8 @@ bool clk_set_src(clk_t clk, clk_src_t src)
             return false;
         }
 
-        // Wait for aux to complete clock source switch
-        WAIT(!clk_is_aux_ready(clk), 100);
+        // Wait for SELECTED register to indicate that a new clock source is used
+        WAIT(!clk_is_aux_ready_internal(clk), 100);
 
         // Change clock source for both aux and glitchless mux
         if (!clk_set_src_internal(clk, src, clk_sel->src_mask))
@@ -282,17 +282,17 @@ static bool clk_set_src_internal(clk_t clk, clk_src_t src, uint32_t mask)
         default: return false;
     }
 
-    // Disable old source and enable a new one
+    // Set SRC and/or AUXSRC
     *clk_sel->reg_ctrl = (*clk_sel->reg_ctrl & ~mask) | (val & mask);
 
     return true;
 }
 
-static bool clk_is_aux_ready(clk_t clk)
+static bool clk_is_aux_ready_internal(clk_t clk)
 {
     clk_info_t* clk_sel = &clk_info[clk];
 
-    // Check if aux finished switching its source
+    // Read masked SELECTED register, any set bit indicates aux uses this clock source
     return (*clk_sel->reg_sel & clk_sel->sel_mask) != 0;
 }
 
