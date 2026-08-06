@@ -4,24 +4,24 @@ static const clk_info_t clk_info[] =
 {
     // CLK_REF
     {
-        .reg_ctrl = CLK_REG_REF_CTRL,
-        .reg_sel = CLK_REG_REF_SEL,
+        .reg_ctrl = CLK_REF_REG_CTRL,
+        .reg_sel = CLK_REF_REG_SEL,
         .src_mask = CLK_REF_SRC_MASK,
         .aux_mask = CLK_REF_AUX_MASK,
         .sel_mask = CLK_REF_SEL_MASK
     },
     // CLK_SYS
     {
-        .reg_ctrl = CLK_REG_SYS_CTRL,
-        .reg_sel = CLK_REG_SYS_SEL,
+        .reg_ctrl = CLK_SYS_REG_CTRL,
+        .reg_sel = CLK_SYS_REG_SEL,
         .src_mask = CLK_SYS_SRC_MASK,
         .aux_mask = CLK_SYS_AUX_MASK,
         .sel_mask = CLK_SYS_SEL_MASK
     },
     // CLK_PERI
     {
-        .reg_ctrl = CLK_REG_PERI_CTRL,
-        .reg_sel = CLK_REG_PERI_SEL,
+        .reg_ctrl = CLK_PERI_REG_CTRL,
+        .reg_sel = CLK_PERI_REG_SEL,
         .src_mask = CLK_PERI_SRC_MASK,
         .aux_mask = CLK_PERI_AUX_MASK,
         .sel_mask = CLK_PERI_SEL_MASK
@@ -308,4 +308,27 @@ uint32_t clk_get_freq(clk_t clk)
         case CLK_SRC_LPOSC: return CLK_SRC_ROSC_LPOSC;
         default: return 0;
     }
+}
+
+uint32_t clk_measure_freq(clk_t clk)
+{
+    uint8_t src = 0;
+
+    switch (clk)
+    {
+        case CLK_REF: src = 0x08; break;
+        case CLK_SYS: src = 0x09; break;
+        case CLK_PERI: src = 0x0a; break;
+    }
+
+    *CLK_FC0_REG_REF = (*CLK_FC0_REG_REF & ~0xfffff) | (clk_get_freq(CLK_REF) / 1000);
+    *CLK_FC0_REG_MIN = (*CLK_FC0_REG_MIN & ~0xffffff) | 0;
+    *CLK_FC0_REG_MAX = (*CLK_FC0_REG_MAX & ~0xffffff) | 0x1ffffff;
+    *CLK_FC0_REG_SRC = (*CLK_FC0_REG_SRC & ~0xff) | src;
+
+    // Wait for DONE to set
+    while ((*CLK_FC0_REG_STATUS & (1u << 4)) == 0);
+
+    // Read KHZ
+    return *CLK_FC0_REG_RESULT >> 5;
 }

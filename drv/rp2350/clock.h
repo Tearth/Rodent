@@ -6,8 +6,8 @@
 
 #define CLK_REG_BASE 0x40010000
 
-#define CLK_REG_REF_CTRL REG((CLK_REG_BASE + 0x30))
-#define CLK_REG_REF_SEL REG((CLK_REG_BASE + 0x38))
+#define CLK_REF_REG_CTRL REG((CLK_REG_BASE + 0x30))
+#define CLK_REF_REG_SEL REG((CLK_REG_BASE + 0x38))
 #define CLK_REF_SRC_MASK 0x63
 #define CLK_REF_SRC_AUX_MASK 0x03
 #define CLK_REF_SRC_ROSC 0x00
@@ -16,8 +16,8 @@
 #define CLK_REF_AUX_MASK 0x60
 #define CLK_REF_SEL_MASK 0x07
 
-#define CLK_REG_SYS_CTRL REG((CLK_REG_BASE + 0x3c))
-#define CLK_REG_SYS_SEL REG((CLK_REG_BASE + 0x44))
+#define CLK_SYS_REG_CTRL REG((CLK_REG_BASE + 0x3c))
+#define CLK_SYS_REG_SEL REG((CLK_REG_BASE + 0x44))
 #define CLK_SYS_SRC_MASK 0xe1
 #define CLK_SYS_SRC_REF 0x00
 #define CLK_SYS_SRC_ROSC 0x41
@@ -25,8 +25,8 @@
 #define CLK_SYS_AUX_MASK 0xe0
 #define CLK_SYS_SEL_MASK 0x01
 
-#define CLK_REG_PERI_CTRL REG((CLK_REG_BASE + 0x48))
-#define CLK_REG_PERI_SEL REG((CLK_REG_BASE + 0x50))
+#define CLK_PERI_REG_CTRL REG((CLK_REG_BASE + 0x48))
+#define CLK_PERI_REG_SEL REG((CLK_REG_BASE + 0x50))
 #define CLK_PERI_SRC_MASK 0xe0
 #define CLK_PERI_SRC_SYS 0x00
 #define CLK_PERI_SRC_ROSC 0x60
@@ -35,6 +35,13 @@
 #define CLK_PERI_SEL_MASK 0x01
 
 #define CLK_SRC_MASK 0xfff000
+
+#define CLK_FC0_REG_REF REG((CLK_REG_BASE + 0x8c))
+#define CLK_FC0_REG_MIN REG((CLK_REG_BASE + 0x90))
+#define CLK_FC0_REG_MAX REG((CLK_REG_BASE + 0x94))
+#define CLK_FC0_REG_SRC REG((CLK_REG_BASE + 0xa0))
+#define CLK_FC0_REG_STATUS REG((CLK_REG_BASE + 0xa4))
+#define CLK_FC0_REG_RESULT REG((CLK_REG_BASE + 0xa8))
 
 #define CLK_SRC_ROSC_REG_BASE 0x400e8000
 #define CLK_SRC_ROSC_REG_CTRL REG((CLK_SRC_ROSC_REG_BASE + 0x00))
@@ -93,5 +100,6 @@ clk_src_t clk_get_src(clk_t clk);
 bool clk_set_src(clk_t clk, clk_src_t src);
 
 uint32_t clk_get_freq(clk_t clk);
+uint32_t clk_measure_freq(clk_t clk);
 
 #endif
