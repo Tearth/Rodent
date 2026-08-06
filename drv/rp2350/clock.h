@@ -67,8 +67,8 @@ typedef enum clk_src
 
 typedef struct clk_info
 {
-    uint32_t *reg_ctrl;
-    uint32_t *reg_sel;
+    volatile uint32_t *reg_ctrl;
+    volatile uint32_t *reg_sel;
     uint32_t src_mask;
     uint32_t aux_mask;
     uint32_t sel_mask;
@@ -76,8 +76,8 @@ typedef struct clk_info
 
 typedef struct clk_src_info
 {
-    uint32_t *reg_ctrl;
-    uint32_t *reg_status;
+    volatile uint32_t *reg_ctrl;
+    volatile uint32_t *reg_status;
 } clk_src_info_t;
 
 bool clk_enable(clk_t clk);

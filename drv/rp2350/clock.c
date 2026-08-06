@@ -53,7 +53,7 @@ static bool clk_is_aux_ready_internal(clk_t clk);
 
 bool clk_enable(clk_t clk)
 {
-    clk_info_t* clk_sel = &clk_info[clk];
+    const clk_info_t* clk_sel = &clk_info[clk];
 
     // Set ENABLE
     *clk_sel->reg_ctrl |= 1u << 11;
@@ -66,7 +66,7 @@ bool clk_enable(clk_t clk)
 
 bool clk_disable(clk_t clk)
 {
-    clk_info_t* clk_sel = &clk_info[clk];
+    const clk_info_t* clk_sel = &clk_info[clk];
 
     // Clear ENABLE
     *clk_sel->reg_ctrl &= ~(1u << 11);
@@ -85,7 +85,7 @@ bool clk_is_enabled(clk_t clk)
 
 bool clk_src_enable(clk_src_t src)
 {
-    clk_src_info_t *clk_src_sel = &clk_src_info[src];
+    const clk_src_info_t *clk_src_sel = &clk_src_info[src];
 
     if (clk_src_sel->reg_ctrl == nullptr)
     {
@@ -96,14 +96,14 @@ bool clk_src_enable(clk_src_t src)
     *clk_src_sel->reg_ctrl = (*clk_src_sel->reg_ctrl & ~CLK_SRC_MASK) | (0xfab << 12);
 
     // Wait for ENABLED and STABLE to set, stabilization might take a bit of time so timeout is higher than usual
-    WAIT(!clk_src_is_enabled(src) && !clk_src_is_stable(src), 100000);
+    WAIT(!clk_src_is_enabled(src) || !clk_src_is_stable(src), 100000);
 
     return true;
 }
 
 bool clk_src_disable(clk_src_t src)
 {
-    clk_src_info_t *clk_src_sel = &clk_src_info[src];
+    const clk_src_info_t *clk_src_sel = &clk_src_info[src];
 
     if (clk_src_sel->reg_ctrl == nullptr)
     {
@@ -121,7 +121,7 @@ bool clk_src_disable(clk_src_t src)
 
 bool clk_src_is_enabled(clk_src_t src)
 {
-    clk_src_info_t *clk_src_sel = &clk_src_info[src];
+    const clk_src_info_t *clk_src_sel = &clk_src_info[src];
 
     if (clk_src_sel->reg_ctrl == nullptr)
     {
@@ -134,7 +134,7 @@ bool clk_src_is_enabled(clk_src_t src)
 
 bool clk_src_is_stable(clk_src_t src)
 {
-    clk_src_info_t *clk_src_sel = &clk_src_info[src];
+    const clk_src_info_t *clk_src_sel = &clk_src_info[src];
 
     if (clk_src_sel->reg_ctrl == nullptr)
     {
@@ -182,8 +182,8 @@ clk_src_t clk_get_src(clk_t clk)
 
 bool clk_set_src(clk_t clk, clk_src_t src)
 {
-    clk_info_t *clk_sel = &clk_info[clk];
-    clk_src_t src_old = clk_get_src(clk);
+    const clk_info_t *clk_sel = &clk_info[clk];
+    const clk_src_t src_old = clk_get_src(clk);
 
     if (src == src_old)
     {
@@ -200,6 +200,7 @@ bool clk_set_src(clk_t clk, clk_src_t src)
         case CLK_SYS:
             glitchless = src == CLK_SRC_REF;
             break;
+        default: break;
     }
 
     if (glitchless)
@@ -247,7 +248,7 @@ bool clk_set_src(clk_t clk, clk_src_t src)
 
 static bool clk_set_src_internal(clk_t clk, clk_src_t src, uint32_t mask)
 {
-    clk_info_t* clk_sel = &clk_info[clk];
+    const clk_info_t* clk_sel = &clk_info[clk];
     uint32_t val = 0;
 
     switch (clk)
@@ -290,7 +291,7 @@ static bool clk_set_src_internal(clk_t clk, clk_src_t src, uint32_t mask)
 
 static bool clk_is_aux_ready_internal(clk_t clk)
 {
-    clk_info_t* clk_sel = &clk_info[clk];
+    const clk_info_t* clk_sel = &clk_info[clk];
 
     // Read masked SELECTED register, any set bit indicates aux uses this clock source
     return (*clk_sel->reg_sel & clk_sel->sel_mask) != 0;

@@ -2,7 +2,7 @@
 
 bool reset_subsys(reset_subsys_t subsys)
 {
-    uint32_t bit = (1u << subsys);
+    const uint32_t bit = (1u << subsys);
 
     // Assert subsystem reset
     *RESET_REG_RESET |= bit;
