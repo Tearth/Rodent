@@ -37,7 +37,7 @@ typedef struct uart_info
     volatile uint32_t *reg_fbrd;
     volatile uint32_t *reg_lcr;
     volatile uint32_t *reg_cr;
-} uart_into_t;
+} uart_info_t;
 
 bool uart_enable(uart_t uart, uint32_t baudrate, uint8_t data_bits, uint8_t stop_bits);
 bool uart_disable(uart_t uart);
@@ -48,6 +48,7 @@ bool uart_set_baudrate(uart_t uart, uint32_t baudrate);
 bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits);
 
 uint8_t uart_read_byte(uart_t uart);
-uint8_t uart_send_byte(uart_t uart, uint8_t byte);
+void uart_send_byte(uart_t uart, uint8_t byte);
+void uart_send_str(uart_t uart, const char *str);
 
 #endif

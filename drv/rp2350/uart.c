@@ -1,6 +1,6 @@
 #include "uart.h"
 
-static const uart_into_t uart_info[] =
+static const uart_info_t uart_info[] =
 {
     // UART0
     {
@@ -24,11 +24,6 @@ static const uart_into_t uart_info[] =
 
 bool uart_enable(uart_t uart, uint32_t baudrate, uint8_t data_bits, uint8_t stop_bits)
 {
-    if (!uart_reset(uart))
-    {
-        return false;
-    }
-
     if (!uart_set_baudrate(uart, baudrate))
     {
         return false;
@@ -61,18 +56,18 @@ bool uart_reset(uart_t uart)
 {
     switch (uart)
     {
-        case UART0: reset_subsys(RESET_SUBSYS_UART0); return true;
-        case UART1: reset_subsys(RESET_SUBSYS_UART1); return true;
+        case UART0: return reset_subsys(RESET_SUBSYS_UART0);
+        case UART1: return reset_subsys(RESET_SUBSYS_UART1);
         default: return false;
     }
 }
 
 bool uart_set_baudrate(uart_t uart, uint32_t baudrate)
 {
-    uart_into_t *uart_sel = &uart_info[uart];
+    uart_info_t *uart_sel = &uart_info[uart];
     uint32_t freq = clk_get_freq(CLK_PERI);
 
-    if (freq == 0)
+    if (baudrate == 0 || freq == 0)
     {
         return false;
     }
@@ -107,7 +102,7 @@ bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits)
 
 uint8_t uart_read_byte(uart_t uart)
 {
-    uart_into_t *uart_sel = &uart_info[uart];
+    uart_info_t *uart_sel = &uart_info[uart];
 
     // Wait for RXFE (Receive FIFO Empty) to clear
     while ((*uart_sel->reg_fr & (1u << 4)) != 0);
@@ -115,12 +110,20 @@ uint8_t uart_read_byte(uart_t uart)
     return *uart_sel->reg_dr;
 }
 
-uint8_t uart_send_byte(uart_t uart, uint8_t byte)
+void uart_send_byte(uart_t uart, uint8_t byte)
 {
-    uart_into_t *uart_sel = &uart_info[uart];
+    uart_info_t *uart_sel = &uart_info[uart];
 
     // Wait for TXFF (Transmit FIFO Full) to clear
     while ((*uart_sel->reg_fr & (1u << 5)) != 0);
 
     *uart_sel->reg_dr = byte;
+}
+
+void uart_send_str(uart_t uart, const char *str)
+{
+    for (char *ptr = str; *ptr != 0; ptr++)
+    {
+        uart_send_byte(uart, *ptr);
+    }
 }
