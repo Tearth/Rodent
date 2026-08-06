@@ -205,7 +205,7 @@ bool clk_set_src(clk_t clk, clk_src_t src)
 
     if (glitchless)
     {
-        if (!clk_set_src_internal(clk, src, clk_sel->src_mask))
+        if (!clk_set_src_internal(clk, src, clk_sel->src_mask & ~clk_sel->aux_mask))
         {
             return false;
         }
