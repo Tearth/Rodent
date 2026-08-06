@@ -30,6 +30,19 @@
             }
         },
         {
+            "label": "Clean",
+            "command": "./clean.sh",
+            "type": "shell",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/scripts/"
+            }
+        },
+        {
             "label": "Flash",
             "command": "./flash.sh",
             "type": "shell",
