@@ -20,6 +20,8 @@
 #define CLK_SYS_REG_SEL REG((CLK_REG_BASE + 0x44))
 #define CLK_SYS_SRC_MASK 0xe1
 #define CLK_SYS_SRC_REF 0x00
+#define CLK_SYS_SRC_PLL_SYS 0x01
+#define CLK_SYS_SRC_PLL_USB 0x21
 #define CLK_SYS_SRC_ROSC 0x41
 #define CLK_SYS_SRC_XOSC 0x61
 #define CLK_SYS_AUX_MASK 0xe0
@@ -29,6 +31,8 @@
 #define CLK_PERI_REG_SEL REG((CLK_REG_BASE + 0x50))
 #define CLK_PERI_SRC_MASK 0xe0
 #define CLK_PERI_SRC_SYS 0x00
+#define CLK_PERI_SRC_PLL_SYS 0x20
+#define CLK_PERI_SRC_PLL_USB 0x40
 #define CLK_PERI_SRC_ROSC 0x60
 #define CLK_PERI_SRC_XOSC 0x80
 #define CLK_PERI_AUX_MASK 0xe0
@@ -43,17 +47,29 @@
 #define CLK_FC0_REG_STATUS REG((CLK_REG_BASE + 0xa4))
 #define CLK_FC0_REG_RESULT REG((CLK_REG_BASE + 0xa8))
 
+#define CLK_SRC_LPOSC_FREQ 32'768
+
 #define CLK_SRC_ROSC_REG_BASE 0x400e8000
 #define CLK_SRC_ROSC_REG_CTRL REG((CLK_SRC_ROSC_REG_BASE + 0x00))
 #define CLK_SRC_ROSC_REG_STATUS REG((CLK_SRC_ROSC_REG_BASE + 0x1c))
+#define CLK_SRC_ROSC_FREQ 11'000'000
 
 #define CLK_SRC_XOSC_REG_BASE 0x40048000
 #define CLK_SRC_XOSC_REG_CTRL REG((CLK_SRC_XOSC_REG_BASE + 0x00))
 #define CLK_SRC_XOSC_REG_STATUS REG((CLK_SRC_XOSC_REG_BASE + 0x04))
-
-#define CLK_SRC_ROSC_LPOSC 32'768
-#define CLK_SRC_ROSC_FREQ 11'000'000
 #define CLK_SRC_XOSC_FREQ 12'000'000
+
+#define CLK_PLL_SYS_REG_BASE 0x40050000
+#define CLK_PLL_SYS_REG_CS REG((CLK_PLL_SYS_REG_BASE + 0x00))
+#define CLK_PLL_SYS_REG_PWR REG((CLK_PLL_SYS_REG_BASE + 0x04))
+#define CLK_PLL_SYS_REG_FBDIV REG((CLK_PLL_SYS_REG_BASE + 0x08))
+#define CLK_PLL_SYS_REG_PRIM REG((CLK_PLL_SYS_REG_BASE + 0x0c))
+
+#define CLK_PLL_USB_REG_BASE 0x40058000
+#define CLK_PLL_USB_REG_CS REG((CLK_PLL_USB_REG_BASE + 0x00))
+#define CLK_PLL_USB_REG_PWR REG((CLK_PLL_USB_REG_BASE + 0x04))
+#define CLK_PLL_USB_REG_FBDIV REG((CLK_PLL_USB_REG_BASE + 0x08))
+#define CLK_PLL_USB_REG_PRIM REG((CLK_PLL_USB_REG_BASE + 0x0c))
 
 typedef enum clk
 {
@@ -69,8 +85,16 @@ typedef enum clk_src
     CLK_SRC_ROSC,
     CLK_SRC_XOSC,
     CLK_SRC_LPOSC,
+    CLK_SRC_PLL_SYS,
+    CLK_SRC_PLL_USB,
     CLK_SRC_INVALID
 } clk_src_t;
+
+typedef enum clk_pll
+{
+    CLK_PLL_SYS,
+    CLK_PLL_USB
+} clk_pll_t;
 
 typedef struct clk_info
 {
@@ -87,6 +111,14 @@ typedef struct clk_src_info
     volatile uint32_t *reg_status;
 } clk_src_info_t;
 
+typedef struct clk_pll_info
+{
+    volatile uint32_t *reg_cs;
+    volatile uint32_t *reg_pwr;
+    volatile uint32_t *reg_fbdiv;
+    volatile uint32_t *reg_prim;
+} clk_pll_info_t;
+
 bool clk_enable(clk_t clk);
 bool clk_disable(clk_t clk);
 bool clk_is_enabled(clk_t clk);
@@ -98,6 +130,10 @@ bool clk_src_is_stable(clk_src_t src);
 
 clk_src_t clk_get_src(clk_t clk);
 bool clk_set_src(clk_t clk, clk_src_t src);
+
+bool clk_pll_enable(clk_pll_t pll, uint8_t refdiv, uint16_t fbdiv, uint8_t pdiv1, uint8_t pdiv2);
+bool clk_pll_disable(clk_pll_t pll);
+bool clk_pll_is_enabled(clk_pll_t pll);
 
 uint32_t clk_get_freq(clk_t clk);
 uint32_t clk_measure_freq(clk_t clk);

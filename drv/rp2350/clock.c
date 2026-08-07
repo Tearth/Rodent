@@ -48,6 +48,24 @@ static const clk_src_info_t clk_src_info[] =
     { }
 };
 
+static const clk_pll_info_t clk_pll_info[] =
+{
+    // CLK_PLL_SYS
+    {
+        .reg_cs = CLK_PLL_SYS_REG_CS,
+        .reg_pwr = CLK_PLL_SYS_REG_PWR,
+        .reg_fbdiv = CLK_PLL_SYS_REG_FBDIV,
+        .reg_prim = CLK_PLL_SYS_REG_PRIM
+    },
+    // CLK_PLL_USB
+    {
+        .reg_cs = CLK_PLL_USB_REG_CS,
+        .reg_pwr = CLK_PLL_USB_REG_PWR,
+        .reg_fbdiv = CLK_PLL_USB_REG_FBDIV,
+        .reg_prim = CLK_PLL_USB_REG_PRIM
+    }
+};
+
 static bool clk_set_src_internal(clk_t clk, clk_src_t src, uint32_t mask);
 static bool clk_is_aux_ready_internal(clk_t clk);
 
@@ -162,6 +180,8 @@ clk_src_t clk_get_src(clk_t clk)
             switch (*clk_info[CLK_SYS].reg_ctrl & CLK_SYS_SRC_MASK)
             {
                 case CLK_SYS_SRC_REF: return CLK_SRC_REF;
+                case CLK_SYS_SRC_PLL_SYS: return CLK_SRC_PLL_SYS;
+                case CLK_SYS_SRC_PLL_USB: return CLK_SRC_PLL_USB;
                 case CLK_SYS_SRC_ROSC: return CLK_SRC_ROSC;
                 case CLK_SYS_SRC_XOSC: return CLK_SRC_XOSC;
                 default: return CLK_SRC_INVALID;
@@ -171,6 +191,8 @@ clk_src_t clk_get_src(clk_t clk)
             switch (*clk_info[CLK_PERI].reg_ctrl & CLK_PERI_SRC_MASK)
             {
                 case CLK_PERI_SRC_SYS: return CLK_SRC_SYS;
+                case CLK_PERI_SRC_PLL_SYS: return CLK_SRC_PLL_SYS;
+                case CLK_PERI_SRC_PLL_USB: return CLK_SRC_PLL_USB;
                 case CLK_PERI_SRC_ROSC: return CLK_SRC_ROSC;
                 case CLK_PERI_SRC_XOSC: return CLK_SRC_XOSC;
                 default: return CLK_SRC_INVALID;
@@ -268,6 +290,8 @@ static bool clk_set_src_internal(clk_t clk, clk_src_t src, uint32_t mask)
                 case CLK_SRC_REF: val = CLK_SYS_SRC_REF; break;
                 case CLK_SRC_ROSC: val = CLK_SYS_SRC_ROSC; break;
                 case CLK_SRC_XOSC: val = CLK_SYS_SRC_XOSC; break;
+                case CLK_SRC_PLL_SYS: val = CLK_SYS_SRC_PLL_SYS; break;
+                case CLK_SRC_PLL_USB: val = CLK_SYS_SRC_PLL_USB; break;
                 default: return false;
             }
             break;
@@ -277,6 +301,8 @@ static bool clk_set_src_internal(clk_t clk, clk_src_t src, uint32_t mask)
                 case CLK_SRC_SYS: val = CLK_PERI_SRC_SYS; break;
                 case CLK_SRC_ROSC: val = CLK_PERI_SRC_ROSC; break;
                 case CLK_SRC_XOSC: val = CLK_PERI_SRC_XOSC; break;
+                case CLK_SRC_PLL_SYS: val = CLK_PERI_SRC_PLL_SYS; break;
+                case CLK_SRC_PLL_USB: val = CLK_PERI_SRC_PLL_USB; break;
                 default: return false;
             }
             break;
@@ -297,6 +323,48 @@ static bool clk_is_aux_ready_internal(clk_t clk)
     return (*clk_sel->reg_sel & clk_sel->sel_mask) != 0;
 }
 
+bool clk_pll_enable(clk_pll_t pll, uint8_t refdiv, uint16_t fbdiv, uint8_t pdiv1, uint8_t pdiv2)
+{
+    const clk_pll_info_t* pll_sel = &clk_pll_info[pll];
+
+    // Set REFDIV
+    *pll_sel->reg_cs = (*pll_sel->reg_cs & ~0x3f) | refdiv;
+
+    // Set FBDIV
+    *pll_sel->reg_fbdiv = (*pll_sel->reg_fbdiv & ~0xfff) | fbdiv;
+
+    // Clear PD (PLL Powerdown), VCOPD (PLL VCO Powerdown)
+    *pll_sel->reg_pwr &= ~(1u | (1u << 5));
+
+    // Wait for LOCK to clear
+    WAIT((*pll_sel->reg_cs & (1u << 30)) != 0, 100);
+
+    // Set POSTDIV1
+    *pll_sel->reg_prim = (*pll_sel->reg_prim & ~0x70000) | (pdiv1 << 16);
+
+    // Set POSTDIV2
+    *pll_sel->reg_prim = (*pll_sel->reg_prim & ~0x7000) | (pdiv2 << 12);
+
+    // Clear POSTDIVPD (PLL Post Divider Powerdown)
+    *pll_sel->reg_pwr &= ~(1u << 3);
+
+    return true;
+}
+
+bool clk_pll_disable(clk_pll_t pll)
+{
+    // Set PD (PLL Powerdown), POSTDIVPD (PLL Post Divider Powerdown), VCOPD (PLL VCO Powerdown)
+    *clk_pll_info[pll].reg_pwr |= 1u | (1u << 3) | (1u << 5);
+
+    return true;
+}
+
+bool clk_pll_is_enabled(clk_pll_t pll)
+{
+    // Read PD (PLL Powerdown)
+    return (*clk_pll_info[pll].reg_pwr & 1u) == 0;
+}
+
 uint32_t clk_get_freq(clk_t clk)
 {
     switch (clk_get_src(clk))
@@ -305,7 +373,7 @@ uint32_t clk_get_freq(clk_t clk)
         case CLK_SRC_SYS: return clk_get_freq(CLK_SYS);
         case CLK_SRC_ROSC: return CLK_SRC_ROSC_FREQ;
         case CLK_SRC_XOSC: return CLK_SRC_XOSC_FREQ;
-        case CLK_SRC_LPOSC: return CLK_SRC_ROSC_LPOSC;
+        case CLK_SRC_LPOSC: return CLK_SRC_LPOSC_FREQ;
         default: return 0;
     }
 }
@@ -330,5 +398,5 @@ uint32_t clk_measure_freq(clk_t clk)
     while ((*CLK_FC0_REG_STATUS & (1u << 4)) == 0);
 
     // Read KHZ
-    return *CLK_FC0_REG_RESULT >> 5;
+    return (*CLK_FC0_REG_RESULT >> 5) * 1000;
 }
