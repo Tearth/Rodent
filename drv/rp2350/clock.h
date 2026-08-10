@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "common.h"
+#include "reset.h"
 
 #define CLK_REG_BASE 0x40010000
 
@@ -134,6 +135,7 @@ bool clk_set_src(clk_t clk, clk_src_t src);
 bool clk_pll_enable(clk_pll_t pll, uint8_t refdiv, uint16_t fbdiv, uint8_t pdiv1, uint8_t pdiv2);
 bool clk_pll_disable(clk_pll_t pll);
 bool clk_pll_is_enabled(clk_pll_t pll);
+bool clk_pll_reset();
 
 uint32_t clk_get_freq(clk_t clk);
 uint32_t clk_measure_freq(clk_t clk);

@@ -97,6 +97,11 @@ bool clk_disable(clk_t clk)
 
 bool clk_is_enabled(clk_t clk)
 {
+    if (clk == CLK_REF || clk == CLK_SYS)
+    {
+        return true;
+    }
+
     // Read ENABLED
     return (*clk_info[clk].reg_ctrl & (1u << 28)) != 0;
 }
@@ -363,6 +368,11 @@ bool clk_pll_is_enabled(clk_pll_t pll)
 {
     // Read PD (PLL Powerdown)
     return (*clk_pll_info[pll].reg_pwr & 1u) == 0;
+}
+
+bool clk_pll_reset()
+{
+    return reset_subsys(RESET_SUBSYS_PLL_SYS);
 }
 
 uint32_t clk_get_freq(clk_t clk)
