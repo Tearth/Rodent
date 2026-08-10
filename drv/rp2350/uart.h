@@ -25,8 +25,7 @@
 typedef enum uart
 {
     UART0,
-    UART1,
-    UART_COUNT
+    UART1
 } uart_t;
 
 typedef struct uart_info
@@ -45,7 +44,11 @@ bool uart_is_enabled(uart_t uart);
 bool uart_reset(uart_t uart);
 
 bool uart_set_baudrate(uart_t uart, uint32_t baudrate);
+uint32_t uart_get_baudrate(uart_t uart);
+
 bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits);
+uint8_t uart_get_data_bits(uart_t uart);
+uint8_t uart_get_stop_bits(uart_t uart);
 
 uint8_t uart_read_byte(uart_t uart);
 void uart_send_byte(uart_t uart, uint8_t byte);

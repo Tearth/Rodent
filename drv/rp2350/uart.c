@@ -78,10 +78,27 @@ bool uart_set_baudrate(uart_t uart, uint32_t baudrate)
     const uint32_t ibrd = (uint32_t)divisor;
     const uint32_t fbrd = (uint32_t)((divisor - (uint32_t)divisor) * 64 + 0.5);
 
-    *uart_sel->reg_ibrd = ibrd;
-    *uart_sel->reg_fbrd = fbrd;
+    // Write BAUD_DIVINT (Integer Baud Rate Divisor)
+    *uart_sel->reg_ibrd = (*uart_sel->reg_ibrd & ~0xffff) | ibrd;
+
+    // Write BAUD_DIVFRAC (Fractional Baud Rate Divisor)
+    *uart_sel->reg_fbrd = (*uart_sel->reg_fbrd & ~0x3f) | fbrd;
 
     return true;
+}
+
+uint32_t uart_get_baudrate(uart_t uart)
+{
+    const uart_info_t *uart_sel = &uart_info[uart];
+    const uint32_t freq = clk_get_freq(CLK_PERI);
+
+    // Read BAUD_DIVINT (Integer Baud Rate Divisor)
+    const uint32_t ibrd = *uart_sel->reg_ibrd & 0xffff;
+
+    // Read BAUD_DIVFRAC (Fractional Baud Rate Divisor)
+    const uint32_t fbrd = *uart_sel->reg_fbrd & 0x3f;
+
+    return freq / (16 * (ibrd + (float)fbrd / 64.0f));
 }
 
 bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits)
@@ -100,6 +117,18 @@ bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits)
     *uart_info[uart].reg_lcr = ((data_bits - 5) << 5) | (1u << 4) | ((stop_bits - 1) << 3);
 
     return true;
+}
+
+uint8_t uart_get_data_bits(uart_t uart)
+{
+    // Read WLEN (Word Length)
+    return ((*uart_info[uart].reg_lcr >> 5) & 0x3) + 5;
+}
+
+uint8_t uart_get_stop_bits(uart_t uart)
+{
+    // Read STP2 (Stop Bits)
+    return ((*uart_info[uart].reg_lcr >> 3) & 0x1) + 1;
 }
 
 uint8_t uart_read_byte(uart_t uart)
