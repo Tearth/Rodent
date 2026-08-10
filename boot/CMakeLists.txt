@@ -9,6 +9,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 project(bootloader LANGUAGES C ASM)
 add_executable(bootloader.elf
     src/main.c
+    src/log.c
     src/asm/image.s
     src/asm/startup.s
 )
@@ -44,6 +45,7 @@ if($ENV{TARGET_CPU} STREQUAL "rp2350")
     )
 
     target_sources(bootloader.elf PRIVATE
+        src/hal/hal_rp2350.c
         ../drv/rp2350/clock.c
         ../drv/rp2350/gpio.c
         ../drv/rp2350/reset.c

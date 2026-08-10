@@ -15,7 +15,7 @@ typedef struct fs_fhandle
 } fs_fhandle_t;
 
 bool fs_init(void* base);
-bool fs_file_open(const char* path, fs_fhandle_t *handle);
+bool fs_file_open(const char *path, fs_fhandle_t *handle);
 
 int lfs_read(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, void *buffer, lfs_size_t size);
 int lfs_prog(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, const void *buffer, lfs_size_t size);

@@ -48,7 +48,7 @@ bool fs_init(void* base_addr)
     return lfs_mount(&lfs, &cfg) == LFS_ERR_OK;
 }
 
-bool fs_file_open(const char* path, fs_fhandle_t *handle)
+bool fs_file_open(const char *path, fs_fhandle_t *handle)
 {
     if (handle->config.buffer != handle->buffer)
     {
