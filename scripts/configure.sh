@@ -10,3 +10,10 @@ mkdir ./build/fs
 mkdir ./boot/build
 cd ./boot/build
 cmake ..
+cd ../..
+
+# Kernel
+mkdir ./kernel/build
+cd ./kernel/build
+cmake ..
+cd ../..

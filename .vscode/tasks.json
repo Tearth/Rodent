@@ -114,7 +114,7 @@
             "FS_SIZE": "0x20000",
 
             // Kernel
-            "KERNEL_FILENAME": "kernel.bin",
+            "KERNEL_FILENAME": "kernel.elf",
 
             // OpenOCD
             "ADAPTER_SPEED": "30000"
