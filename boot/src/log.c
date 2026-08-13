@@ -1,6 +1,6 @@
 #include "log.h"
 
-void log(log_level_t level, const char *msg)
+void log_msg(log_level_t level, const char *msg)
 {
     log_fmt(level, msg, nullptr);
 }

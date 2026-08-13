@@ -46,8 +46,8 @@ bool init_hw()
         return false;
     }
 
-    log(LOG_LEVEL_OK, "PicOS Bootloader");
-    log(LOG_LEVEL_OK, "Started clocks");
+    log_msg(LOG_LEVEL_OK, "PicOS Bootloader");
+    log_msg(LOG_LEVEL_OK, "Started clocks");
 
     hal_clk_info_t clks[8];
     hal_uart_info_t uarts[8];
@@ -68,7 +68,7 @@ bool init_hw()
         log_fmt(LOG_LEVEL_INFO, " ", clks[i].name, " @ ", clks[i].src, " (", freq_buf, " MHz), ", enabled_buff, nullptr);
     }
 
-    log(LOG_LEVEL_OK, "Started UART");
+    log_msg(LOG_LEVEL_OK, "Started UART");
 
     for (int i = 0; i < hal_uart_get_list(uarts, 8); i++)
     {
@@ -104,7 +104,7 @@ bool init_fs()
     }
     else
     {
-        return log(LOG_LEVEL_FAIL, "Failed to mount filesystem"), false;
+        return log_msg(LOG_LEVEL_FAIL, "Failed to mount filesystem"), false;
     }
 }
 
@@ -116,7 +116,7 @@ bool init_kernel()
 
     if (!fs_file_open(KERNEL_FILENAME, &handle))
     {
-        return log(LOG_LEVEL_FAIL, "Failed to open kernel ELF"), false;
+        return log_msg(LOG_LEVEL_FAIL, "Failed to open kernel ELF"), false;
     }
 
     fs_file_read(&handle, buffer, sizeof(buffer));
@@ -124,10 +124,10 @@ bool init_kernel()
 
     if (elf_header.signature != 0x464c457f)
     {
-        return log(LOG_LEVEL_FAIL, "Invalid ELF signature"), false;
+        return log_msg(LOG_LEVEL_FAIL, "Invalid ELF signature"), false;
     }
 
-    log(LOG_LEVEL_OK, "Found valid kernel executable");
+    log_msg(LOG_LEVEL_OK, "Found valid kernel executable");
 
     uint32_t data_from = UINT32_MAX;
     uint32_t data_to = 0;
@@ -189,7 +189,7 @@ bool init_kernel()
 
     log_fmt(LOG_LEVEL_INFO, " BSS @ 0x", addr_from, "-0x", addr_to, " (", addr_size, " B)", nullptr);
     log_fmt(LOG_LEVEL_INFO, " Entry point @ 0x", entry_buf, nullptr);
-    log(LOG_LEVEL_INFO, "Jumping to kernel...");
+    log_msg(LOG_LEVEL_INFO, "Jumping to kernel...");
 
     jmp((void*)elf_header.entry);
 }
