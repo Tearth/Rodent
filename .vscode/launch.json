@@ -5,7 +5,8 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/bootloader.elf",
+            //"program": "${workspaceFolder}/bin/bootloader.elf",
+            "program": "${workspaceFolder}/kernel/bin/kernel.elf",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
@@ -16,7 +17,11 @@
             "miDebuggerPath": "riscv32-unknown-elf-gdb",
             "useExtendedRemote": true,
             "preLaunchTask": "Debug",
-            "postDebugTask": "Terminate All Tasks"
+            "postDebugTask": "Terminate All Tasks",
+            "hardwareBreakpoints": {
+                "require": true,
+                "limit": 4
+            }
         }
     ]
 }
