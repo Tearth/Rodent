@@ -23,7 +23,7 @@ struct lfs_config cfg = {
     .lookahead_buffer = lookahead_buffer
 };
 
-bool fs_init(void* base_addr)
+bool fs_mount(void* base_addr)
 {
     if (base_addr == NULL)
     {
@@ -56,6 +56,21 @@ bool fs_file_open(const char *path, fs_fhandle_t *handle)
     }
 
     return lfs_file_opencfg(&lfs, &handle->file, path, LFS_O_RDONLY, &handle->config) == LFS_ERR_OK;
+}
+
+void fs_file_read(fs_fhandle_t *handle, uint8_t *buffer, uint32_t size)
+{
+    lfs_file_read(&lfs, &handle->file, buffer, size);
+}
+
+void fs_file_seek(fs_fhandle_t *handle, uint32_t pos)
+{
+    lfs_file_seek(&lfs, &handle->file, pos, LFS_SEEK_SET);
+}
+
+void fs_get_info(fs_info_t *info)
+{
+    strncpy(info->name, "LittleFS", sizeof(info->name));
 }
 
 int lfs_read(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, void *buffer, lfs_size_t size)
