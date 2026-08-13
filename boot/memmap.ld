@@ -2,7 +2,7 @@ OUTPUT_FORMAT(elf32-littleriscv)
 MEMORY
 {
     FLASH(rx) : ORIGIN = 0x10000000, LENGTH = 4M
-    RAM(rwx) : ORIGIN = 0x20000000, LENGTH = 520k
+    RAM(rwx) : ORIGIN = 0x20080000, LENGTH = 8k
 }
 ENTRY(_entry_point)
 SECTIONS
@@ -38,6 +38,7 @@ SECTIONS
     } > RAM AT> FLASH
 
     __data_pointer = LOADADDR(.data);
+    __stack_pointer = ORIGIN(RAM) + LENGTH(RAM);
 
     .bss (NOLOAD) : {
         . = ALIGN(4);
