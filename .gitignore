@@ -2,3 +2,5 @@
 /build
 /boot/bin/
 /boot/build/
+/kernel/bin/
+/kernel/build/

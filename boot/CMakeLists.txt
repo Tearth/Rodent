@@ -21,6 +21,32 @@ target_compile_options(bootloader.elf PRIVATE -march=rv32ima_zicsr_zifencei_zba_
 target_link_options(bootloader.elf PRIVATE -T ${CMAKE_SOURCE_DIR}/memmap.ld -nostartfiles -Wl,-Map=${CMAKE_BINARY_DIR}/bootloader.map)
 target_compile_definitions(bootloader.elf PRIVATE -DFS_$ENV{FS_TYPE})
 
+if($ENV{TARGET_ARCH} STREQUAL "riscv")
+    target_compile_definitions(bootloader.elf PRIVATE
+        -DARCH_RISCV
+    )
+
+    target_sources(bootloader.elf PRIVATE
+        src/arch/arch_riscv.c
+    )
+
+endif()
+
+if($ENV{TARGET_CPU} STREQUAL "rp2350")
+    target_compile_definitions(bootloader.elf PRIVATE
+        -DCPU_RP2350
+    )
+
+    target_sources(bootloader.elf PRIVATE
+        src/hal/hal_rp2350.c
+        ../drv/rp2350/clock.c
+        ../drv/rp2350/gpio.c
+        ../drv/rp2350/reset.c
+        ../drv/rp2350/uart.c
+    )
+
+endif()
+
 if($ENV{FS_TYPE} STREQUAL "lfs")
     target_sources(bootloader.elf PRIVATE
         src/fs/fs_lfs.c
@@ -37,21 +63,6 @@ if($ENV{FS_TYPE} STREQUAL "lfs")
         -DLFS_NO_ERROR
         -DLFS_READONLY
     )
-endif()
-
-if($ENV{TARGET_CPU} STREQUAL "rp2350")
-    target_compile_definitions(bootloader.elf PRIVATE
-        -DCPU_RP2350
-    )
-
-    target_sources(bootloader.elf PRIVATE
-        src/hal/hal_rp2350.c
-        ../drv/rp2350/clock.c
-        ../drv/rp2350/gpio.c
-        ../drv/rp2350/reset.c
-        ../drv/rp2350/uart.c
-    )
-
 endif()
 
 set(FS_BASE_ADDR $ENV{FS_BASE_ADDR})

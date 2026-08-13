@@ -1,19 +1,37 @@
 #include <stdlib.h>
+#include "arch/arch.h"
 #include "cfg/config.h"
 #include "fs/fs.h"
 #include "hal/hal.h"
 #include "log.h"
+#include "elf.h"
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
 
 static bool init_hw();
+static bool init_fs();
+static bool init_kernel();
+static void halt();
 
 int main()
 {
     if (!init_hw())
     {
-        while(1);
+        halt();
     }
 
-    while (1);
+    if (!init_fs())
+    {
+        halt();
+    }
+
+    if (!init_kernel())
+    {
+        halt();
+    }
+
+    halt();
 }
 
 bool init_hw()
@@ -29,7 +47,7 @@ bool init_hw()
     }
 
     log(LOG_LEVEL_OK, "PicOS Bootloader");
-    log(LOG_LEVEL_OK, "Started Clocks");
+    log(LOG_LEVEL_OK, "Started clocks");
 
     hal_clk_info_t clks[8];
     hal_uart_info_t uarts[8];
@@ -73,4 +91,110 @@ bool init_hw()
     }
 
     return true;
+}
+
+bool init_fs()
+{
+    if (fs_mount((void*)FS_BASE_ADDR))
+    {
+        fs_info_t info;
+        fs_get_info(&info);
+
+        return log_fmt(LOG_LEVEL_OK, "Mounted filesystem ", info.name), true;
+    }
+    else
+    {
+        return log(LOG_LEVEL_FAIL, "Failed to mount filesystem"), false;
+    }
+}
+
+bool init_kernel()
+{
+    fs_fhandle_t handle;
+    elf_header_t elf_header;
+    uint8_t buffer[64];
+
+    if (!fs_file_open(KERNEL_FILENAME, &handle))
+    {
+        return log(LOG_LEVEL_FAIL, "Failed to open kernel ELF"), false;
+    }
+
+    fs_file_read(&handle, buffer, sizeof(buffer));
+    memcpy(&elf_header, buffer, sizeof(elf_header_t));
+
+    if (elf_header.signature != 0x464c457f)
+    {
+        return log(LOG_LEVEL_FAIL, "Invalid ELF signature"), false;
+    }
+
+    log(LOG_LEVEL_OK, "Found valid kernel executable");
+
+    uint32_t data_from = UINT32_MAX;
+    uint32_t data_to = 0;
+    uint32_t bss_from = UINT32_MAX;
+    uint32_t bss_to = 0;
+
+    for (int i = 0; i < elf_header.phnum; i++)
+    {
+        elf_pheader_t pheader;
+
+        fs_file_seek(&handle, elf_header.phoff + sizeof(elf_pheader_t) * i);
+        fs_file_read(&handle, buffer, sizeof(buffer));
+        memcpy(&pheader, buffer, sizeof(elf_pheader_t));
+
+        if (pheader.type == 0x1)
+        {
+            int32_t data_left = pheader.fsize;
+            uint8_t *vaddr_ptr = (uint8_t*)pheader.vaddr;
+
+            fs_file_seek(&handle, pheader.offset);
+
+            do
+            {
+                fs_file_read(&handle, buffer, sizeof(buffer));
+                memcpy(vaddr_ptr, buffer, MIN(data_left, sizeof(buffer)));
+
+                vaddr_ptr += sizeof(buffer);
+                data_left -= sizeof(buffer);
+            }
+            while (data_left > 0);
+
+            data_from = MIN(data_from, pheader.vaddr);
+            data_to = MAX(data_to, pheader.vaddr + pheader.fsize);
+
+            uint32_t bss_length = pheader.msize - pheader.fsize;
+
+            memset((uint8_t*)pheader.vaddr + pheader.fsize, 0, bss_length);
+            bss_from = MIN(bss_from, pheader.vaddr + pheader.fsize);
+            bss_to = MAX(bss_to, pheader.vaddr + pheader.msize);
+        }
+    }
+
+    char entry_buf[16];
+    char addr_from[16];
+    char addr_to[16];
+    char addr_size[16];
+
+    itoa(elf_header.entry, entry_buf, 16);
+    itoa(data_from, addr_from, 16);
+    itoa(data_to, addr_to, 16);
+    itoa(data_to - data_from, addr_size, 10);
+
+    log_fmt(LOG_LEVEL_OK, "Loaded ", KERNEL_FILENAME, " into memory", nullptr);
+    log_fmt(LOG_LEVEL_INFO, " Data @ 0x", addr_from, "-0x", addr_to, " (", addr_size, " B)", nullptr);
+
+    itoa(bss_from, addr_from, 16);
+    itoa(bss_to, addr_to, 16);
+    itoa(bss_to - bss_from, addr_size, 10);
+
+    log_fmt(LOG_LEVEL_INFO, " BSS @ 0x", addr_from, "-0x", addr_to, " (", addr_size, " B)", nullptr);
+    log_fmt(LOG_LEVEL_INFO, " Entry point @ 0x", entry_buf, nullptr);
+    log(LOG_LEVEL_INFO, "Jumping to kernel...");
+
+    jmp((void*)elf_header.entry);
+}
+
+void halt()
+{
+    while(1);
 }
