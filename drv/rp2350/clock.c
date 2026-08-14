@@ -384,6 +384,8 @@ uint32_t clk_get_freq(clk_t clk)
         case CLK_SRC_ROSC: return CLK_SRC_ROSC_FREQ;
         case CLK_SRC_XOSC: return CLK_SRC_XOSC_FREQ;
         case CLK_SRC_LPOSC: return CLK_SRC_LPOSC_FREQ;
+        case CLK_SRC_PLL_SYS: return clk_measure_freq(clk);
+        case CLK_SRC_PLL_USB: return clk_measure_freq(clk);
         default: return 0;
     }
 }

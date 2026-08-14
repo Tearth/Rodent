@@ -25,6 +25,24 @@ bool hal_clk_init()
         return false;
     }
 
+    if (clk_get_src(CLK_SYS) != CLK_SRC_PLL_SYS)
+    {
+        if (!clk_pll_reset())
+        {
+            return false;
+        }
+
+        if (!clk_pll_enable(CLK_PLL_SYS, 1, 125, 5, 2))
+        {
+            return false;
+        }
+
+        if (!clk_set_src(CLK_SYS, CLK_SRC_PLL_SYS))
+        {
+            return false;
+        }
+    }
+
     return true;
 }
 
