@@ -3,7 +3,7 @@ MEMORY
 {
     RAM(rwx) : ORIGIN = 0x20000000, LENGTH = 32k
 }
-ENTRY(main)
+ENTRY(_entry_point)
 SECTIONS
 {
     .text : {

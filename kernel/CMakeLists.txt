@@ -9,6 +9,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
 project(kernel LANGUAGES C ASM)
 add_executable(kernel.elf
     src/main.c
+    src/arch/riscv/startup.s
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/../lib/littlefs/src)
