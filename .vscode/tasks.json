@@ -105,8 +105,8 @@
     "options": {
         "env": {
             // Target
-            "TARGET_ARCH": "riscv",
             "TARGET_CPU": "rp2350",
+            "TARGET_ARCH": "riscv",
 
             // Filesystem
             "FS_TYPE": "lfs",

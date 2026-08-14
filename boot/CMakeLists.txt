@@ -10,16 +10,31 @@ project(bootloader LANGUAGES C ASM)
 add_executable(bootloader.elf
     src/main.c
     src/log.c
-    src/asm/image.s
-    src/asm/startup.s
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/../lib/littlefs/src)
 include_directories(${CMAKE_SOURCE_DIR}/../drv)
 
 target_compile_options(bootloader.elf PRIVATE -march=rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp -mabi=ilp32 -Wall -g)
-target_link_options(bootloader.elf PRIVATE -T ${CMAKE_SOURCE_DIR}/memmap.ld -nostartfiles -Wl,-Map=${CMAKE_BINARY_DIR}/bootloader.map)
+target_link_options(bootloader.elf PRIVATE -T ${CMAKE_SOURCE_DIR}/ld/$ENV{TARGET_CPU}_$ENV{TARGET_ARCH}.ld -nostartfiles -Wl,-Map=${CMAKE_BINARY_DIR}/bootloader.map)
 target_compile_definitions(bootloader.elf PRIVATE -DFS_$ENV{FS_TYPE})
+
+if($ENV{TARGET_CPU} STREQUAL "rp2350")
+    target_compile_definitions(bootloader.elf PRIVATE
+        -DCPU_RP2350
+    )
+
+    target_sources(bootloader.elf PRIVATE
+        src/cpu/rp2350/image_$ENV{TARGET_ARCH}.s
+        src/cpu/rp2350/startup_$ENV{TARGET_ARCH}.s
+        src/hal/hal_rp2350.c
+        ../drv/rp2350/clock.c
+        ../drv/rp2350/gpio.c
+        ../drv/rp2350/reset.c
+        ../drv/rp2350/uart.c
+    )
+
+endif()
 
 if($ENV{TARGET_ARCH} STREQUAL "riscv")
     target_compile_definitions(bootloader.elf PRIVATE
@@ -28,21 +43,6 @@ if($ENV{TARGET_ARCH} STREQUAL "riscv")
 
     target_sources(bootloader.elf PRIVATE
         src/arch/arch_riscv.c
-    )
-
-endif()
-
-if($ENV{TARGET_CPU} STREQUAL "rp2350")
-    target_compile_definitions(bootloader.elf PRIVATE
-        -DCPU_RP2350
-    )
-
-    target_sources(bootloader.elf PRIVATE
-        src/hal/hal_rp2350.c
-        ../drv/rp2350/clock.c
-        ../drv/rp2350/gpio.c
-        ../drv/rp2350/reset.c
-        ../drv/rp2350/uart.c
     )
 
 endif()

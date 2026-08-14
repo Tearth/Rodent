@@ -112,15 +112,15 @@ bool init_kernel()
 {
     fs_fhandle_t handle;
     elf_header_t elf_header;
-    uint8_t buffer[64];
+    uint8_t buf[64];
 
     if (!fs_file_open(KERNEL_FILENAME, &handle))
     {
         return log_msg(LOG_LEVEL_FAIL, "Failed to open kernel ELF"), false;
     }
 
-    fs_file_read(&handle, buffer, sizeof(buffer));
-    memcpy(&elf_header, buffer, sizeof(elf_header_t));
+    fs_file_read(&handle, buf, sizeof(buf));
+    memcpy(&elf_header, buf, sizeof(elf_header_t));
 
     if (elf_header.signature != 0x464c457f)
     {
@@ -139,8 +139,8 @@ bool init_kernel()
         elf_pheader_t pheader;
 
         fs_file_seek(&handle, elf_header.phoff + sizeof(elf_pheader_t) * i);
-        fs_file_read(&handle, buffer, sizeof(buffer));
-        memcpy(&pheader, buffer, sizeof(elf_pheader_t));
+        fs_file_read(&handle, buf, sizeof(buf));
+        memcpy(&pheader, buf, sizeof(elf_pheader_t));
 
         if (pheader.type == 0x1)
         {
@@ -151,11 +151,11 @@ bool init_kernel()
 
             do
             {
-                fs_file_read(&handle, buffer, sizeof(buffer));
-                memcpy(vaddr_ptr, buffer, MIN(data_left, sizeof(buffer)));
+                fs_file_read(&handle, buf, sizeof(buf));
+                memcpy(vaddr_ptr, buf, MIN(data_left, sizeof(buf)));
 
-                vaddr_ptr += sizeof(buffer);
-                data_left -= sizeof(buffer);
+                vaddr_ptr += sizeof(buf);
+                data_left -= sizeof(buf);
             }
             while (data_left > 0);
 

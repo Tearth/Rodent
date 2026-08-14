@@ -1,9 +1,9 @@
 #include "fs_lfs.h"
 
 lfs_t lfs;
-uint8_t read_buffer[FS_CACHE_SIZE];
-uint8_t prog_buffer[FS_CACHE_SIZE];
-uint8_t lookahead_buffer[FS_CACHE_SIZE];
+uint8_t read_buf[FS_CACHE_SIZE];
+uint8_t prog_buf[FS_CACHE_SIZE];
+uint8_t lookahead_buf[FS_CACHE_SIZE];
 
 struct lfs_config cfg = {
     .read  = lfs_read,
@@ -18,9 +18,9 @@ struct lfs_config cfg = {
     .block_size = 4096,
     .block_cycles = 500,
 
-    .read_buffer = read_buffer,
-    .prog_buffer = prog_buffer,
-    .lookahead_buffer = lookahead_buffer
+    .read_buffer = read_buf,
+    .prog_buffer = prog_buf,
+    .lookahead_buffer = lookahead_buf
 };
 
 bool fs_mount(void* base_addr)
@@ -50,17 +50,17 @@ bool fs_mount(void* base_addr)
 
 bool fs_file_open(const char *path, fs_fhandle_t *handle)
 {
-    if (handle->config.buffer != handle->buffer)
+    if (handle->cfg.buffer != handle->buf)
     {
-        handle->config.buffer = handle->buffer;
+        handle->cfg.buffer = handle->buf;
     }
 
-    return lfs_file_opencfg(&lfs, &handle->file, path, LFS_O_RDONLY, &handle->config) == LFS_ERR_OK;
+    return lfs_file_opencfg(&lfs, &handle->file, path, LFS_O_RDONLY, &handle->cfg) == LFS_ERR_OK;
 }
 
-void fs_file_read(fs_fhandle_t *handle, uint8_t *buffer, uint32_t size)
+void fs_file_read(fs_fhandle_t *handle, uint8_t *buf, uint32_t size)
 {
-    lfs_file_read(&lfs, &handle->file, buffer, size);
+    lfs_file_read(&lfs, &handle->file, buf, size);
 }
 
 void fs_file_seek(fs_fhandle_t *handle, uint32_t pos)
@@ -73,22 +73,22 @@ void fs_get_info(fs_info_t *info)
     strncpy(info->name, "LittleFS", sizeof(info->name));
 }
 
-int lfs_read(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, void *buffer, lfs_size_t size)
+int lfs_read(const struct lfs_config *cfg, lfs_block_t block, lfs_off_t off, void *buf, lfs_size_t size)
 {
-    return memcpy(buffer, (const void*)((uint8_t*)c->context + block * c->block_size + off), size), LFS_ERR_OK;
+    return memcpy(buf, (const void*)((uint8_t*)cfg->context + block * cfg->block_size + off), size), LFS_ERR_OK;
 }
 
-int lfs_prog(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, const void *buffer, lfs_size_t size)
-{
-    return LFS_ERR_OK;
-}
-
-int lfs_erase(const struct lfs_config *c, lfs_block_t block)
+int lfs_prog(const struct lfs_config *cfg, lfs_block_t block, lfs_off_t off, const void *buf, lfs_size_t size)
 {
     return LFS_ERR_OK;
 }
 
-int lfs_sync(const struct lfs_config *c)
+int lfs_erase(const struct lfs_config *cfg, lfs_block_t block)
+{
+    return LFS_ERR_OK;
+}
+
+int lfs_sync(const struct lfs_config *cfg)
 {
     return LFS_ERR_OK;
 }
