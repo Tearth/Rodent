@@ -31,6 +31,7 @@ if($ENV{TARGET_CPU} STREQUAL "rp2350")
         ../drv/rp2350/clock.c
         ../drv/rp2350/gpio.c
         ../drv/rp2350/reset.c
+        ../drv/rp2350/timer.c
         ../drv/rp2350/uart.c
     )
 

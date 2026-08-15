@@ -188,8 +188,8 @@ bool init_kernel()
     itoa(bss_to - bss_from, addr_size, 10);
 
     log_fmt(LOG_LEVEL_INFO, " BSS @ 0x", addr_from, "-0x", addr_to, " (", addr_size, " B)", nullptr);
-    log_fmt(LOG_LEVEL_INFO, " Entry point @ 0x", entry_buf, nullptr);
-    log_msg(LOG_LEVEL_INFO, "Jumping to kernel...");
+    log_fmt(LOG_LEVEL_INFO, "Jumping to kernel @ 0x", entry_buf, nullptr);
+    log_msg(LOG_LEVEL_INFO, "------------------------------");
 
     jmp((void*)elf_header.entry);
 }
