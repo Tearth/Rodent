@@ -1,51 +1,27 @@
 cmake_minimum_required(VERSION 3.2)
-
-set(CMAKE_ASM_COMPILER riscv32-unknown-elf-gcc)
-set(CMAKE_C_COMPILER riscv32-unknown-elf-gcc)
-set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM_PROCESSOR riscv)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/../bin)
-
 project(bootloader LANGUAGES C ASM)
+
 add_executable(bootloader.elf
+    $<TARGET_OBJECTS:drv>
     src/main.c
     src/log.c
 )
 
-include_directories(${CMAKE_SOURCE_DIR}/../lib/littlefs/src)
-include_directories(${CMAKE_SOURCE_DIR}/../drv)
-
-target_compile_options(bootloader.elf PRIVATE -march=rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp -mabi=ilp32 -Wall -g)
-target_link_options(bootloader.elf PRIVATE -T ${CMAKE_SOURCE_DIR}/ld/$ENV{TARGET_CPU}_$ENV{TARGET_ARCH}.ld -nostartfiles -Wl,-Map=${CMAKE_BINARY_DIR}/bootloader.map)
-target_compile_definitions(bootloader.elf PRIVATE -DFS_$ENV{FS_TYPE})
+target_link_options(bootloader.elf PRIVATE
+    -T ${CMAKE_CURRENT_SOURCE_DIR}/ld/$ENV{TARGET_CPU}_$ENV{TARGET_ARCH}.ld -nostartfiles
+    -Wl,-Map=${CMAKE_BINARY_DIR}/bootloader.map
+)
 
 if($ENV{TARGET_CPU} STREQUAL "rp2350")
-    target_compile_definitions(bootloader.elf PRIVATE
-        -DCPU_RP2350
-    )
-
     target_sources(bootloader.elf PRIVATE
         src/cpu/rp2350/image_$ENV{TARGET_ARCH}.s
         src/cpu/rp2350/startup_$ENV{TARGET_ARCH}.s
         src/hal/hal_rp2350.c
-        ../drv/rp2350/clock.c
-        ../drv/rp2350/gpio.c
-        ../drv/rp2350/reset.c
-        ../drv/rp2350/timer.c
-        ../drv/rp2350/uart.c
     )
-
 endif()
 
 if($ENV{TARGET_ARCH} STREQUAL "riscv")
-    target_compile_definitions(bootloader.elf PRIVATE
-        -DARCH_RISCV
-    )
-
-    target_sources(bootloader.elf PRIVATE
-        src/arch/arch_riscv.c
-    )
-
+    target_sources(bootloader.elf PRIVATE src/arch/arch_riscv.c)
 endif()
 
 if($ENV{FS_TYPE} STREQUAL "lfs")
@@ -56,7 +32,6 @@ if($ENV{FS_TYPE} STREQUAL "lfs")
     )
 
     target_compile_definitions(bootloader.elf PRIVATE
-        -DFS_LFS
         -DLFS_NO_MALLOC
         -DLFS_NO_ASSERT
         -DLFS_NO_DEBUG
@@ -69,4 +44,7 @@ endif()
 set(FS_BASE_ADDR $ENV{FS_BASE_ADDR})
 set(KERNEL_FILENAME $ENV{KERNEL_FILENAME})
 
-configure_file(${CMAKE_SOURCE_DIR}/src/cfg/config.h.in ${CMAKE_SOURCE_DIR}/src/cfg/config.h)
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/cfg/config.h.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/cfg/config.h
+)

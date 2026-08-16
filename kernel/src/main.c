@@ -22,7 +22,7 @@ bool init_systime()
     char buf[16];
 
     hal_systime_init();
-    itoa(hal_systime_get_current(), buf, 10);
+    utoa(hal_systime_get_current(), buf, 10);
 
     log_msg(LOG_LEVEL_OK, "Started system time");
     log_fmt(LOG_LEVEL_INFO, " Current value @ ", buf, nullptr);

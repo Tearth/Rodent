@@ -1,19 +1,9 @@
 #!/bin/sh
 
 cd ..
-
 mkdir ./bin
 mkdir ./build
 mkdir ./build/fs
-
-# Bootloader
-mkdir ./boot/build
-cd ./boot/build
+cd ./build
 cmake ..
-cd ../..
-
-# Kernel
-mkdir ./kernel/build
-cd ./kernel/build
-cmake ..
-cd ../..
+cd ..
