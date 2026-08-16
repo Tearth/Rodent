@@ -17,5 +17,5 @@ bool timer_sys_is_enabled()
 
 uint64_t timer_sys_get_current()
 {
-    return (*TIMER_SIO_REG_MTIMEH << 32) | *TIMER_SIO_REG_MTIME;
+    return ((uint64_t)*TIMER_SIO_REG_MTIMEH << 32) | *TIMER_SIO_REG_MTIME;
 }
