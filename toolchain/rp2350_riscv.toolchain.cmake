@@ -1,0 +1,5 @@
+set(CMAKE_ASM_COMPILER riscv32-unknown-elf-gcc)
+set(CMAKE_C_COMPILER riscv32-unknown-elf-gcc)
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR riscv)
+set(CMAKE_C_FLAGS "-march=rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp -mabi=ilp32 -Wall")

@@ -106,6 +106,7 @@
         "env": {
             // Build
             "BUILD_PROFILE": "RELEASE",
+            "BUILD_TOOLCHAIN": "rp2350_riscv",
 
             // Target
             "TARGET_CPU": "rp2350",

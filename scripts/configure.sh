@@ -6,4 +6,4 @@ mkdir ./build
 mkdir ./build/fs
 cd ./build
 
-cmake .. -DCMAKE_BUILD_TYPE=${BUILD_PROFILE}
+cmake .. -DCMAKE_BUILD_TYPE=${BUILD_PROFILE} -DCMAKE_TOOLCHAIN_FILE=./toolchain/${BUILD_TOOLCHAIN}.toolchain.cmake
