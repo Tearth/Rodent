@@ -1,8 +1,4 @@
 #!/bin/sh
 
-cd ..
-
-# Bootloader
-cd ./boot/build
+cd ../build
 cmake --build . --target clean
-cd ../..

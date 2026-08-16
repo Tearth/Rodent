@@ -5,5 +5,5 @@ mkdir ./bin
 mkdir ./build
 mkdir ./build/fs
 cd ./build
-cmake ..
-cd ..
+
+cmake .. -DCMAKE_BUILD_TYPE=${BUILD_PROFILE}

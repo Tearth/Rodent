@@ -104,6 +104,9 @@
     ],
     "options": {
         "env": {
+            // Build
+            "BUILD_PROFILE": "RELEASE",
+
             // Target
             "TARGET_CPU": "rp2350",
             "TARGET_ARCH": "riscv",

@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.9)
+cmake_policy(SET CMP0069 NEW)
 project(drv LANGUAGES C ASM)
 
 if($ENV{TARGET_CPU} STREQUAL "rp2350")
