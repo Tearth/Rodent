@@ -1,6 +1,6 @@
 #include <stdlib.h>
+#include <hal.h>
 #include "log.h"
-#include "hal/hal.h"
 
 static bool init_systime();
 static void halt();

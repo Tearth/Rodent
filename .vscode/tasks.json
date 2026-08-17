@@ -105,7 +105,7 @@
     "options": {
         "env": {
             // Build
-            "BUILD_PROFILE": "RELEASE",
+            "BUILD_PROFILE": "DEBUG",
             "BUILD_TOOLCHAIN": "rp2350_riscv",
 
             // Target

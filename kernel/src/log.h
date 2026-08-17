@@ -2,7 +2,7 @@
 #define LOG_H
 
 #include <stdarg.h>
-#include "hal/hal.h"
+#include <hal.h>
 
 typedef enum log_level
 {

@@ -1,8 +1,8 @@
 #include <stdlib.h>
+#include <hal.h>
 #include "arch/arch.h"
 #include "cfg/config.h"
 #include "fs/fs.h"
-#include "hal/hal.h"
 #include "log.h"
 #include "elf.h"
 

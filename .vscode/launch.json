@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             //"program": "${workspaceFolder}/bin/bootloader.elf",
-            "program": "${workspaceFolder}/kernel/bin/kernel.elf",
+            "program": "${workspaceFolder}/bin/kernel.elf",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",

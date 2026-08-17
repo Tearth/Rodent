@@ -1,7 +1,8 @@
-#include "hal.h"
 #include <rp2350/uart.h>
 #include <rp2350/clock.h>
 #include <rp2350/gpio.h>
+#include <rp2350/timer.h>
+#include "hal.h"
 
 bool hal_clk_init()
 {
@@ -141,4 +142,14 @@ uint32_t hal_uart_get_list(hal_uart_info_t *uarts, int max_len)
     }
 
     return 2;
+}
+
+bool hal_systime_init()
+{
+    return timer_sys_enable(), true;
+}
+
+uint64_t hal_systime_get_current()
+{
+    return timer_sys_get_current();
 }

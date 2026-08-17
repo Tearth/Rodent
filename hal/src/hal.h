@@ -28,4 +28,7 @@ bool hal_uart_init();
 void hal_uart_send_str(const char *str);
 uint32_t hal_uart_get_list(hal_uart_info_t *uarts, int max_len);
 
+bool hal_systime_init();
+uint64_t hal_systime_get_current();
+
 #endif
