@@ -98,9 +98,19 @@ bool init_fs()
     if (fs_mount((void*)FS_BASE_ADDR))
     {
         fs_info_t info;
-        fs_get_info(&info);
+        char base_addr_from_buf[16];
+        char base_addr_to_buf[16];
+        char size_buf[16];
 
-        return log_fmt(LOG_LEVEL_OK, "Mounted filesystem ", info.name), true;
+        fs_get_info(&info);
+        itoa((uint32_t)info.base_addr, base_addr_from_buf, 16);
+        itoa((uint32_t)(info.base_addr + info.size), base_addr_to_buf, 16);
+        itoa(info.size / 1024, size_buf, 10);
+
+        log_msg(LOG_LEVEL_OK, "Mounted filesystem");
+        log_fmt(LOG_LEVEL_INFO, " ", info.name, " @ 0x", base_addr_from_buf, "-0x", base_addr_to_buf, " (", size_buf, " KB)", nullptr);
+
+        return true;
     }
     else
     {
@@ -110,8 +120,8 @@ bool init_fs()
 
 bool init_kernel()
 {
-    fs_fhandle_t handle;
-    elf_header_t elf_header;
+    fs_fhandle_t handle = {};
+    elf_header_t elf_header = {};
     uint8_t buf[64];
 
     if (!fs_file_open(KERNEL_FILENAME, &handle))
@@ -169,23 +179,23 @@ bool init_kernel()
     }
 
     char entry_buf[16];
-    char addr_from[16];
-    char addr_to[16];
-    char addr_size[16];
+    char addr_from_buf[16];
+    char addr_to_buf[16];
+    char addr_size_buf[16];
 
     itoa(elf_header.entry, entry_buf, 16);
-    itoa(data_from, addr_from, 16);
-    itoa(data_to, addr_to, 16);
-    itoa(data_to - data_from, addr_size, 10);
+    itoa(data_from, addr_from_buf, 16);
+    itoa(data_to, addr_to_buf, 16);
+    itoa(data_to - data_from, addr_size_buf, 10);
 
     log_fmt(LOG_LEVEL_OK, "Loaded ", KERNEL_FILENAME, " into memory", nullptr);
-    log_fmt(LOG_LEVEL_INFO, " Data @ 0x", addr_from, "-0x", addr_to, " (", addr_size, " B)", nullptr);
+    log_fmt(LOG_LEVEL_INFO, " Data @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " B)", nullptr);
 
-    itoa(bss_from, addr_from, 16);
-    itoa(bss_to, addr_to, 16);
-    itoa(bss_to - bss_from, addr_size, 10);
+    itoa(bss_from, addr_from_buf, 16);
+    itoa(bss_to, addr_to_buf, 16);
+    itoa(bss_to - bss_from, addr_size_buf, 10);
 
-    log_fmt(LOG_LEVEL_INFO, " BSS @ 0x", addr_from, "-0x", addr_to, " (", addr_size, " B)", nullptr);
+    log_fmt(LOG_LEVEL_INFO, " BSS @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " B)", nullptr);
     log_fmt(LOG_LEVEL_INFO, "Jumping to kernel @ 0x", entry_buf, nullptr);
     log_msg(LOG_LEVEL_INFO, "------------------------------");
 

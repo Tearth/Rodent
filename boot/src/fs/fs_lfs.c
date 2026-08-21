@@ -70,7 +70,13 @@ void fs_file_seek(fs_fhandle_t *handle, uint32_t pos)
 
 void fs_get_info(fs_info_t *info)
 {
+    struct lfs_fsinfo fsinfo = {};
+
+    lfs_fs_stat(&lfs, &fsinfo);
     strncpy(info->name, "LittleFS", sizeof(info->name));
+
+    info->base_addr = lfs.cfg->context;
+    info->size = fsinfo.block_size * fsinfo.block_count;
 }
 
 int lfs_read(const struct lfs_config *cfg, lfs_block_t block, lfs_off_t off, void *buf, lfs_size_t size)

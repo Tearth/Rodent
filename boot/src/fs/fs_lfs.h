@@ -10,7 +10,9 @@
 
 typedef struct fs_info
 {
-    char name[64];
+    char name[16];
+    uint32_t *base_addr;
+    uint32_t size;
 } fs_info_t;
 
 typedef struct fs_fhandle
