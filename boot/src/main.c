@@ -46,7 +46,7 @@ bool init_hw()
         return false;
     }
 
-    log_msg(LOG_LEVEL_OK, "PicOS Bootloader");
+    log_msg(LOG_LEVEL_OK, "Rodent Bootloader");
     log_msg(LOG_LEVEL_OK, "Started clocks");
 
     hal_clk_info_t clks[8];
@@ -162,9 +162,7 @@ bool init_kernel()
             data_from = MIN(data_from, pheader.vaddr);
             data_to = MAX(data_to, pheader.vaddr + pheader.fsize);
 
-            uint32_t bss_length = pheader.msize - pheader.fsize;
-
-            memset((uint8_t*)pheader.vaddr + pheader.fsize, 0, bss_length);
+            memset((uint8_t*)pheader.vaddr + pheader.fsize, 0, pheader.msize - pheader.fsize);
             bss_from = MIN(bss_from, pheader.vaddr + pheader.fsize);
             bss_to = MAX(bss_to, pheader.vaddr + pheader.msize);
         }

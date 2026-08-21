@@ -7,7 +7,7 @@ static void halt();
 
 int main()
 {
-    log_msg(LOG_LEVEL_OK, "PicOS Kernel");
+    log_msg(LOG_LEVEL_OK, "Rodent Kernel");
 
     if (!init_systime())
     {
