@@ -61,6 +61,7 @@ uint32_t hal_clk_get_list(hal_clk_info_t *clks, int max_len)
             case CLK_REF: clk_name = "CLK_REF"; break;
             case CLK_SYS: clk_name = "CLK_SYS"; break;
             case CLK_PERI: clk_name = "CLK_PERI"; break;
+            default: clk_name = "CLK_INVALID"; break;
         }
 
         switch (clk_get_src(clk_types[i]))
@@ -72,7 +73,7 @@ uint32_t hal_clk_get_list(hal_clk_info_t *clks, int max_len)
             case CLK_SRC_LPOSC: clk_src_name = "CLK_SRC_LPOSC"; break;
             case CLK_SRC_PLL_SYS: clk_src_name = "CLK_SRC_PLL_SYS"; break;
             case CLK_SRC_PLL_USB: clk_src_name = "CLK_SRC_PLL_USB"; break;
-            case CLK_SRC_INVALID: clk_src_name = "CLK_SRC_INVALID"; break;
+            default: clk_src_name = "CLK_SRC_INVALID"; break;
         }
 
         strncpy(clks[i].name, clk_name, sizeof(clks[i].name));
@@ -131,6 +132,7 @@ uint32_t hal_uart_get_list(hal_uart_info_t *uarts, int max_len)
         {
             case UART0: uart_name = "UART0"; break;
             case UART1: uart_name = "UART1"; break;
+            default: uart_name = "UART_INVALID"; break;
         }
 
         strncpy(uarts[i].name, uart_name, sizeof(uarts[i].name));

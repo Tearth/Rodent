@@ -399,6 +399,7 @@ uint32_t clk_measure_freq(clk_t clk)
         case CLK_REF: src = 0x08; break;
         case CLK_SYS: src = 0x09; break;
         case CLK_PERI: src = 0x0a; break;
+        default: return 0;
     }
 
     *CLK_FC0_REG_REF = (*CLK_FC0_REG_REF & ~0xfffff) | (clk_get_freq(CLK_REF) / 1000);

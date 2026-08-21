@@ -76,7 +76,8 @@ typedef enum clk
 {
     CLK_REF,
     CLK_SYS,
-    CLK_PERI
+    CLK_PERI,
+    CLK_INVALID
 } clk_t;
 
 typedef enum clk_src

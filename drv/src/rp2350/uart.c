@@ -74,9 +74,9 @@ bool uart_set_baudrate(uart_t uart, uint32_t baudrate)
         return false;
     }
 
-    const float divisor = (float)freq / (16 * baudrate);
-    const uint32_t ibrd = (uint32_t)divisor;
-    const uint32_t fbrd = (uint32_t)((divisor - (uint32_t)divisor) * 64 + 0.5);
+    const uint32_t divisor = 16 * baudrate;
+    const uint32_t ibrd = freq / divisor;
+    const uint32_t fbrd = ((freq % divisor) * 64 + divisor / 2) / divisor;
 
     // Write BAUD_DIVINT (Integer Baud Rate Divisor)
     *uart_sel->reg_ibrd = (*uart_sel->reg_ibrd & ~0xffff) | ibrd;
@@ -98,7 +98,7 @@ uint32_t uart_get_baudrate(uart_t uart)
     // Read BAUD_DIVFRAC (Fractional Baud Rate Divisor)
     const uint32_t fbrd = *uart_sel->reg_fbrd & 0x3f;
 
-    return freq / (16 * (ibrd + (float)fbrd / 64.0f));
+    return (4 * freq) / (64 * ibrd + fbrd);
 }
 
 bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits)

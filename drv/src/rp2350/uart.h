@@ -25,7 +25,8 @@
 typedef enum uart
 {
     UART0,
-    UART1
+    UART1,
+    UART_INVALID
 } uart_t;
 
 typedef struct uart_info
