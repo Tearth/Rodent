@@ -55,17 +55,17 @@ bool init_hw()
     for (int i = 0; i < hal_clk_get_list(clks, 8); i++)
     {
         char freq_buf[16];
-        char *enabled_buff;
+        char *enabled_buf;
 
         itoa(clks[i].freq / 1'000'000, freq_buf, 10);
 
         switch (clks[i].enabled)
         {
-            case true: enabled_buff = "active"; break;
-            case false: enabled_buff = "inactive"; break;
+            case true: enabled_buf = "active"; break;
+            case false: enabled_buf = "inactive"; break;
         }
 
-        log_fmt(LOG_LEVEL_INFO, " ", clks[i].name, " @ ", clks[i].src, " (", freq_buf, " MHz), ", enabled_buff, nullptr);
+        log_fmt(LOG_LEVEL_INFO, " ", clks[i].name, " @ ", clks[i].src, " (", freq_buf, " MHz), ", enabled_buf, nullptr);
     }
 
     log_msg(LOG_LEVEL_OK, "Started UART");
@@ -75,7 +75,7 @@ bool init_hw()
         char baudrate_buf[16];
         char data_bits_buf[16];
         char stop_bits_buf[16];
-        char *enabled_buff;
+        char *enabled_buf;
 
         itoa(uarts[i].baudrate, baudrate_buf, 10);
         itoa(uarts[i].data_bits, data_bits_buf, 10);
@@ -83,11 +83,11 @@ bool init_hw()
 
         switch (uarts[i].enabled)
         {
-            case true: enabled_buff = "active"; break;
-            case false: enabled_buff = "inactive"; break;
+            case true: enabled_buf = "active"; break;
+            case false: enabled_buf = "inactive"; break;
         }
 
-        log_fmt(LOG_LEVEL_INFO, " ", uarts[i].name, " @ ", baudrate_buf, "/", data_bits_buf, "/", stop_bits_buf, ", ", enabled_buff, nullptr);
+        log_fmt(LOG_LEVEL_INFO, " ", uarts[i].name, " @ ", baudrate_buf, "/", data_bits_buf, "/", stop_bits_buf, ", ", enabled_buf, nullptr);
     }
 
     return true;
@@ -97,7 +97,7 @@ bool init_fs()
 {
     if (fs_mount((void*)FS_BASE_ADDR))
     {
-        fs_info_t info;
+        fs_info_t info = {};
         char base_addr_from_buf[16];
         char base_addr_to_buf[16];
         char size_buf[16];
@@ -146,7 +146,7 @@ bool init_kernel()
 
     for (int i = 0; i < elf_header.phnum; i++)
     {
-        elf_pheader_t pheader;
+        elf_pheader_t pheader = {};
 
         fs_file_seek(&handle, elf_header.phoff + sizeof(elf_pheader_t) * i);
         fs_file_read(&handle, buf, sizeof(buf));

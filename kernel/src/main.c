@@ -25,7 +25,7 @@ bool init_systime()
     utoa(hal_systime_get_current(), buf, 10);
 
     log_msg(LOG_LEVEL_OK, "Started system time");
-    log_fmt(LOG_LEVEL_INFO, " Current value @ ", buf, nullptr);
+    log_fmt(LOG_LEVEL_INFO, " Now @ ", buf, " ticks", nullptr);
 
     return true;
 }

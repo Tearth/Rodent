@@ -1,9 +1,9 @@
 #include "fs_lfs.h"
 
-lfs_t lfs;
-uint8_t read_buf[FS_CACHE_SIZE];
-uint8_t prog_buf[FS_CACHE_SIZE];
-uint8_t lookahead_buf[FS_CACHE_SIZE];
+static lfs_t lfs;
+static uint8_t read_buf[FS_CACHE_SIZE];
+static uint8_t prog_buf[FS_CACHE_SIZE];
+static uint8_t lookahead_buf[FS_CACHE_SIZE];
 
 struct lfs_config cfg = {
     .read  = lfs_read,
