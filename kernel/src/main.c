@@ -21,9 +21,12 @@ bool init_systime()
 {
     char buf[16];
 
-    hal_systime_init();
-    utoa(hal_systime_get_current(), buf, 10);
+    if (!hal_systime_init())
+    {
+        return log_msg(LOG_LEVEL_FAIL, "Failed to init system time"), false;
+    }
 
+    utoa(hal_systime_get_current(), buf, 10);
     log_msg(LOG_LEVEL_OK, "Started system time");
     log_fmt(LOG_LEVEL_INFO, " Now @ ", buf, " ticks", nullptr);
 

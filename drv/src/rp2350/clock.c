@@ -356,12 +356,10 @@ bool clk_pll_enable(clk_pll_t pll, uint8_t refdiv, uint16_t fbdiv, uint8_t pdiv1
     return true;
 }
 
-bool clk_pll_disable(clk_pll_t pll)
+void clk_pll_disable(clk_pll_t pll)
 {
     // Set PD (PLL Powerdown), POSTDIVPD (PLL Post Divider Powerdown), VCOPD (PLL VCO Powerdown)
     *clk_pll_info[pll].reg_pwr |= 1u | (1u << 3) | (1u << 5);
-
-    return true;
 }
 
 bool clk_pll_is_enabled(clk_pll_t pll)

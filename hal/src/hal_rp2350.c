@@ -148,10 +148,10 @@ uint32_t hal_uart_get_list(hal_uart_info_t *uarts, int max_len)
 
 bool hal_systime_init()
 {
-    return timer_sys_enable(), true;
+    return timer_enable(), true;
 }
 
 uint64_t hal_systime_get_current()
 {
-    return timer_sys_get_current();
+    return timer_get_current();
 }

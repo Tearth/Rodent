@@ -40,7 +40,7 @@ typedef struct uart_info
 } uart_info_t;
 
 bool uart_enable(uart_t uart, uint32_t baudrate, uint8_t data_bits, uint8_t stop_bits);
-bool uart_disable(uart_t uart);
+void uart_disable(uart_t uart);
 bool uart_is_enabled(uart_t uart);
 bool uart_reset(uart_t uart);
 

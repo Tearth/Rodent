@@ -40,12 +40,10 @@ bool uart_enable(uart_t uart, uint32_t baudrate, uint8_t data_bits, uint8_t stop
     return true;
 }
 
-bool uart_disable(uart_t uart)
+void uart_disable(uart_t uart)
 {
     // Clear UARTEN, TXE, RXE
     *uart_info[uart].reg_cr &= ~(1u | (1u << 8) | (1u << 9));
-
-    return true;
 }
 
 bool uart_is_enabled(uart_t uart)
