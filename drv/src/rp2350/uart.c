@@ -76,10 +76,10 @@ bool uart_set_baudrate(uart_t uart, uint32_t baudrate)
     const uint32_t ibrd = freq / divisor;
     const uint32_t fbrd = ((freq % divisor) * 64 + divisor / 2) / divisor;
 
-    // Write BAUD_DIVINT (Integer Baud Rate Divisor)
+    // Set BAUD_DIVINT (Integer Baud Rate Divisor)
     *uart_sel->reg_ibrd = (*uart_sel->reg_ibrd & ~0xffff) | ibrd;
 
-    // Write BAUD_DIVFRAC (Fractional Baud Rate Divisor)
+    // Set BAUD_DIVFRAC (Fractional Baud Rate Divisor)
     *uart_sel->reg_fbrd = (*uart_sel->reg_fbrd & ~0x3f) | fbrd;
 
     return true;

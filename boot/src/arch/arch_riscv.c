@@ -2,9 +2,9 @@
 
 __attribute__((noreturn)) void jmp(void *addr)
 {
-    __asm__ (
+    __asm__ volatile (
         "fence.i\n" \
-        "jalr x0, 0(%0)"
+        "jalr x0, 0(%0)\n" \
     : : "r"(addr));
 
     __builtin_unreachable();
