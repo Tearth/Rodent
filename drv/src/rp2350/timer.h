@@ -8,11 +8,14 @@
 #define TIMER_SIO_REG_MTIME_CTRL REG((TIMER_SIO_REG_BASE + 0x1a4))
 #define TIMER_SIO_REG_MTIME REG((TIMER_SIO_REG_BASE + 0x1b0))
 #define TIMER_SIO_REG_MTIMEH REG((TIMER_SIO_REG_BASE + 0x1b4))
+#define TIMER_SIO_REG_MTIMECMP REG((TIMER_SIO_REG_BASE + 0x1b8))
+#define TIMER_SIO_REG_MTIMECMPH REG((TIMER_SIO_REG_BASE + 0x1bc))
 
 void timer_enable();
 void timer_disable();
 bool timer_is_enabled();
 
 uint64_t timer_get_current();
+void timer_set_comparator(uint64_t value);
 
 #endif
