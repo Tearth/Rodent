@@ -21,7 +21,7 @@ void log_fmt(log_level_t level, const char *msg, ...)
     va_start(args, msg);
     const char *chunk;
 
-    while (chunk = va_arg(args, const char *), chunk != nullptr)
+    while ((chunk = va_arg(args, const char *)) != nullptr)
     {
         uart_send(chunk);
     }

@@ -43,14 +43,15 @@ bool clk_init()
     return true;
 }
 
-uint32_t clk_get_list(clk_info_t *clks, int max_len)
+size_t clk_get_list(clk_info_t *clks, size_t max_len)
 {
     const clk_t clk_types[] = { CLK_REF, CLK_SYS, CLK_PERI };
+    size_t count = max_len < 3 ? max_len : 3;
 
-    for (int i = 0; i < 3; i++)
+    for (size_t i = 0; i < count; i++)
     {
-        char *clk_name;
-        char *clk_src_name;
+        const char *clk_name;
+        const char *clk_src_name;
 
         switch (clk_types[i])
         {
@@ -79,7 +80,7 @@ uint32_t clk_get_list(clk_info_t *clks, int max_len)
         clks[i].freq = clk_get_freq(clk_types[i]);
     }
 
-    return 3;
+    return count;
 }
 
 bool uart_init()
@@ -116,13 +117,14 @@ void uart_send(const char *str)
     uart_send_str(UART0, str);
 }
 
-uint32_t uart_get_list(uart_info_t *uarts, int max_len)
+size_t uart_get_list(uart_info_t *uarts, size_t max_len)
 {
     const uart_t uart_types[] = { UART0, UART1 };
+    size_t count = max_len < 2 ? max_len : 2;
 
-    for (int i = 0; i < 2; i++)
+    for (size_t i = 0; i < count; i++)
     {
-        char *uart_name;
+        const char *uart_name;
 
         switch (uart_types[i])
         {
@@ -139,5 +141,5 @@ uint32_t uart_get_list(uart_info_t *uarts, int max_len)
         uarts[i].stop_bits = uart_get_stop_bits(uart_types[i]);
     }
 
-    return 2;
+    return count;
 }

@@ -1,8 +1,8 @@
 #ifndef CPU_H
 #define CPU_H
 
+#include <stddef.h>
 #include <stdint.h>
-#include <string.h>
 
 typedef struct clk_dinfo
 {
@@ -22,10 +22,10 @@ typedef struct uart_info
 } uart_info_t;
 
 bool clk_init();
-uint32_t clk_get_list(clk_info_t *clks, int max_len);
+size_t clk_get_list(clk_info_t *clks, size_t max_len);
 
 bool uart_init();
 void uart_send(const char *str);
-uint32_t uart_get_list(uart_info_t *uarts, int max_len);
+size_t uart_get_list(uart_info_t *uarts, size_t max_len);
 
 #endif

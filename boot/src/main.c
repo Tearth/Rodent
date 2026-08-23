@@ -52,10 +52,10 @@ bool init_hw()
     clk_info_t clks[8];
     uart_info_t uarts[8];
 
-    for (int i = 0; i < clk_get_list(clks, 8); i++)
+    for (size_t i = 0; i < clk_get_list(clks, 8); i++)
     {
         char freq_buf[16];
-        char *enabled_buf;
+        const char *enabled_buf;
 
         itoa(clks[i].freq / 1'000'000, freq_buf, 10);
 
@@ -70,12 +70,12 @@ bool init_hw()
 
     log_msg(LOG_LEVEL_OK, "Started UART");
 
-    for (int i = 0; i < uart_get_list(uarts, 8); i++)
+    for (size_t i = 0; i < uart_get_list(uarts, 8); i++)
     {
         char baudrate_buf[16];
         char data_bits_buf[16];
         char stop_bits_buf[16];
-        char *enabled_buf;
+        const char *enabled_buf;
 
         itoa(uarts[i].baudrate, baudrate_buf, 10);
         itoa(uarts[i].data_bits, data_bits_buf, 10);
@@ -102,7 +102,11 @@ bool init_fs()
         char base_addr_to_buf[16];
         char size_buf[16];
 
-        fs_get_info(&info);
+        if (!fs_get_info(&info))
+        {
+            return log_msg(LOG_LEVEL_FAIL, "Failed to read filesystem info"), false;
+        }
+
         itoa((uint32_t)info.base_addr, base_addr_from_buf, 16);
         itoa((uint32_t)(info.base_addr + info.size), base_addr_to_buf, 16);
         itoa(info.size / 1024, size_buf, 10);
@@ -129,12 +133,26 @@ bool init_kernel()
         return log_msg(LOG_LEVEL_FAIL, "Failed to open kernel ELF"), false;
     }
 
-    fs_file_read(&handle, buf, sizeof(buf));
+    if (!fs_file_read(&handle, buf, sizeof(buf)))
+    {
+        return log_msg(LOG_LEVEL_FAIL, "Failed to read kernel ELF"), false;
+    }
+
     memcpy(&elf_header, buf, sizeof(elf_header_t));
 
-    if (elf_header.signature != 0x464c457f)
+    if (elf_header.signature != ELF_MAGIC)
     {
         return log_msg(LOG_LEVEL_FAIL, "Invalid ELF signature"), false;
+    }
+
+    if (elf_header.type != ELF_TYPE_EXEC)
+    {
+        return log_msg(LOG_LEVEL_FAIL, "Invalid ELF type"), false;
+    }
+
+    if (elf_header.machine != ELF_MACHINE)
+    {
+        return log_msg(LOG_LEVEL_FAIL, "Invalid ELF machine"), false;
     }
 
     log_msg(LOG_LEVEL_OK, "Found valid kernel executable");
@@ -144,12 +162,20 @@ bool init_kernel()
     uint32_t bss_from = UINT32_MAX;
     uint32_t bss_to = 0;
 
-    for (int i = 0; i < elf_header.phnum; i++)
+    for (size_t i = 0; i < elf_header.phnum; i++)
     {
         elf_pheader_t pheader = {};
 
-        fs_file_seek(&handle, elf_header.phoff + sizeof(elf_pheader_t) * i);
-        fs_file_read(&handle, buf, sizeof(buf));
+        if (!fs_file_seek(&handle, elf_header.phoff + sizeof(elf_pheader_t) * i))
+        {
+            return log_msg(LOG_LEVEL_FAIL, "Failed to seek kernel ELF"), false;
+        }
+
+        if (!fs_file_read(&handle, buf, sizeof(buf)))
+        {
+            return log_msg(LOG_LEVEL_FAIL, "Failed to read kernel ELF"), false;
+        }
+
         memcpy(&pheader, buf, sizeof(elf_pheader_t));
 
         if (pheader.type == 0x1)
@@ -157,11 +183,18 @@ bool init_kernel()
             int32_t data_left = pheader.fsize;
             uint8_t *vaddr_ptr = (uint8_t*)pheader.vaddr;
 
-            fs_file_seek(&handle, pheader.offset);
+            if (!fs_file_seek(&handle, pheader.offset))
+            {
+                return log_msg(LOG_LEVEL_FAIL, "Failed to seek kernel ELF"), false;
+            }
 
             do
             {
-                fs_file_read(&handle, buf, sizeof(buf));
+                if (!fs_file_read(&handle, buf, sizeof(buf)))
+                {
+                    return log_msg(LOG_LEVEL_FAIL, "Failed to read kernel ELF"), false;
+                }
+
                 memcpy(vaddr_ptr, buf, MIN(data_left, sizeof(buf)));
 
                 vaddr_ptr += sizeof(buf);
@@ -204,5 +237,5 @@ bool init_kernel()
 
 void halt()
 {
-    while(1);
+    while (1);
 }

@@ -39,15 +39,15 @@ blocks_end:
 # | Byte | Value | Description                 |
 # |--------------------------------------------|
 # | 0    | 0xff  | Block Type: BLOCK_ITEM_LAST |
-# | 2-3  | size  | Block Size: 3 words         |
-# | 4    | 0x00  | Pad                         |
-# | 5    | 0x00  | Header Position             |
+# | 1-2  | size  | Block Size: 3 words         |
+# | 3    | 0x00  | Pad                         |
+# | 4    | 0x00  | Header Position             |
 # |--------------------------------------------|
 
 .byte   0xff
 .hword  (blocks_end - blocks_begin) / 4
 .byte   0x00
-.word   0
+.word   0x00
 
 # Footer
 .word 0xab123579

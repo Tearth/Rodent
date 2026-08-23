@@ -1,6 +1,6 @@
 #include "irq.h"
 
-extern void _irq_khandler_entry();
+extern void _irq_handler_entry();
 
 static void irq_user_ecall_handler(irq_state_t *state);
 static void irq_timer_handler(irq_state_t *state);
@@ -10,7 +10,7 @@ static void (*timer_handler)();
 
 bool irq_enable()
 {
-    uint32_t mtvec = (uint32_t)_irq_khandler_entry;
+    uint32_t mtvec = (uint32_t)_irq_handler_entry;
 
     // Handler address has to be aligned
     if ((mtvec & 0x3) != 0)
@@ -94,7 +94,7 @@ void irq_timer_handler(irq_state_t *state)
 
 void irq_exception_handler(irq_state_t *state)
 {
-    char *name;
+    const char *name;
 
     switch (state->mcause)
     {
@@ -115,11 +115,11 @@ void irq_exception_handler(irq_state_t *state)
         default: name = "IRQ_CAUSE_UNKNOWN"; break;
     }
 
-    char mepc_buf[16];
+    char pc_buf[16];
     char mtval_buf[16];
     char sp_buf[16];
 
-    itoa(state->mepc, mepc_buf, 16);
+    itoa(state->mepc, pc_buf, 16);
     itoa(state->mtval, mtval_buf, 16);
     itoa(state->sp, sp_buf, 16);
 
@@ -133,10 +133,11 @@ void irq_exception_handler(irq_state_t *state)
     log_msg(LOG_LEVEL_FAIL, "            //__/     //__/ //__/");
     log_msg(LOG_LEVEL_FAIL, "---------------------------------------");
     log_fmt(LOG_LEVEL_FAIL, "Type: ", name, nullptr);
-    log_fmt(LOG_LEVEL_FAIL, "MEPC: 0x", mepc_buf, nullptr);
+    log_fmt(LOG_LEVEL_FAIL, "PC: 0x", pc_buf, nullptr);
+    log_fmt(LOG_LEVEL_FAIL, "SP: 0x", sp_buf, nullptr);
     log_fmt(LOG_LEVEL_FAIL, "MTVAL: 0x", mtval_buf, nullptr);
 
-    while(1);
+    while (1);
 }
 
 void irq_unsupported_handler(irq_state_t *state)

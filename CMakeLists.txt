@@ -15,9 +15,9 @@ string(TOUPPER $ENV{TARGET_ARCH} TARGET_ARCH_UPPER)
 string(TOUPPER $ENV{FS_TYPE} FS_TYPE_UPPER)
 
 add_compile_definitions(
-    -DCPU_${TARGET_CPU_UPPER}
-    -DARCH_${TARGET_ARCH_UPPER}
-    -DFS_${FS_TYPE_UPPER}
+    CPU_${TARGET_CPU_UPPER}
+    ARCH_${TARGET_ARCH_UPPER}
+    FS_${FS_TYPE_UPPER}
 )
 
 project(rodent)

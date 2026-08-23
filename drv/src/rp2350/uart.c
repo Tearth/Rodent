@@ -49,7 +49,7 @@ void uart_disable(uart_t uart)
 bool uart_is_enabled(uart_t uart)
 {
     // Read UARTEN
-    return (*uart_defs[uart].reg_cr & 1u) == 1;
+    return (*uart_defs[uart].reg_cr & 1u) != 0;
 }
 
 bool uart_reset(uart_t uart)
@@ -112,7 +112,7 @@ bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits)
     }
 
     // Set WLEN (Word Length), FEN (FIFO Enabled), STP2 (Stop Bits)
-    *uart_defs[uart].reg_lcr = ((data_bits - 5) << 5) | (1u << 4) | ((stop_bits - 1) << 3);
+    *uart_defs[uart].reg_lcr = (*uart_defs[uart].reg_lcr & ~0xff) | ((data_bits - 5) << 5) | (1u << 4) | ((stop_bits - 1) << 3);
 
     return true;
 }

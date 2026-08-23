@@ -3,6 +3,13 @@
 
 #include <stdint.h>
 
+#define ELF_MAGIC 0x464c457f
+#define ELF_TYPE_EXEC 2
+
+#ifdef ARCH_RISCV
+#define ELF_MACHINE 243
+#endif
+
 typedef struct elf_header
 {
     uint32_t signature;

@@ -33,12 +33,12 @@ if($ENV{FS_TYPE} STREQUAL "lfs")
     )
 
     target_compile_definitions(bootloader.elf PRIVATE
-        -DLFS_NO_MALLOC
-        -DLFS_NO_ASSERT
-        -DLFS_NO_DEBUG
-        -DLFS_NO_WARN
-        -DLFS_NO_ERROR
-        -DLFS_READONLY
+        LFS_NO_MALLOC
+        LFS_NO_ASSERT
+        LFS_NO_DEBUG
+        LFS_NO_WARN
+        LFS_NO_ERROR
+        LFS_READONLY
     )
 endif()
 

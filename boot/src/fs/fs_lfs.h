@@ -1,7 +1,12 @@
 #ifndef FS_LFS_H
 #define FS_LFS_H
 
-#define FS_CACHE_SIZE 16
+#define FS_LFS_MAGIC
+#define FS_LFS_CACHE_SIZE 16
+#define FS_LFS_BLOCK_SIZE 4096
+#define FS_LFS_BLOCK_CYCLES 512
+#define FS_LFS_MAGIC_WORDH 0x7474696c
+#define FS_LFS_MAGIC_WORDL 0x7366656c
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -24,9 +29,9 @@ typedef struct fs_fhandle
 
 bool fs_mount(void* base);
 bool fs_file_open(const char *path, fs_fhandle_t *handle);
-void fs_file_read(fs_fhandle_t *handle, uint8_t *buf, uint32_t size);
-void fs_file_seek(fs_fhandle_t *handle, uint32_t pos);
-void fs_get_info(fs_info_t *info);
+bool fs_file_read(fs_fhandle_t *handle, uint8_t *buf, uint32_t size);
+bool fs_file_seek(fs_fhandle_t *handle, uint32_t pos);
+bool fs_get_info(fs_info_t *info);
 
 int lfs_read(const struct lfs_config *cfg, lfs_block_t block, lfs_off_t off, void *buf, lfs_size_t size);
 int lfs_prog(const struct lfs_config *cfg, lfs_block_t block, lfs_off_t off, const void *buf, lfs_size_t size);
