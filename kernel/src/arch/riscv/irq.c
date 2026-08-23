@@ -11,7 +11,6 @@ static void (*timer_handler)();
 
 bool irq_enable()
 {
-    // Set BASE with DIRECT mode (single handler for all interrupts)
     uint32_t mtvec = (uint32_t)_irq_khandler_entry;
 
     // Handler address has to be aligned
@@ -25,14 +24,37 @@ bool irq_enable()
         "csrs mstatus, %1\n" \
         "csrs mie, %2\n" \
     : :
-    // Set MIE (Interrupt Enable)
+    // Set BASE with DIRECT mode (single handler for all interrupts) in MTVEC
     "r"(mtvec),
-    // Set MIE (Interrupt Enable)
+    // Set MIE (Interrupt Enable) in MSTATUS
     "r"((1u << 3)),
-    // Set MSIE (Software Interrupt Enable), MTIE (Timer Interrupt Enable)
-    "r"((1u << 3) | (1u << 7)));
+    // Set MTIE (Timer Interrupt Enable) in MIE
+    "r"(1u << 7));
 
     return true;
+}
+
+bool irq_disable()
+{
+    __asm__ volatile (
+        "csrc mstatus, %0\n" \
+    : :
+    // Clear MIE (Interrupt Enable) in MSTATUS
+    "r"((1u << 3)));
+
+    return true;
+}
+
+bool irq_is_enabled()
+{
+    uint32_t mstatus;
+
+    // Read MIE in MSTATUS
+    __asm__ volatile  (
+        "csrr %0, mstatus"
+    : "=r"(mstatus));
+
+    return (mstatus & (1u << 3)) != 0;
 }
 
 void irq_handler(irq_state_t *state)
