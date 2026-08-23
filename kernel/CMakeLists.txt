@@ -4,13 +4,15 @@ project(kernel LANGUAGES C ASM)
 
 add_executable(kernel.elf
     $<TARGET_OBJECTS:drv>
-    $<TARGET_OBJECTS:hal>
     src/main.c
     src/log.c
     src/arch/riscv/startup.s
     src/arch/riscv/irq.s
     src/arch/riscv/irq.c
+    src/cpu/cpu_rp2350.c
 )
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_options(kernel.elf PRIVATE
     -T ${CMAKE_CURRENT_SOURCE_DIR}/ld/$ENV{TARGET_CPU}_$ENV{TARGET_ARCH}.ld -nostartfiles

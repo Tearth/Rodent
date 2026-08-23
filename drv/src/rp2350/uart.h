@@ -29,7 +29,7 @@ typedef enum uart
     UART_INVALID
 } uart_t;
 
-typedef struct uart_info
+typedef struct uart_def
 {
     volatile uint32_t *reg_dr;
     volatile uint32_t *reg_fr;
@@ -37,7 +37,7 @@ typedef struct uart_info
     volatile uint32_t *reg_fbrd;
     volatile uint32_t *reg_lcr;
     volatile uint32_t *reg_cr;
-} uart_info_t;
+} uart_def_t;
 
 bool uart_enable(uart_t uart, uint32_t baudrate, uint8_t data_bits, uint8_t stop_bits);
 void uart_disable(uart_t uart);

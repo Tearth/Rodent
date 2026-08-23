@@ -8,7 +8,6 @@ set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG FALSE)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
 
 include_directories(${CMAKE_SOURCE_DIR}/drv/src)
-include_directories(${CMAKE_SOURCE_DIR}/hal/src)
 include_directories(${CMAKE_SOURCE_DIR}/lib/littlefs/src)
 
 string(TOUPPER $ENV{TARGET_CPU} TARGET_CPU_UPPER)
@@ -23,6 +22,5 @@ add_compile_definitions(
 
 project(rodent)
 add_subdirectory(drv)
-add_subdirectory(hal)
 add_subdirectory(boot)
 add_subdirectory(kernel)

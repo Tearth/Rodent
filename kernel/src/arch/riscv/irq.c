@@ -1,5 +1,4 @@
 #include "irq.h"
-#include "../irq_arch.h"
 
 extern void _irq_khandler_entry();
 

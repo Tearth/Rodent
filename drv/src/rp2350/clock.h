@@ -98,28 +98,28 @@ typedef enum clk_pll
     CLK_PLL_USB
 } clk_pll_t;
 
-typedef struct clk_info
+typedef struct clk_def
 {
     volatile uint32_t *reg_ctrl;
     volatile uint32_t *reg_sel;
     uint32_t src_mask;
     uint32_t aux_mask;
     uint32_t sel_mask;
-} clk_info_t;
+} clk_def_t;
 
-typedef struct clk_src_info
+typedef struct clk_src_def
 {
     volatile uint32_t *reg_ctrl;
     volatile uint32_t *reg_status;
-} clk_src_info_t;
+} clk_src_def_t;
 
-typedef struct clk_pll_info
+typedef struct clk_pll_def
 {
     volatile uint32_t *reg_cs;
     volatile uint32_t *reg_pwr;
     volatile uint32_t *reg_fbdiv;
     volatile uint32_t *reg_prim;
-} clk_pll_info_t;
+} clk_pll_def_t;
 
 bool clk_enable(clk_t clk);
 bool clk_disable(clk_t clk);

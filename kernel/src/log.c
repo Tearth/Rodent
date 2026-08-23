@@ -9,13 +9,13 @@ void log_fmt(log_level_t level, const char *msg, ...)
 {
     switch (level)
     {
-        case LOG_LEVEL_OK: hal_uart_send_str("[  \033[32mOK\033[0m  ] "); break;
-        case LOG_LEVEL_INFO: hal_uart_send_str("[ \033[0mINFO\033[0m ] "); break;
-        case LOG_LEVEL_WARN: hal_uart_send_str("[ \033[33mWARN\033[0m ] "); break;
-        case LOG_LEVEL_FAIL: hal_uart_send_str("[ \033[31mFAIL\033[0m ] "); break;
+        case LOG_LEVEL_OK: uart_send("[  \033[32mOK\033[0m  ] "); break;
+        case LOG_LEVEL_INFO: uart_send("[ \033[0mINFO\033[0m ] "); break;
+        case LOG_LEVEL_WARN: uart_send("[ \033[33mWARN\033[0m ] "); break;
+        case LOG_LEVEL_FAIL: uart_send("[ \033[31mFAIL\033[0m ] "); break;
     }
 
-    hal_uart_send_str(msg);
+    uart_send(msg);
 
     va_list args;
     va_start(args, msg);
@@ -23,8 +23,8 @@ void log_fmt(log_level_t level, const char *msg, ...)
 
     while (chunk = va_arg(args, const char *), chunk != nullptr)
     {
-        hal_uart_send_str(chunk);
+        uart_send(chunk);
     }
 
-    hal_uart_send_str("\r\n");
+    uart_send("\r\n");
 }

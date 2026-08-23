@@ -1,10 +1,10 @@
 #include <stdlib.h>
-#include <hal.h>
 #include "arch/arch.h"
 #include "cfg/config.h"
+#include "cpu/cpu.h"
 #include "fs/fs.h"
-#include "log.h"
 #include "elf.h"
+#include "log.h"
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -36,12 +36,12 @@ int main()
 
 bool init_hw()
 {
-    if (!hal_clk_init())
+    if (!clk_init())
     {
         return false;
     }
 
-    if (!hal_uart_init())
+    if (!uart_init())
     {
         return false;
     }
@@ -49,10 +49,10 @@ bool init_hw()
     log_msg(LOG_LEVEL_OK, "Rodent Bootloader");
     log_msg(LOG_LEVEL_OK, "Started clocks");
 
-    hal_clk_info_t clks[8];
-    hal_uart_info_t uarts[8];
+    clk_info_t clks[8];
+    uart_info_t uarts[8];
 
-    for (int i = 0; i < hal_clk_get_list(clks, 8); i++)
+    for (int i = 0; i < clk_get_list(clks, 8); i++)
     {
         char freq_buf[16];
         char *enabled_buf;
@@ -70,7 +70,7 @@ bool init_hw()
 
     log_msg(LOG_LEVEL_OK, "Started UART");
 
-    for (int i = 0; i < hal_uart_get_list(uarts, 8); i++)
+    for (int i = 0; i < uart_get_list(uarts, 8); i++)
     {
         char baudrate_buf[16];
         char data_bits_buf[16];

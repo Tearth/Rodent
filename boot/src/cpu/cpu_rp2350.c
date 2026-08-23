@@ -1,10 +1,6 @@
-#include <rp2350/uart.h>
-#include <rp2350/clock.h>
-#include <rp2350/gpio.h>
-#include <rp2350/timer.h>
-#include "hal.h"
+#include "cpu_rp2350.h"
 
-bool hal_clk_init()
+bool clk_init()
 {
     if (!clk_enable(CLK_PERI))
     {
@@ -47,7 +43,7 @@ bool hal_clk_init()
     return true;
 }
 
-uint32_t hal_clk_get_list(hal_clk_info_t *clks, int max_len)
+uint32_t clk_get_list(clk_info_t *clks, int max_len)
 {
     const clk_t clk_types[] = { CLK_REF, CLK_SYS, CLK_PERI };
 
@@ -86,7 +82,7 @@ uint32_t hal_clk_get_list(hal_clk_info_t *clks, int max_len)
     return 3;
 }
 
-bool hal_uart_init()
+bool uart_init()
 {
     if (!gpio_reset())
     {
@@ -115,12 +111,12 @@ bool hal_uart_init()
     return true;
 }
 
-void hal_uart_send_str(const char *str)
+void uart_send(const char *str)
 {
     uart_send_str(UART0, str);
 }
 
-uint32_t hal_uart_get_list(hal_uart_info_t *uarts, int max_len)
+uint32_t uart_get_list(uart_info_t *uarts, int max_len)
 {
     const uart_t uart_types[] = { UART0, UART1 };
 
@@ -144,14 +140,4 @@ uint32_t hal_uart_get_list(hal_uart_info_t *uarts, int max_len)
     }
 
     return 2;
-}
-
-bool hal_systime_init()
-{
-    return timer_enable(), true;
-}
-
-uint64_t hal_systime_get_current()
-{
-    return timer_get_current();
 }

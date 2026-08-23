@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <hal.h>
+#include "cpu/cpu.h"
 #include "log.h"
 #include "arch/irq_arch.h"
 
@@ -28,12 +28,12 @@ bool init_systime()
 {
     char buf[16];
 
-    if (!hal_systime_init())
+    if (!systime_init())
     {
         return log_msg(LOG_LEVEL_FAIL, "Failed to init system time"), false;
     }
 
-    utoa(hal_systime_get_current(), buf, 10);
+    utoa(systime_get_current(), buf, 10);
     log_msg(LOG_LEVEL_OK, "Started system time");
     log_fmt(LOG_LEVEL_INFO, " Now @ ", buf, " ticks", nullptr);
 

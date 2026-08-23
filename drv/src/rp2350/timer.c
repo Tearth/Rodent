@@ -21,7 +21,7 @@ bool timer_is_enabled()
 uint64_t timer_get_current()
 {
     // Read MTIMEH
-    uint32_t mtimeh = (uint64_t)*TIMER_SIO_REG_MTIMEH << 32);
+    uint32_t mtimeh = (uint64_t)*TIMER_SIO_REG_MTIMEH << 32;
 
     // Read MTIME
     uint32_t mtime = *TIMER_SIO_REG_MTIME;

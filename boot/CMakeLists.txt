@@ -4,7 +4,6 @@ project(bootloader LANGUAGES C ASM)
 
 add_executable(bootloader.elf
     $<TARGET_OBJECTS:drv>
-    $<TARGET_OBJECTS:hal>
     src/main.c
     src/log.c
 )
@@ -18,6 +17,7 @@ if($ENV{TARGET_CPU} STREQUAL "rp2350")
     target_sources(bootloader.elf PRIVATE
         src/cpu/rp2350/image_$ENV{TARGET_ARCH}.s
         src/cpu/rp2350/startup_$ENV{TARGET_ARCH}.s
+        src/cpu/cpu_rp2350.c
     )
 endif()
 

@@ -1,6 +1,6 @@
 #include "uart.h"
 
-static const uart_info_t uart_info[] =
+static const uart_def_t uart_defs[] =
 {
     // UART0
     {
@@ -35,7 +35,7 @@ bool uart_enable(uart_t uart, uint32_t baudrate, uint8_t data_bits, uint8_t stop
     }
 
     // Set UARTEN, TXE, RXE
-    *uart_info[uart].reg_cr |= 1u | (1u << 8) | (1u << 9);
+    *uart_defs[uart].reg_cr |= 1u | (1u << 8) | (1u << 9);
 
     return true;
 }
@@ -43,13 +43,13 @@ bool uart_enable(uart_t uart, uint32_t baudrate, uint8_t data_bits, uint8_t stop
 void uart_disable(uart_t uart)
 {
     // Clear UARTEN, TXE, RXE
-    *uart_info[uart].reg_cr &= ~(1u | (1u << 8) | (1u << 9));
+    *uart_defs[uart].reg_cr &= ~(1u | (1u << 8) | (1u << 9));
 }
 
 bool uart_is_enabled(uart_t uart)
 {
     // Read UARTEN
-    return (*uart_info[uart].reg_cr & 1u) == 1;
+    return (*uart_defs[uart].reg_cr & 1u) == 1;
 }
 
 bool uart_reset(uart_t uart)
@@ -64,7 +64,7 @@ bool uart_reset(uart_t uart)
 
 bool uart_set_baudrate(uart_t uart, uint32_t baudrate)
 {
-    const uart_info_t *uart_sel = &uart_info[uart];
+    const uart_def_t *uart_sel = &uart_defs[uart];
     const uint32_t freq = clk_get_freq(CLK_PERI);
 
     if (baudrate == 0 || freq == 0)
@@ -87,7 +87,7 @@ bool uart_set_baudrate(uart_t uart, uint32_t baudrate)
 
 uint32_t uart_get_baudrate(uart_t uart)
 {
-    const uart_info_t *uart_sel = &uart_info[uart];
+    const uart_def_t *uart_sel = &uart_defs[uart];
     const uint32_t freq = clk_get_freq(CLK_PERI);
 
     // Read BAUD_DIVINT (Integer Baud Rate Divisor)
@@ -112,7 +112,7 @@ bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits)
     }
 
     // Set WLEN (Word Length), FEN (FIFO Enabled), STP2 (Stop Bits)
-    *uart_info[uart].reg_lcr = ((data_bits - 5) << 5) | (1u << 4) | ((stop_bits - 1) << 3);
+    *uart_defs[uart].reg_lcr = ((data_bits - 5) << 5) | (1u << 4) | ((stop_bits - 1) << 3);
 
     return true;
 }
@@ -120,18 +120,18 @@ bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits)
 uint8_t uart_get_data_bits(uart_t uart)
 {
     // Read WLEN (Word Length)
-    return ((*uart_info[uart].reg_lcr >> 5) & 0x3) + 5;
+    return ((*uart_defs[uart].reg_lcr >> 5) & 0x3) + 5;
 }
 
 uint8_t uart_get_stop_bits(uart_t uart)
 {
     // Read STP2 (Stop Bits)
-    return ((*uart_info[uart].reg_lcr >> 3) & 0x1) + 1;
+    return ((*uart_defs[uart].reg_lcr >> 3) & 0x1) + 1;
 }
 
 uint8_t uart_read_byte(uart_t uart)
 {
-    const uart_info_t *uart_sel = &uart_info[uart];
+    const uart_def_t *uart_sel = &uart_defs[uart];
 
     // Wait for RXFE (Receive FIFO Empty) to clear
     while ((*uart_sel->reg_fr & (1u << 4)) != 0);
@@ -141,7 +141,7 @@ uint8_t uart_read_byte(uart_t uart)
 
 void uart_send_byte(uart_t uart, uint8_t byte)
 {
-    const uart_info_t *uart_sel = &uart_info[uart];
+    const uart_def_t *uart_sel = &uart_defs[uart];
 
     // Wait for TXFF (Transmit FIFO Full) to clear
     while ((*uart_sel->reg_fr & (1u << 5)) != 0);

@@ -1,6 +1,6 @@
 #include "clock.h"
 
-static const clk_info_t clk_info[] =
+static const clk_def_t clk_defs[] =
 {
     // CLK_REF
     {
@@ -28,7 +28,7 @@ static const clk_info_t clk_info[] =
     }
 };
 
-static const clk_src_info_t clk_src_info[] =
+static const clk_src_def_t clk_src_defs[] =
 {
     // CLK_SRC_REF
     { },
@@ -48,7 +48,7 @@ static const clk_src_info_t clk_src_info[] =
     { }
 };
 
-static const clk_pll_info_t clk_pll_info[] =
+static const clk_pll_def_t clk_pll_defs[] =
 {
     // CLK_PLL_SYS
     {
@@ -71,7 +71,7 @@ static bool clk_is_aux_ready_internal(clk_t clk);
 
 bool clk_enable(clk_t clk)
 {
-    const clk_info_t* clk_sel = &clk_info[clk];
+    const clk_def_t* clk_sel = &clk_defs[clk];
 
     // Set ENABLE
     *clk_sel->reg_ctrl |= 1u << 11;
@@ -84,7 +84,7 @@ bool clk_enable(clk_t clk)
 
 bool clk_disable(clk_t clk)
 {
-    const clk_info_t* clk_sel = &clk_info[clk];
+    const clk_def_t* clk_sel = &clk_defs[clk];
 
     // Clear ENABLE
     *clk_sel->reg_ctrl &= ~(1u << 11);
@@ -103,12 +103,12 @@ bool clk_is_enabled(clk_t clk)
     }
 
     // Read ENABLED
-    return (*clk_info[clk].reg_ctrl & (1u << 28)) != 0;
+    return (*clk_defs[clk].reg_ctrl & (1u << 28)) != 0;
 }
 
 bool clk_src_enable(clk_src_t src)
 {
-    const clk_src_info_t *clk_src_sel = &clk_src_info[src];
+    const clk_src_def_t *clk_src_sel = &clk_src_defs[src];
 
     if (clk_src_sel->reg_ctrl == nullptr)
     {
@@ -126,7 +126,7 @@ bool clk_src_enable(clk_src_t src)
 
 bool clk_src_disable(clk_src_t src)
 {
-    const clk_src_info_t *clk_src_sel = &clk_src_info[src];
+    const clk_src_def_t *clk_src_sel = &clk_src_defs[src];
 
     if (clk_src_sel->reg_ctrl == nullptr)
     {
@@ -144,7 +144,7 @@ bool clk_src_disable(clk_src_t src)
 
 bool clk_src_is_enabled(clk_src_t src)
 {
-    const clk_src_info_t *clk_src_sel = &clk_src_info[src];
+    const clk_src_def_t *clk_src_sel = &clk_src_defs[src];
 
     if (clk_src_sel->reg_ctrl == nullptr)
     {
@@ -157,7 +157,7 @@ bool clk_src_is_enabled(clk_src_t src)
 
 bool clk_src_is_stable(clk_src_t src)
 {
-    const clk_src_info_t *clk_src_sel = &clk_src_info[src];
+    const clk_src_def_t *clk_src_sel = &clk_src_defs[src];
 
     if (clk_src_sel->reg_ctrl == nullptr)
     {
@@ -173,7 +173,7 @@ clk_src_t clk_get_src(clk_t clk)
     switch (clk)
     {
         case CLK_REF:
-            switch (*clk_info[CLK_REF].reg_ctrl & CLK_REF_SRC_MASK)
+            switch (*clk_defs[CLK_REF].reg_ctrl & CLK_REF_SRC_MASK)
             {
                 case CLK_REF_SRC_ROSC: return CLK_SRC_ROSC;
                 case CLK_REF_SRC_XOSC: return CLK_SRC_XOSC;
@@ -182,7 +182,7 @@ clk_src_t clk_get_src(clk_t clk)
             }
             break;
         case CLK_SYS:
-            switch (*clk_info[CLK_SYS].reg_ctrl & CLK_SYS_SRC_MASK)
+            switch (*clk_defs[CLK_SYS].reg_ctrl & CLK_SYS_SRC_MASK)
             {
                 case CLK_SYS_SRC_REF: return CLK_SRC_REF;
                 case CLK_SYS_SRC_PLL_SYS: return CLK_SRC_PLL_SYS;
@@ -193,7 +193,7 @@ clk_src_t clk_get_src(clk_t clk)
             }
             break;
         case CLK_PERI:
-            switch (*clk_info[CLK_PERI].reg_ctrl & CLK_PERI_SRC_MASK)
+            switch (*clk_defs[CLK_PERI].reg_ctrl & CLK_PERI_SRC_MASK)
             {
                 case CLK_PERI_SRC_SYS: return CLK_SRC_SYS;
                 case CLK_PERI_SRC_PLL_SYS: return CLK_SRC_PLL_SYS;
@@ -209,7 +209,7 @@ clk_src_t clk_get_src(clk_t clk)
 
 bool clk_set_src(clk_t clk, clk_src_t src)
 {
-    const clk_info_t *clk_sel = &clk_info[clk];
+    const clk_def_t *clk_sel = &clk_defs[clk];
     const clk_src_t src_old = clk_get_src(clk);
 
     if (src == src_old)
@@ -275,7 +275,7 @@ bool clk_set_src(clk_t clk, clk_src_t src)
 
 static bool clk_set_src_internal(clk_t clk, clk_src_t src, uint32_t mask)
 {
-    const clk_info_t* clk_sel = &clk_info[clk];
+    const clk_def_t* clk_sel = &clk_defs[clk];
     uint32_t val = 0;
 
     switch (clk)
@@ -322,7 +322,7 @@ static bool clk_set_src_internal(clk_t clk, clk_src_t src, uint32_t mask)
 
 static bool clk_is_aux_ready_internal(clk_t clk)
 {
-    const clk_info_t* clk_sel = &clk_info[clk];
+    const clk_def_t* clk_sel = &clk_defs[clk];
 
     // Read masked SELECTED register, any set bit indicates aux uses this clock source
     return (*clk_sel->reg_sel & clk_sel->sel_mask) != 0;
@@ -330,7 +330,7 @@ static bool clk_is_aux_ready_internal(clk_t clk)
 
 bool clk_pll_enable(clk_pll_t pll, uint8_t refdiv, uint16_t fbdiv, uint8_t pdiv1, uint8_t pdiv2)
 {
-    const clk_pll_info_t* pll_sel = &clk_pll_info[pll];
+    const clk_pll_def_t* pll_sel = &clk_pll_defs[pll];
 
     // Set REFDIV
     *pll_sel->reg_cs = (*pll_sel->reg_cs & ~0x3f) | refdiv;
@@ -359,13 +359,13 @@ bool clk_pll_enable(clk_pll_t pll, uint8_t refdiv, uint16_t fbdiv, uint8_t pdiv1
 void clk_pll_disable(clk_pll_t pll)
 {
     // Set PD (PLL Powerdown), POSTDIVPD (PLL Post Divider Powerdown), VCOPD (PLL VCO Powerdown)
-    *clk_pll_info[pll].reg_pwr |= 1u | (1u << 3) | (1u << 5);
+    *clk_pll_defs[pll].reg_pwr |= 1u | (1u << 3) | (1u << 5);
 }
 
 bool clk_pll_is_enabled(clk_pll_t pll)
 {
     // Read PD (PLL Powerdown)
-    return (*clk_pll_info[pll].reg_pwr & 1u) == 0;
+    return (*clk_pll_defs[pll].reg_pwr & 1u) == 0;
 }
 
 bool clk_pll_reset()
