@@ -15,22 +15,32 @@ void timer_disable()
 bool timer_is_enabled()
 {
     // Read EN (Timer Enable)
-    return (*TIMER_SIO_REG_MTIME_CTRL & 1) == 1;
+    return (*TIMER_SIO_REG_MTIME_CTRL & 1) != 0;
 }
 
 uint64_t timer_get_current()
 {
-    // Read MTIMEH
-    uint32_t mtimeh = (uint64_t)*TIMER_SIO_REG_MTIMEH << 32;
+    uint64_t mtimeh;
+    uint64_t mtime;
 
-    // Read MTIME
-    uint32_t mtime = *TIMER_SIO_REG_MTIME;
+    do
+    {
+        // Read MTIMEH
+        mtimeh = *TIMER_SIO_REG_MTIMEH;
 
-    return mtimeh | mtime;
+        // Read MTIME
+        mtime = *TIMER_SIO_REG_MTIME;
+    }
+    while (mtimeh != *TIMER_SIO_REG_MTIMEH);
+
+    return ((uint64_t)mtimeh << 32) | mtime;
 }
 
 void timer_set_comparator(uint64_t value)
 {
+    // Set MTIMECMP to a value guaranteeing no accidental interrupt
+    *TIMER_SIO_REG_MTIMECMP = UINT32_MAX;
+
     // Set MTIMECMPH
     *TIMER_SIO_REG_MTIMECMPH = (uint32_t)(value >> 32);
 
