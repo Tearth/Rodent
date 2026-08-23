@@ -1,26 +1,35 @@
 .altmacro
 
-.macro store_regs from, to
-sw x\from, \from*4(sp)
-.if \from<\to
-    store_regs %from+1,\to
+.macro store_regs current, to
+.if \current==2
+    csrr x1, mscratch
+    sw x1, \current*4(sp)
+.else
+    sw x\current, \current*4(sp)
+.endif
+.if \current<\to
+    store_regs %current+1,\to
 .endif
 .endm
 
-.macro load_regs from, to
-lw x\from, \from*4(sp)
-.if \from<\to
-    load_regs %from+1,\to
+.macro load_regs current, to
+.if \current!=2
+    lw x\current, \current*4(sp)
+.endif
+.if \current<\to
+    load_regs %current+1,\to
 .endif
 .endm
 
-.global _irq_khandler_entry
+.global _irq_handler_entry
 .align 2
 
 # Input: none
 # Output: none
-_irq_khandler_entry:
-    addi    sp, sp, -140
+_irq_handler_entry:
+    csrw    mscratch, sp
+    addi    sp, sp, -144
+
     store_regs 0, 31
 
     csrr    t0, mepc
@@ -34,12 +43,9 @@ _irq_khandler_entry:
     call    irq_handler
 
     lw      t0, 128(sp)
-    lw      t1, 132(sp)
-    lw      t2, 136(sp)
     csrw    mepc, t0
-    csrw    mtval, t1
-    csrw    mcause, t2
 
     load_regs 0, 31
-    addi    sp, sp, 140
+
+    addi    sp, sp, 144
     mret
