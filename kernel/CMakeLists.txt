@@ -8,6 +8,8 @@ add_executable(kernel.elf
     src/main.c
     src/log.c
     src/arch/riscv/startup.s
+    src/arch/riscv/irq.s
+    src/arch/riscv/irq.c
 )
 
 target_link_options(kernel.elf PRIVATE
