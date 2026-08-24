@@ -27,11 +27,14 @@
 # Input: none
 # Output: none
 _irq_handler_entry:
+    # Store SP before it's modified
     csrw    mscratch, sp
     addi    sp, sp, -144
 
+    # Store all registers except SP (it's read from MSCRATCH)
     store_regs 0, 31
 
+    # Store MEPC, MTVAL, MCAUSE
     csrr    t0, mepc
     csrr    t1, mtval
     csrr    t2, mcause
@@ -42,9 +45,11 @@ _irq_handler_entry:
     mv      a0, sp
     call    irq_handler
 
+    # Restore MEPC
     lw      t0, 128(sp)
     csrw    mepc, t0
 
+    # Restore all registers except SP
     load_regs 0, 31
 
     addi    sp, sp, 144

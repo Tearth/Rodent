@@ -10,7 +10,7 @@ static void (*timer_handler)();
 
 bool irq_enable()
 {
-    uint32_t mtvec = (uint32_t)_irq_handler_entry;
+    uintptr_t mtvec = (uintptr_t)_irq_handler_entry;
 
     // Handler address has to be aligned
     if ((mtvec & 0x3) != 0)
