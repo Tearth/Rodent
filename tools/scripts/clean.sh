@@ -1,4 +1,4 @@
 #!/bin/sh
 
-cd ../build
+cd ../../build
 cmake --build . --target clean

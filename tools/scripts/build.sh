@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd ../build
+cd ../../build
 cmake --build .
 cd ..
 

@@ -11,7 +11,7 @@
                 "isDefault": true
             },
             "options": {
-                "cwd": "${workspaceFolder}/scripts/"
+                "cwd": "${workspaceFolder}/tools/scripts/"
             }
         },
         {
@@ -26,7 +26,7 @@
                 "isDefault": true
             },
             "options": {
-                "cwd": "${workspaceFolder}/scripts/"
+                "cwd": "${workspaceFolder}/tools/scripts/"
             }
         },
         {
@@ -39,7 +39,7 @@
                 "isDefault": true
             },
             "options": {
-                "cwd": "${workspaceFolder}/scripts/"
+                "cwd": "${workspaceFolder}/tools/scripts/"
             }
         },
         {
@@ -52,7 +52,7 @@
                 "isDefault": true
             },
             "options": {
-                "cwd": "${workspaceFolder}/scripts/"
+                "cwd": "${workspaceFolder}/tools/scripts/"
             },
             "dependsOn": "Build"
         },
@@ -83,7 +83,7 @@
                 "isDefault": true
             },
             "options": {
-                "cwd": "${workspaceFolder}/scripts/"
+                "cwd": "${workspaceFolder}/tools/scripts/"
             },
             "dependsOn": "Flash"
         },

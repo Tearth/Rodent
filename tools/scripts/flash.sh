@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd ..
+cd ../..
 openocd \
   -f interface/cmsis-dap.cfg \
   -f target/rp2350-riscv.cfg \
