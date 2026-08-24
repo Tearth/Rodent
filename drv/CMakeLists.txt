@@ -6,6 +6,7 @@ if($ENV{TARGET_CPU} STREQUAL "rp2350")
     add_library(drv OBJECT
         src/rp2350/clock.c
         src/rp2350/gpio.c
+        src/rp2350/qmi.c
         src/rp2350/reset.c
         src/rp2350/timer.c
         src/rp2350/uart.c

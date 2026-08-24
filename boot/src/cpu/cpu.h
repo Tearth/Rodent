@@ -28,4 +28,6 @@ bool uart_init();
 void uart_send(const char *str);
 size_t uart_get_list(uart_info_t *uarts, size_t max_len);
 
+void flash_read(void *buf, const void *addr, size_t size);
+
 #endif

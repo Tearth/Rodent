@@ -5,7 +5,7 @@ static uint8_t read_buf[FS_LFS_CACHE_SIZE];
 static uint8_t prog_buf[FS_LFS_CACHE_SIZE];
 static uint8_t lookahead_buf[FS_LFS_CACHE_SIZE];
 
-static struct lfs_config cfg = {
+static lfs_config_t cfg = {
     .read  = lfs_read,
     .prog  = lfs_prog,
     .erase = lfs_erase,
@@ -28,7 +28,6 @@ bool fs_mount(void* base_addr)
     uint32_t m1 = *((uint32_t*)base_addr + 2);
     uint32_t m2 = *((uint32_t*)base_addr + 3);
 
-    // Check littlefs signature
     if (m1 == FS_LFS_MAGIC_WORDH && m2 == FS_LFS_MAGIC_WORDL)
     {
         cfg.context = base_addr;
@@ -78,22 +77,22 @@ bool fs_get_info(fs_info_t *info)
     return true;
 }
 
-int lfs_read(const struct lfs_config *cfg, lfs_block_t block, lfs_off_t off, void *buf, lfs_size_t size)
+int lfs_read(const lfs_config_t *cfg, lfs_block_t block, lfs_off_t off, void *buf, lfs_size_t size)
 {
-    return memcpy(buf, (const void*)((uint8_t*)cfg->context + block * cfg->block_size + off), size), LFS_ERR_OK;
+    return flash_read(buf, (const void*)((uint8_t*)cfg->context + block * cfg->block_size + off), size), LFS_ERR_OK;
 }
 
-int lfs_prog(const struct lfs_config *cfg, lfs_block_t block, lfs_off_t off, const void *buf, lfs_size_t size)
-{
-    return LFS_ERR_OK;
-}
-
-int lfs_erase(const struct lfs_config *cfg, lfs_block_t block)
+int lfs_prog(const lfs_config_t *cfg, lfs_block_t block, lfs_off_t off, const void *buf, lfs_size_t size)
 {
     return LFS_ERR_OK;
 }
 
-int lfs_sync(const struct lfs_config *cfg)
+int lfs_erase(const lfs_config_t *cfg, lfs_block_t block)
+{
+    return LFS_ERR_OK;
+}
+
+int lfs_sync(const lfs_config_t *cfg)
 {
     return LFS_ERR_OK;
 }

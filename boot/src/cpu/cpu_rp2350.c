@@ -143,3 +143,8 @@ size_t uart_get_list(uart_info_t *uarts, size_t max_len)
 
     return count;
 }
+
+void flash_read(void *buf, const void *addr, size_t size)
+{
+    qmi_read(buf, addr, size);
+}

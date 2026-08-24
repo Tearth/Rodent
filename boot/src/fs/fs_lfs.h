@@ -12,6 +12,10 @@
 #include <stdbool.h>
 #include <string.h>
 #include <lfs.h>
+#include "cpu/cpu.h"
+
+typedef struct lfs_config lfs_config_t;
+typedef struct lfs_file_config lfs_file_config_t;
 
 typedef struct fs_info
 {
@@ -23,7 +27,7 @@ typedef struct fs_info
 typedef struct fs_fhandle
 {
     lfs_file_t file;
-    struct lfs_file_config cfg;
+    lfs_file_config_t cfg;
     uint8_t buf[16];
 } fs_fhandle_t;
 
@@ -33,9 +37,9 @@ bool fs_file_read(fs_fhandle_t *handle, uint8_t *buf, uint32_t size);
 bool fs_file_seek(fs_fhandle_t *handle, uint32_t pos);
 bool fs_get_info(fs_info_t *info);
 
-int lfs_read(const struct lfs_config *cfg, lfs_block_t block, lfs_off_t off, void *buf, lfs_size_t size);
-int lfs_prog(const struct lfs_config *cfg, lfs_block_t block, lfs_off_t off, const void *buf, lfs_size_t size);
-int lfs_erase(const struct lfs_config *cfg, lfs_block_t block);
-int lfs_sync(const struct lfs_config *cfg);
+int lfs_read(const lfs_config_t *cfg, lfs_block_t block, lfs_off_t off, void *buf, lfs_size_t size);
+int lfs_prog(const lfs_config_t *cfg, lfs_block_t block, lfs_off_t off, const void *buf, lfs_size_t size);
+int lfs_erase(const lfs_config_t *cfg, lfs_block_t block);
+int lfs_sync(const lfs_config_t *cfg);
 
 #endif

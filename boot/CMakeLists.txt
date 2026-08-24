@@ -8,6 +8,8 @@ add_executable(bootloader.elf
     src/log.c
 )
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+
 target_link_options(bootloader.elf PRIVATE
     -T ${CMAKE_CURRENT_SOURCE_DIR}/ld/$ENV{TARGET_CPU}_$ENV{TARGET_ARCH}.ld -nostartfiles
     -Wl,-Map=${CMAKE_BINARY_DIR}/bootloader.map
