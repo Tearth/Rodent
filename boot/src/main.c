@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "arch/arch.h"
 #include "cfg/config.h"
-#include "cpu/cpu.h"
+#include "mcu/mcu.h"
 #include "fs/fs.h"
 #include "elf.h"
 #include "log.h"

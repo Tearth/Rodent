@@ -1,5 +1,5 @@
-#ifndef CPU_H
-#define CPU_H
+#ifndef MCU_H
+#define MCU_H
 
 #include <stddef.h>
 #include <stdint.h>

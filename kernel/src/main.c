@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "cpu/cpu.h"
+#include "mcu/mcu.h"
 #include "log.h"
 #include "arch/irq_arch.h"
 

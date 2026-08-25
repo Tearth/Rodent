@@ -3,7 +3,7 @@ cmake_policy(SET CMP0069 NEW)
 project(bootloader LANGUAGES C ASM)
 
 add_executable(bootloader.elf
-    $<TARGET_OBJECTS:drv>
+    $<TARGET_OBJECTS:mcu>
     src/main.c
     src/log.c
 )
@@ -11,15 +11,15 @@ add_executable(bootloader.elf
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_options(bootloader.elf PRIVATE
-    -T ${CMAKE_CURRENT_SOURCE_DIR}/ld/$ENV{TARGET_CPU}_$ENV{TARGET_ARCH}.ld -nostartfiles
+    -T ${CMAKE_CURRENT_SOURCE_DIR}/ld/$ENV{TARGET_MCU}_$ENV{TARGET_ARCH}.ld -nostartfiles
     -Wl,-Map=${CMAKE_BINARY_DIR}/bootloader.map
 )
 
-if($ENV{TARGET_CPU} STREQUAL "rp2350")
+if($ENV{TARGET_MCU} STREQUAL "rp2350")
     target_sources(bootloader.elf PRIVATE
-        src/cpu/rp2350/image_$ENV{TARGET_ARCH}.s
-        src/cpu/rp2350/startup_$ENV{TARGET_ARCH}.s
-        src/cpu/cpu_rp2350.c
+        src/mcu/rp2350/image_$ENV{TARGET_ARCH}.s
+        src/mcu/rp2350/startup_$ENV{TARGET_ARCH}.s
+        src/mcu/mcu_rp2350.c
     )
 endif()
 

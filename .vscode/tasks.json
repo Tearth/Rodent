@@ -109,7 +109,7 @@
             "BUILD_TOOLCHAIN": "rp2350_riscv",
 
             // Target
-            "TARGET_CPU": "rp2350",
+            "TARGET_MCU": "rp2350",
             "TARGET_ARCH": "riscv",
 
             // Filesystem

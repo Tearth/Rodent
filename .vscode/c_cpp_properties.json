@@ -6,7 +6,7 @@
                 "${workspaceFolder}/**"
             ],
             "defines": [
-                "CPU_RP2350",
+                "MCU_RP2350",
                 "ARCH_RISCV",
                 "FS_LFS"
             ],

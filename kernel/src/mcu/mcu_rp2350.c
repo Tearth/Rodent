@@ -1,4 +1,4 @@
-#include "cpu_rp2350.h"
+#include "mcu_rp2350.h"
 
 void uart_send(const char *str)
 {

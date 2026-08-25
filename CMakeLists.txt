@@ -7,20 +7,20 @@ set(CMAKE_C_FLAGS_RELEASE "-Os")
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG FALSE)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
 
-include_directories(${CMAKE_SOURCE_DIR}/drv/src)
+include_directories(${CMAKE_SOURCE_DIR}/mcu/src)
 include_directories(${CMAKE_SOURCE_DIR}/lib/littlefs/src)
 
-string(TOUPPER $ENV{TARGET_CPU} TARGET_CPU_UPPER)
+string(TOUPPER $ENV{TARGET_MCU} TARGET_MCU_UPPER)
 string(TOUPPER $ENV{TARGET_ARCH} TARGET_ARCH_UPPER)
 string(TOUPPER $ENV{FS_TYPE} FS_TYPE_UPPER)
 
 add_compile_definitions(
-    CPU_${TARGET_CPU_UPPER}
+    MCU_${TARGET_MCU_UPPER}
     ARCH_${TARGET_ARCH_UPPER}
     FS_${FS_TYPE_UPPER}
 )
 
 project(rodent)
-add_subdirectory(drv)
+add_subdirectory(mcu)
 add_subdirectory(boot)
 add_subdirectory(kernel)

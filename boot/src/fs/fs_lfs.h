@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <lfs.h>
-#include "cpu/cpu.h"
+#include "mcu/mcu.h"
 
 typedef struct lfs_config lfs_config_t;
 typedef struct lfs_file_config lfs_file_config_t;

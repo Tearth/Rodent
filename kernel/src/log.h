@@ -2,7 +2,7 @@
 #define LOG_H
 
 #include <stdarg.h>
-#include "cpu/cpu.h"
+#include "mcu/mcu.h"
 
 typedef enum log_level
 {
