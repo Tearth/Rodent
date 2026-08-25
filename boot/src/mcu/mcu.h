@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef struct clk_dinfo
+typedef struct clk_info
 {
     char name[16];
     char src[16];
