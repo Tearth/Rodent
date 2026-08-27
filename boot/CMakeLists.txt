@@ -6,6 +6,7 @@ add_executable(bootloader.elf
     $<TARGET_OBJECTS:mcu>
     src/main.c
     src/log.c
+    src/cfg/cfg.c
 )
 
 target_include_directories(bootloader.elf PRIVATE
@@ -47,9 +48,8 @@ if($ENV{FS_TYPE} STREQUAL "lfs")
 endif()
 
 set(FS_BASE_ADDR $ENV{FS_BASE_ADDR})
-set(KERNEL_FILENAME $ENV{KERNEL_FILENAME})
 
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/cfg/config.h.in
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/cfg/config.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/cfg/defs.h.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/cfg/defs.h
 )

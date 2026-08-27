@@ -56,6 +56,11 @@ bool irq_is_enabled()
     return (mstatus & (1u << 3)) != 0;
 }
 
+void irq_attach_timer_handler(void (*handler)())
+{
+    timer_handler = handler;
+}
+
 void irq_handler(irq_state_t *state)
 {
     switch (state->mcause)
@@ -78,13 +83,13 @@ void irq_handler(irq_state_t *state)
     }
 }
 
-void irq_user_ecall_handler(irq_state_t *state)
+static void irq_user_ecall_handler(irq_state_t *state)
 {
     // TODO: syscalls
     state->mepc += 4;
 }
 
-void irq_timer_handler(irq_state_t *state)
+static void irq_timer_handler(irq_state_t *state)
 {
     if (timer_handler != nullptr)
     {
@@ -92,7 +97,7 @@ void irq_timer_handler(irq_state_t *state)
     }
 }
 
-void irq_exception_handler(irq_state_t *state)
+static void irq_exception_handler(irq_state_t *state)
 {
     const char *name;
 
@@ -140,15 +145,10 @@ void irq_exception_handler(irq_state_t *state)
     while (1);
 }
 
-void irq_unsupported_handler(irq_state_t *state)
+static void irq_unsupported_handler(irq_state_t *state)
 {
     char mcause_buf[16];
 
     itoa(state->mcause, mcause_buf, 16);
     log_fmt(LOG_LEVEL_WARN, "Unknown interrupt type (", mcause_buf, ")", nullptr);
-}
-
-void irq_attach_timer_handler(void (*handler)())
-{
-    timer_handler = handler;
 }

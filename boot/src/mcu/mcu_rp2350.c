@@ -43,10 +43,10 @@ bool clk_init()
     return true;
 }
 
-size_t clk_get_list(clk_info_t *clks, size_t max_len)
+size_t clk_get_list(clk_info_t *clks, size_t len)
 {
     const clk_t clk_types[] = { CLK_REF, CLK_SYS, CLK_PERI };
-    size_t count = max_len < 3 ? max_len : 3;
+    size_t count = len < 3 ? len : 3;
 
     for (size_t i = 0; i < count; i++)
     {
@@ -117,10 +117,10 @@ void uart_send(const char *str)
     uart_send_str(UART0, str);
 }
 
-size_t uart_get_list(uart_info_t *uarts, size_t max_len)
+size_t uart_get_list(uart_info_t *uarts, size_t len)
 {
     const uart_t uart_types[] = { UART0, UART1 };
-    size_t count = max_len < 2 ? max_len : 2;
+    size_t count = len < 2 ? len : 2;
 
     for (size_t i = 0; i < count; i++)
     {

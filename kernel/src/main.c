@@ -24,7 +24,7 @@ int main()
     while (1);
 }
 
-bool init_systime()
+static bool init_systime()
 {
     char buf[16];
 
@@ -40,7 +40,7 @@ bool init_systime()
     return true;
 }
 
-bool init_irq()
+static bool init_irq()
 {
     if (!irq_enable())
     {
@@ -52,7 +52,7 @@ bool init_irq()
     return true;
 }
 
-void halt()
+static void halt()
 {
     while (1);
 }

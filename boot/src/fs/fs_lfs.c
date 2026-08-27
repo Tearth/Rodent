@@ -50,9 +50,9 @@ bool fs_file_open(const char *path, fs_fhandle_t *handle)
     return lfs_file_opencfg(&lfs, &handle->file, path, LFS_O_RDONLY, &handle->cfg) == LFS_ERR_OK;
 }
 
-bool fs_file_read(fs_fhandle_t *handle, uint8_t *buf, uint32_t size)
+int32_t fs_file_read(fs_fhandle_t *handle, uint8_t *buf, uint32_t size)
 {
-    return lfs_file_read(&lfs, &handle->file, buf, size) >= 0;
+    return lfs_file_read(&lfs, &handle->file, buf, size);
 }
 
 bool fs_file_seek(fs_fhandle_t *handle, uint32_t pos)

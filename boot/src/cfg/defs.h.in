@@ -4,7 +4,4 @@
 // Filesystem
 #define FS_BASE_ADDR @FS_BASE_ADDR@
 
-// Kernel
-#define KERNEL_FILENAME "@KERNEL_FILENAME@"
-
 #endif

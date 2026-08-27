@@ -4,6 +4,8 @@ cd ../..
 mkdir ./bin
 mkdir ./build
 mkdir ./build/fs
+mkdir ./build/fs/etc
+mkdir ./build/fs/sys
 cd ./build
 
 cmake .. \

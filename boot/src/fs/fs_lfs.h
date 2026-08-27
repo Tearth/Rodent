@@ -33,7 +33,7 @@ typedef struct fs_fhandle
 
 bool fs_mount(void* base);
 bool fs_file_open(const char *path, fs_fhandle_t *handle);
-bool fs_file_read(fs_fhandle_t *handle, uint8_t *buf, uint32_t size);
+int32_t fs_file_read(fs_fhandle_t *handle, uint8_t *buf, uint32_t size);
 bool fs_file_seek(fs_fhandle_t *handle, uint32_t pos);
 bool fs_get_info(fs_info_t *info);
 

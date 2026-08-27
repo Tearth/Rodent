@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "arch/arch.h"
-#include "cfg/config.h"
+#include "cfg/defs.h"
+#include "cfg/cfg.h"
 #include "mcu/mcu.h"
 #include "fs/fs.h"
 #include "elf.h"
@@ -11,11 +12,14 @@
 
 static bool init_hw();
 static bool init_fs();
-static bool init_kernel();
+static bool init_cfg(cfg_data_t *cfg);
+static bool init_kernel(cfg_data_t *cfg);
 static void halt();
 
 int main()
 {
+    cfg_data_t cfg;
+
     if (!init_hw())
     {
         halt();
@@ -26,7 +30,12 @@ int main()
         halt();
     }
 
-    if (!init_kernel())
+    if (!init_cfg(&cfg))
+    {
+        halt();
+    }
+
+    if (!init_kernel(&cfg))
     {
         halt();
     }
@@ -34,7 +43,7 @@ int main()
     halt();
 }
 
-bool init_hw()
+static bool init_hw()
 {
     if (!clk_init())
     {
@@ -93,7 +102,7 @@ bool init_hw()
     return true;
 }
 
-bool init_fs()
+static bool init_fs()
 {
     if (fs_mount((void*)FS_BASE_ADDR))
     {
@@ -122,18 +131,30 @@ bool init_fs()
     }
 }
 
-bool init_kernel()
+static bool init_cfg(cfg_data_t *cfg)
+{
+    if (!cfg_load("/etc/boot.cfg", cfg))
+    {
+        return log_msg(LOG_LEVEL_FAIL, "Failed to load /etc/boot.cfg"), false;
+    }
+
+    log_msg(LOG_LEVEL_OK, "Loaded /etc/boot.cfg");
+
+    return true;
+}
+
+static bool init_kernel(cfg_data_t *cfg)
 {
     fs_fhandle_t handle = {};
     elf_header_t elf_header = {};
     uint8_t buf[64];
 
-    if (!fs_file_open(KERNEL_FILENAME, &handle))
+    if (!fs_file_open(cfg->kernel_path, &handle))
     {
         return log_msg(LOG_LEVEL_FAIL, "Failed to open kernel ELF"), false;
     }
 
-    if (!fs_file_read(&handle, buf, sizeof(buf)))
+    if (fs_file_read(&handle, buf, sizeof(buf)) < 0)
     {
         return log_msg(LOG_LEVEL_FAIL, "Failed to read kernel ELF"), false;
     }
@@ -171,7 +192,7 @@ bool init_kernel()
             return log_msg(LOG_LEVEL_FAIL, "Failed to seek kernel ELF"), false;
         }
 
-        if (!fs_file_read(&handle, buf, sizeof(buf)))
+        if (fs_file_read(&handle, buf, sizeof(buf)) < 0)
         {
             return log_msg(LOG_LEVEL_FAIL, "Failed to read kernel ELF"), false;
         }
@@ -190,7 +211,7 @@ bool init_kernel()
 
             do
             {
-                if (!fs_file_read(&handle, buf, sizeof(buf)))
+                if (fs_file_read(&handle, buf, sizeof(buf)) < 0)
                 {
                     return log_msg(LOG_LEVEL_FAIL, "Failed to read kernel ELF"), false;
                 }
@@ -221,7 +242,7 @@ bool init_kernel()
     itoa(data_to, addr_to_buf, 16);
     itoa(data_to - data_from, addr_size_buf, 10);
 
-    log_fmt(LOG_LEVEL_OK, "Loaded ", KERNEL_FILENAME, " into memory", nullptr);
+    log_fmt(LOG_LEVEL_OK, "Loaded ", cfg->kernel_path, " into memory", nullptr);
     log_fmt(LOG_LEVEL_INFO, " Data @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " B)", nullptr);
 
     itoa(bss_from, addr_from_buf, 16);
@@ -235,7 +256,7 @@ bool init_kernel()
     jmp((void*)elf_header.entry);
 }
 
-void halt()
+static void halt()
 {
     while (1);
 }
