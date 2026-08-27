@@ -163,20 +163,18 @@ static bool init_kernel(cfg_data_t *cfg)
 
     if (elf_header.signature != ELF_MAGIC)
     {
-        return log_msg(LOG_LEVEL_FAIL, "Invalid ELF signature"), false;
+        return log_msg(LOG_LEVEL_FAIL, "Invalid kernel ELF signature"), false;
     }
 
     if (elf_header.type != ELF_TYPE_EXEC)
     {
-        return log_msg(LOG_LEVEL_FAIL, "Invalid ELF type"), false;
+        return log_msg(LOG_LEVEL_FAIL, "Invalid kernel ELF type"), false;
     }
 
     if (elf_header.machine != ELF_MACHINE)
     {
-        return log_msg(LOG_LEVEL_FAIL, "Invalid ELF machine"), false;
+        return log_msg(LOG_LEVEL_FAIL, "Invalid kernel ELF machine"), false;
     }
-
-    log_msg(LOG_LEVEL_OK, "Found valid kernel executable");
 
     uint32_t data_from = UINT32_MAX;
     uint32_t data_to = 0;
