@@ -2,5 +2,5 @@
 
 openocd \
     -f interface/cmsis-dap.cfg \
-    -f target/rp2350-riscv.cfg \
+    -f target/${ADAPTER_TARGET}.cfg \
     -c "adapter speed ${ADAPTER_SPEED}"

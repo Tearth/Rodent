@@ -3,7 +3,8 @@
         {
             "name": "RISC-V",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/usr/local/picolibc/rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp/include"
             ],
             "defines": [
                 "MCU_RP2350",

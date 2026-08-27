@@ -107,6 +107,7 @@
             // Build
             "BUILD_PROFILE": "DEBUG",
             "BUILD_TOOLCHAIN": "rp2350_riscv",
+            "BUILD_LIBC_PATH": "/usr/local/picolibc/rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp",
 
             // Target
             "TARGET_MCU": "rp2350",
@@ -121,6 +122,7 @@
             "KERNEL_FILENAME": "kernel.elf",
 
             // OpenOCD
+            "ADAPTER_TARGET": "rp2350-riscv",
             "ADAPTER_SPEED": "30000"
         }
     },

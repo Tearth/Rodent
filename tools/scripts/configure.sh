@@ -6,4 +6,7 @@ mkdir ./build
 mkdir ./build/fs
 cd ./build
 
-cmake .. -DCMAKE_BUILD_TYPE=${BUILD_PROFILE} -DCMAKE_TOOLCHAIN_FILE=./tools/toolchain/${BUILD_TOOLCHAIN}.toolchain.cmake
+cmake .. \
+    -DCMAKE_BUILD_TYPE=${BUILD_PROFILE} \
+    -DCMAKE_TOOLCHAIN_FILE=./tools/toolchain/${BUILD_TOOLCHAIN}.toolchain.cmake \
+    -DLIBC_PATH=${BUILD_LIBC_PATH}
