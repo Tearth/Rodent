@@ -35,10 +35,10 @@ SECTIONS
         *(.sdata*)
         . = ALIGN(4);
         __data_end = .;
+        . = ALIGN(4);
     } > RAM AT> FLASH
 
     __data_pointer = LOADADDR(.data);
-    __stack_pointer = ORIGIN(RAM) + LENGTH(RAM);
 
     .bss (NOLOAD) : {
         . = ALIGN(4);
@@ -46,7 +46,8 @@ SECTIONS
         *(.bss*)
         . = ALIGN(4);
         *(.sbss*)
-        . = ALIGN(4);
-        __bss_end = .;
     } > RAM
+
+    __bss_end = ORIGIN(RAM) + LENGTH(RAM);
+    __stack_pointer = __bss_end;
 }
