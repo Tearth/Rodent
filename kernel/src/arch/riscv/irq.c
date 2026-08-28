@@ -128,14 +128,16 @@ static void irq_exception_handler(irq_state_t *state)
     itoa(state->mtval, mtval_buf, 16);
     itoa(state->sp, sp_buf, 16);
 
-    log_msg(LOG_LEVEL_FAIL, "      //__//");
-    log_msg(LOG_LEVEL_FAIL, "     /   _  \\_________________");
-    log_msg(LOG_LEVEL_FAIL, "    /                         \\");
-    log_msg(LOG_LEVEL_FAIL, "   | .       FATAL EXCEPTION   \\");
-    log_msg(LOG_LEVEL_FAIL, "    \\____/|                    |");
-    log_msg(LOG_LEVEL_FAIL, "        __/ \\   /______     _   \\");
-    log_msg(LOG_LEVEL_FAIL, "      //____/|  |      \\   | \\  /");
-    log_msg(LOG_LEVEL_FAIL, "            //__/     //__/ //__/");
+    log_msg(LOG_LEVEL_FAIL, "");
+    log_msg(LOG_LEVEL_FAIL, "             \\\\__\\\\");
+    log_msg(LOG_LEVEL_FAIL, "         ___/  -  -\\");
+    log_msg(LOG_LEVEL_FAIL, "      __/         ..\\");
+    log_msg(LOG_LEVEL_FAIL, "    _/         \\____/");
+    log_msg(LOG_LEVEL_FAIL, "   /            |       Fatal Exception");
+    log_msg(LOG_LEVEL_FAIL, "  /             |");
+    log_msg(LOG_LEVEL_FAIL, " |             /");
+    log_msg(LOG_LEVEL_FAIL, " |        __   \\");
+    log_msg(LOG_LEVEL_FAIL, "  \\_____//  \\__\\\\");
     log_msg(LOG_LEVEL_FAIL, "---------------------------------------");
     log_fmt(LOG_LEVEL_FAIL, "Type: ", name, nullptr);
     log_fmt(LOG_LEVEL_FAIL, "PC: 0x", pc_buf, nullptr);

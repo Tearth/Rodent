@@ -55,6 +55,18 @@ static bool init_hw()
         return false;
     }
 
+    log_msg(LOG_LEVEL_INFO, "");
+    log_msg(LOG_LEVEL_INFO, "             \\\\__\\\\");
+    log_msg(LOG_LEVEL_INFO, "         ___/  -  -\\");
+    log_msg(LOG_LEVEL_INFO, "      __/         ..\\");
+    log_msg(LOG_LEVEL_INFO, "    _/         \\____/");
+    log_msg(LOG_LEVEL_INFO, "   /            |                Rodent");
+    log_msg(LOG_LEVEL_INFO, "  /             |");
+    log_msg(LOG_LEVEL_INFO, " |             /");
+    log_msg(LOG_LEVEL_INFO, " |        __   \\");
+    log_msg(LOG_LEVEL_INFO, "  \\_____//  \\__\\\\");
+    log_msg(LOG_LEVEL_INFO, "---------------------------------------");
+
     log_msg(LOG_LEVEL_OK, "Rodent Bootloader");
     log_msg(LOG_LEVEL_OK, "Started clocks");
 
@@ -249,7 +261,7 @@ static bool init_kernel(cfg_data_t *cfg)
 
     log_fmt(LOG_LEVEL_INFO, " BSS @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " B)", nullptr);
     log_fmt(LOG_LEVEL_INFO, "Jumping to kernel @ 0x", entry_buf, nullptr);
-    log_msg(LOG_LEVEL_INFO, "------------------------------");
+    log_msg(LOG_LEVEL_INFO, "---------------------------------------");
 
     jmp((void*)elf_header.entry);
 }
