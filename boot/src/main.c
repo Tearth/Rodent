@@ -7,9 +7,6 @@
 #include "elf.h"
 #include "log.h"
 
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
-
 static bool init_hw();
 static bool init_fs();
 static bool init_cfg(cfg_data_t *cfg);
@@ -145,125 +142,29 @@ static bool init_fs()
 
 static bool init_cfg(cfg_data_t *cfg)
 {
-    if (!cfg_load("/etc/boot.cfg", cfg))
+    if (!cfg_load(BOOT_CFG, cfg))
     {
-        return log_msg(LOG_LEVEL_FAIL, "Failed to load /etc/boot.cfg"), false;
+        return log_fmt(LOG_LEVEL_FAIL, "Failed to load ", BOOT_CFG, nullptr), false;
     }
 
-    log_msg(LOG_LEVEL_OK, "Loaded /etc/boot.cfg");
+    log_fmt(LOG_LEVEL_OK, "Loaded ", BOOT_CFG, nullptr);
 
     return true;
 }
 
 static bool init_kernel(cfg_data_t *cfg)
 {
-    fs_fhandle_t handle = {};
-    elf_header_t elf_header = {};
-    uint8_t buf[64];
+    elf_data_t kernel;
 
-    if (!fs_file_open(cfg->kernel_path, &handle))
+    if (!elf_load(cfg->kernel_path, &kernel))
     {
-        return log_msg(LOG_LEVEL_FAIL, "Failed to open kernel ELF"), false;
+        return log_fmt(LOG_LEVEL_FAIL, "Failed to load ", cfg->kernel_path, nullptr), false;
     }
 
-    if (fs_file_read(&handle, buf, sizeof(buf)) < 0)
-    {
-        return log_msg(LOG_LEVEL_FAIL, "Failed to read kernel ELF"), false;
-    }
-
-    memcpy(&elf_header, buf, sizeof(elf_header_t));
-
-    if (elf_header.signature != ELF_MAGIC)
-    {
-        return log_msg(LOG_LEVEL_FAIL, "Invalid kernel ELF signature"), false;
-    }
-
-    if (elf_header.type != ELF_TYPE_EXEC)
-    {
-        return log_msg(LOG_LEVEL_FAIL, "Invalid kernel ELF type"), false;
-    }
-
-    if (elf_header.machine != ELF_MACHINE)
-    {
-        return log_msg(LOG_LEVEL_FAIL, "Invalid kernel ELF machine"), false;
-    }
-
-    uint32_t data_from = UINT32_MAX;
-    uint32_t data_to = 0;
-    uint32_t bss_from = UINT32_MAX;
-    uint32_t bss_to = 0;
-
-    for (size_t i = 0; i < elf_header.phnum; i++)
-    {
-        elf_pheader_t pheader = {};
-
-        if (!fs_file_seek(&handle, elf_header.phoff + sizeof(elf_pheader_t) * i))
-        {
-            return log_msg(LOG_LEVEL_FAIL, "Failed to seek kernel ELF"), false;
-        }
-
-        if (fs_file_read(&handle, buf, sizeof(buf)) < 0)
-        {
-            return log_msg(LOG_LEVEL_FAIL, "Failed to read kernel ELF"), false;
-        }
-
-        memcpy(&pheader, buf, sizeof(elf_pheader_t));
-
-        if (pheader.type == 0x1)
-        {
-            int32_t data_left = pheader.fsize;
-            uint8_t *vaddr_ptr = (uint8_t*)pheader.vaddr;
-
-            if (!fs_file_seek(&handle, pheader.offset))
-            {
-                return log_msg(LOG_LEVEL_FAIL, "Failed to seek kernel ELF"), false;
-            }
-
-            do
-            {
-                if (fs_file_read(&handle, buf, sizeof(buf)) < 0)
-                {
-                    return log_msg(LOG_LEVEL_FAIL, "Failed to read kernel ELF"), false;
-                }
-
-                memcpy(vaddr_ptr, buf, MIN(data_left, sizeof(buf)));
-
-                vaddr_ptr += sizeof(buf);
-                data_left -= sizeof(buf);
-            }
-            while (data_left > 0);
-
-            data_from = MIN(data_from, pheader.vaddr);
-            data_to = MAX(data_to, pheader.vaddr + pheader.fsize);
-
-            memset((uint8_t*)pheader.vaddr + pheader.fsize, 0, pheader.msize - pheader.fsize);
-            bss_from = MIN(bss_from, pheader.vaddr + pheader.fsize);
-            bss_to = MAX(bss_to, pheader.vaddr + pheader.msize);
-        }
-    }
-
-    char entry_buf[16];
-    char addr_from_buf[16];
-    char addr_to_buf[16];
-    char addr_size_buf[16];
-
-    itoa(elf_header.entry, entry_buf, 16);
-    itoa(data_from, addr_from_buf, 16);
-    itoa(data_to, addr_to_buf, 16);
-    itoa(data_to - data_from, addr_size_buf, 10);
-
-    log_fmt(LOG_LEVEL_OK, "Loaded ", cfg->kernel_path, " into memory", nullptr);
-    log_fmt(LOG_LEVEL_INFO, " Data @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " B)", nullptr);
-
-    itoa(bss_from, addr_from_buf, 16);
-    itoa(bss_to, addr_to_buf, 16);
-    itoa(bss_to - bss_from, addr_size_buf, 10);
-
-    log_fmt(LOG_LEVEL_INFO, " BSS @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " B)", nullptr);
-    log_fmt(LOG_LEVEL_INFO, "Jumping to kernel @ 0x", entry_buf, nullptr);
+    log_msg(LOG_LEVEL_INFO, "Jumping to kernel");
     log_msg(LOG_LEVEL_INFO, "---------------------------------------");
 
-    jmp((void*)elf_header.entry);
+    jmp(kernel.entry);
 }
 
 static void halt()

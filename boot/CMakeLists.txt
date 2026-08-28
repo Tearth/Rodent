@@ -5,6 +5,7 @@ project(bootloader LANGUAGES C ASM)
 add_executable(bootloader.elf
     $<TARGET_OBJECTS:mcu>
     src/main.c
+    src/elf.c
     src/log.c
     src/cfg/cfg.c
 )
@@ -48,6 +49,7 @@ if($ENV{FS_TYPE} STREQUAL "lfs")
 endif()
 
 set(FS_BASE_ADDR $ENV{FS_BASE_ADDR})
+set(BOOT_CFG $ENV{BOOT_CFG})
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cfg/defs.h.in

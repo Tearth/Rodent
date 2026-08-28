@@ -2,6 +2,9 @@
 #define ELF_H
 
 #include <stdint.h>
+#include <stdlib.h>
+#include "fs/fs.h"
+#include "log.h"
 
 #define ELF_MAGIC 0x464c457f
 #define ELF_TYPE_EXEC 2
@@ -9,6 +12,16 @@
 #ifdef ARCH_RISCV
 #define ELF_MACHINE 243
 #endif
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
+typedef struct elf_data
+{
+    void *base;
+    void *entry;
+    uint32_t size;
+} elf_data_t;
 
 typedef struct elf_header
 {
@@ -44,5 +57,7 @@ typedef struct elf_pheader
     uint32_t flags;
     uint32_t align;
 } __attribute__((__packed__)) elf_pheader_t;
+
+bool elf_load(const char *path, elf_data_t *data);
 
 #endif

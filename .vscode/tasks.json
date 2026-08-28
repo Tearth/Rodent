@@ -118,6 +118,9 @@
             "FS_BASE_ADDR": "0x10100000",
             "FS_SIZE": "0x40000",
 
+            // Boot
+            "BOOT_CFG": "/etc/boot.cfg",
+
             // OpenOCD
             "ADAPTER_TARGET": "rp2350-riscv",
             "ADAPTER_SPEED": "30000"
