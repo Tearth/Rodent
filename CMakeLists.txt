@@ -9,6 +9,7 @@ set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
 
 include_directories(${CMAKE_SOURCE_DIR}/mcu/src)
 include_directories(${CMAKE_SOURCE_DIR}/lib/littlefs/src)
+include_directories(${CMAKE_SOURCE_DIR}/shared/src)
 include_directories(${LIBC_PATH}/include)
 
 link_directories(${LIBC_PATH}/lib)

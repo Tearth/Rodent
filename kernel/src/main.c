@@ -1,14 +1,16 @@
 #include <stdlib.h>
+#include "arch/irq_arch.h"
+#include "common/boot.h"
 #include "mcu/mcu.h"
 #include "log.h"
-#include "arch/irq_arch.h"
 
 static bool init_systime();
 static bool init_irq();
 static void halt();
 
-int main()
+int kmain(boot_data_t *boot_data)
 {
+    log_init(boot_data);
     log_msg(LOG_LEVEL_OK, "Rodent Kernel");
 
     if (!init_systime())

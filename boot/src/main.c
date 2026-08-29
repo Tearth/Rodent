@@ -2,6 +2,7 @@
 #include "arch/arch.h"
 #include "cfg/defs.h"
 #include "cfg/cfg.h"
+#include "common/boot.h"
 #include "mcu/mcu.h"
 #include "fs/fs.h"
 #include "elf.h"
@@ -147,9 +148,7 @@ static bool init_cfg(cfg_data_t *cfg)
         return log_fmt(LOG_LEVEL_FAIL, "Failed to load ", BOOT_CFG, nullptr), false;
     }
 
-    log_fmt(LOG_LEVEL_OK, "Loaded ", BOOT_CFG, nullptr);
-
-    return true;
+    return log_fmt(LOG_LEVEL_OK, "Loaded ", BOOT_CFG, nullptr), true;
 }
 
 static bool init_kernel(cfg_data_t *cfg)
@@ -164,7 +163,11 @@ static bool init_kernel(cfg_data_t *cfg)
     log_msg(LOG_LEVEL_INFO, "Jumping to kernel");
     log_msg(LOG_LEVEL_INFO, "---------------------------------------");
 
-    jmp(kernel.entry);
+    boot_data_t data;
+    data.log_msg = log_msg;
+    data.log_vargs = log_vargs;
+
+    jmp(kernel.entry, &data);
 }
 
 static void halt()
