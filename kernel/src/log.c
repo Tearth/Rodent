@@ -3,10 +3,10 @@
 static void (*boot_log_msg)(log_level_t level, const char *msg);
 static void (*boot_log_vargs)(log_level_t level, const char *msg, va_list args);
 
-void log_init(boot_data_t *boot_data)
+void log_init(boot_iface_t *boot_iface)
 {
-    boot_log_msg = boot_data->log_msg;
-    boot_log_vargs = boot_data->log_vargs;
+    boot_log_msg = boot_iface->log_msg;
+    boot_log_vargs = boot_iface->log_vargs;
 }
 
 void log_msg(log_level_t level, const char *msg)

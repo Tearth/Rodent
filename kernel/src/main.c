@@ -8,9 +8,9 @@ static bool init_systime();
 static bool init_irq();
 static void halt();
 
-int kmain(boot_data_t *boot_data)
+int kmain(boot_iface_t *boot_iface, boot_args_t *boot_args)
 {
-    log_init(boot_data);
+    log_init(boot_iface);
     log_msg(LOG_LEVEL_OK, "Rodent Kernel");
 
     if (!init_systime())

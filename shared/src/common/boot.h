@@ -4,10 +4,15 @@
 #include <stdarg.h>
 #include "log.h"
 
-typedef struct boot_data
+typedef struct boot_iface
 {
     void (*log_msg)(log_level_t level, const char *msg);
     void (*log_vargs)(log_level_t level, const char *msg, va_list args);
-} boot_data_t;
+} boot_iface_t;
+
+typedef struct boot_args
+{
+
+} boot_args_t;
 
 #endif

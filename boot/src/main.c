@@ -163,11 +163,13 @@ static bool init_kernel(cfg_data_t *cfg)
     log_msg(LOG_LEVEL_INFO, "Jumping to kernel");
     log_msg(LOG_LEVEL_INFO, "---------------------------------------");
 
-    boot_data_t data;
-    data.log_msg = log_msg;
-    data.log_vargs = log_vargs;
+    boot_iface_t iface;
+    iface.log_msg = log_msg;
+    iface.log_vargs = log_vargs;
 
-    jmp(kernel.entry, &data);
+    boot_args_t args;
+
+    jmp(kernel.entry, &iface, &args);
 }
 
 static void halt()
