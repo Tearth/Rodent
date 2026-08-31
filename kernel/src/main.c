@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include "arch/irq_arch.h"
-#include "common/boot.h"
+#include "shared/boot.h"
 #include "mcu/mcu.h"
 #include "log.h"
 

@@ -1,5 +1,4 @@
 #include "arch.h"
-#include "common/boot.h"
 
 __attribute__((noreturn)) void jmp(void *addr, void *iface, void *args)
 {

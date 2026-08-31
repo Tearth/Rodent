@@ -2,7 +2,7 @@
 #include "arch/arch.h"
 #include "cfg/defs.h"
 #include "cfg/cfg.h"
-#include "common/boot.h"
+#include "shared/boot.h"
 #include "mcu/mcu.h"
 #include "fs/fs.h"
 #include "elf.h"

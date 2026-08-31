@@ -2,8 +2,8 @@
 #define LOG_H
 
 #include <stdarg.h>
-#include "common/boot.h"
-#include "common/log.h"
+#include "shared/boot.h"
+#include "shared/log.h"
 #include "mcu/mcu.h"
 
 void log_init(boot_iface_t *boot_iface);
