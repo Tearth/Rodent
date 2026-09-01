@@ -155,7 +155,7 @@ static bool init_kernel(cfg_data_t *cfg)
 {
     elf_data_t kernel;
 
-    if (!elf_load(cfg->kernel_path, &kernel))
+    if (!elf_load(cfg->kernel_path, &kernel, nullptr))
     {
         return log_fmt(LOG_LEVEL_FAIL, "Failed to load ", cfg->kernel_path, nullptr), false;
     }

@@ -11,4 +11,8 @@ if($ENV{TARGET_MCU} STREQUAL "rp2350")
         src/rp2350/timer.c
         src/rp2350/uart.c
     )
+
+    target_compile_options(mcu PRIVATE
+        -mcmodel=medany -fPIE
+    )
 endif()

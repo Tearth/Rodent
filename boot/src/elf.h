@@ -58,6 +58,20 @@ typedef struct elf_pheader
     uint32_t align;
 } __attribute__((__packed__)) elf_pheader_t;
 
-bool elf_load(const char *path, elf_data_t *data);
+typedef struct elf_sheader
+{
+    uint32_t name;
+    uint32_t type;
+    uint32_t flags;
+    uint32_t addr;
+    uint32_t offset;
+    uint32_t size;
+    uint32_t link;
+    uint32_t info;
+    uint32_t align;
+    uint32_t entsize;
+} __attribute__((__packed__)) elf_sheader_t;
+
+bool elf_load(const char *path, elf_data_t *data, void *addr);
 
 #endif
