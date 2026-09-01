@@ -1,12 +1,12 @@
 #include "cfg.h"
 
-static void cfg_parse(const char *section, const char *name, const char *value, cfg_data_t *data);
+static void cfg_parse(const char *section, const char *name, const char *value, cfg_boot_t *cfg);
 
-bool cfg_load(const char *path, cfg_data_t *data)
+bool cfg_load(const char *path, cfg_boot_t *cfg)
 {
     fs_fhandle_t handle = {};
-    uint8_t buf[256] = {};
     uint32_t pos = 0;
+    char buf[256] = {};
 
     if (!fs_file_open(path, &handle))
     {
@@ -53,7 +53,7 @@ bool cfg_load(const char *path, cfg_data_t *data)
                     memcpy(value, buf + str_from, c - str_from);
                     value[c - str_from] = 0;
 
-                    cfg_parse(section, name, value, data);
+                    cfg_parse(section, name, value, cfg);
                 }
 
                 line_from = c + 1;
@@ -79,13 +79,21 @@ bool cfg_load(const char *path, cfg_data_t *data)
     return true;
 }
 
-static void cfg_parse(const char *section, const char *name, const char *value, cfg_data_t *data)
+static void cfg_parse(const char *section, const char *name, const char *value, cfg_boot_t *cfg)
 {
     if (strcmp(section, "kernel") == 0)
     {
-        if (strcmp(name, "path") == 0)
-        {
-            memcpy(data->kernel_path, value, VALUE_LEN);
-        }
+        if (strcmp(name, "path") == 0) memcpy(cfg->kernel_path, value, VALUE_LEN);
+    }
+    else if (strcmp(section, "srv") == 0)
+    {
+        if (strcmp(name, "path0") == 0) memcpy(cfg->srv_path[0], value, VALUE_LEN);
+        if (strcmp(name, "path1") == 0) memcpy(cfg->srv_path[1], value, VALUE_LEN);
+        if (strcmp(name, "path2") == 0) memcpy(cfg->srv_path[2], value, VALUE_LEN);
+        if (strcmp(name, "path3") == 0) memcpy(cfg->srv_path[3], value, VALUE_LEN);
+        if (strcmp(name, "path4") == 0) memcpy(cfg->srv_path[4], value, VALUE_LEN);
+        if (strcmp(name, "path5") == 0) memcpy(cfg->srv_path[5], value, VALUE_LEN);
+        if (strcmp(name, "path6") == 0) memcpy(cfg->srv_path[6], value, VALUE_LEN);
+        if (strcmp(name, "path7") == 0) memcpy(cfg->srv_path[7], value, VALUE_LEN);
     }
 }

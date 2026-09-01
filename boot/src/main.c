@@ -10,13 +10,14 @@
 
 static bool init_hw();
 static bool init_fs();
-static bool init_cfg(cfg_data_t *cfg);
-static bool init_kernel(cfg_data_t *cfg);
+static bool init_cfg(cfg_boot_t *cfg);
+static bool init_kernel(cfg_boot_t *cfg, elf_data_t *data);
+static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args);
 static void halt();
 
 int main()
 {
-    cfg_data_t cfg;
+    cfg_boot_t cfg;
 
     if (!init_hw())
     {
@@ -33,12 +34,26 @@ int main()
         halt();
     }
 
-    if (!init_kernel(&cfg))
+    boot_iface_t iface;
+    iface.log_msg = log_msg;
+    iface.log_vargs = log_vargs;
+
+    boot_args_t args;
+    elf_data_t kernel_data;
+
+    if (!init_kernel(&cfg, &kernel_data))
     {
         halt();
     }
 
-    halt();
+    if (!init_srv(&cfg, &kernel_data, &args))
+    {
+        halt();
+    }
+
+    log_msg(LOG_LEVEL_INFO, "Jumping to kernel");
+    log_msg(LOG_LEVEL_INFO, "---------------------------------------");
+    jmp(kernel_data.entry, &iface, &args);
 }
 
 static bool init_hw()
@@ -141,7 +156,7 @@ static bool init_fs()
     }
 }
 
-static bool init_cfg(cfg_data_t *cfg)
+static bool init_cfg(cfg_boot_t *cfg)
 {
     if (!cfg_load(BOOT_CFG, cfg))
     {
@@ -151,25 +166,43 @@ static bool init_cfg(cfg_data_t *cfg)
     return log_fmt(LOG_LEVEL_OK, "Loaded ", BOOT_CFG, nullptr), true;
 }
 
-static bool init_kernel(cfg_data_t *cfg)
+static bool init_kernel(cfg_boot_t *cfg, elf_data_t *data)
 {
-    elf_data_t kernel;
-
-    if (!elf_load(cfg->kernel_path, &kernel, nullptr))
+    if (!elf_load(cfg->kernel_path, data, nullptr))
     {
         return log_fmt(LOG_LEVEL_FAIL, "Failed to load ", cfg->kernel_path, nullptr), false;
     }
 
-    log_msg(LOG_LEVEL_INFO, "Jumping to kernel");
-    log_msg(LOG_LEVEL_INFO, "---------------------------------------");
+    return true;
+}
 
-    boot_iface_t iface;
-    iface.log_msg = log_msg;
-    iface.log_vargs = log_vargs;
+static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args)
+{
+    uint32_t addr = (uint32_t)kernel_data->base + kernel_data->size;
 
-    boot_args_t args;
+    for (size_t i = 0; i < MAX_BOOT_PROCS; i++)
+    {
+        if (cfg->srv_path[i][0] != 0)
+        {
+            elf_data_t data;
 
-    jmp(kernel.entry, &iface, &args);
+            if (!elf_load(cfg->srv_path[i], &data, (void*)addr))
+            {
+                return log_fmt(LOG_LEVEL_FAIL, "Failed to load ", cfg->kernel_path, nullptr), false;
+            }
+
+            memcpy(args->procs[i].path, cfg->srv_path[i], VALUE_LEN);
+
+            args->procs[i].type = BOOT_PROC_TYPE_SRV;
+            args->procs[i].base = data.base;
+            args->procs[i].entry = data.entry;
+            args->procs[i].size = data.size;
+
+            addr += data.size;
+        }
+    }
+
+    return true;
 }
 
 static void halt()

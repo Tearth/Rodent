@@ -16,13 +16,6 @@
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
-typedef struct elf_data
-{
-    void *base;
-    void *entry;
-    uint32_t size;
-} elf_data_t;
-
 typedef struct elf_header
 {
     uint32_t signature;
@@ -71,6 +64,13 @@ typedef struct elf_sheader
     uint32_t align;
     uint32_t entsize;
 } __attribute__((__packed__)) elf_sheader_t;
+
+typedef struct elf_data
+{
+    void *base;
+    void *entry;
+    uint32_t size;
+} elf_data_t;
 
 bool elf_load(const char *path, elf_data_t *data, void *addr);
 

@@ -1,5 +1,5 @@
-#ifndef COMMON_LOG_H
-#define COMMON_LOG_H
+#ifndef SHARED_LOG_H
+#define SHARED_LOG_H
 
 typedef enum log_level
 {

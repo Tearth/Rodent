@@ -6,6 +6,7 @@ mkdir ./build
 mkdir ./build/fs
 mkdir ./build/fs/etc
 mkdir ./build/fs/sys
+mkdir ./build/fs/usr
 cd ./build
 
 cmake .. \

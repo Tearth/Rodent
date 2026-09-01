@@ -7,7 +7,7 @@ static bool elf_get_strtab_entry(fs_fhandle_t *handle, uint32_t strtab_offset, c
 bool elf_load(const char *path, elf_data_t *data, void *addr)
 {
     char buf[256];
-    fs_fhandle_t handle;
+    fs_fhandle_t handle = {};
     elf_header_t elf_header;
 
     if (!fs_file_open(path, &handle))
@@ -147,16 +147,16 @@ bool elf_load(const char *path, elf_data_t *data, void *addr)
     char addr_to_buf[16];
     char addr_size_buf[16];
 
-    itoa(elf_header.entry, entry_buf, 16);
-    itoa(data_from, addr_from_buf, 16);
-    itoa(data_to, addr_to_buf, 16);
+    itoa(elf_header.entry + offset, entry_buf, 16);
+    itoa(data_from + offset, addr_from_buf, 16);
+    itoa(data_to + offset, addr_to_buf, 16);
     itoa(data_to - data_from, addr_size_buf, 10);
 
     log_fmt(LOG_LEVEL_OK, "Loaded ", path, nullptr);
     log_fmt(LOG_LEVEL_INFO, " Data @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " B)", nullptr);
 
-    itoa(bss_from, addr_from_buf, 16);
-    itoa(bss_to, addr_to_buf, 16);
+    itoa(bss_from + offset, addr_from_buf, 16);
+    itoa(bss_to + offset, addr_to_buf, 16);
     itoa(bss_to - bss_from, addr_size_buf, 10);
 
     log_fmt(LOG_LEVEL_INFO, " BSS @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " B)", nullptr);
