@@ -13,6 +13,6 @@ if($ENV{TARGET_MCU} STREQUAL "rp2350")
     )
 
     target_compile_options(mcu PRIVATE
-        -mcmodel=medany -fPIE
+        -mcmodel=medany -fPIC
     )
 endif()
