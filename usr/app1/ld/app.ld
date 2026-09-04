@@ -1,23 +1,20 @@
 OUTPUT_FORMAT(elf32-littleriscv)
-MEMORY
-{
-    RAM(rwx) : ORIGIN = 0x00000000, LENGTH = 520K
-}
 ENTRY(main)
-STACK_SIZE = 8K;
 SECTIONS
 {
+    . = 0x00000000;
+
     .text : {
         . = ALIGN(4);
         *(.text*)
         . = ALIGN(4);
-    } > RAM
+    }
 
     .rodata : {
         . = ALIGN(4);
         *(.rodata*)
         . = ALIGN(4);
-    } > RAM
+    }
 
     .data : {
         . = ALIGN(4);
@@ -25,7 +22,7 @@ SECTIONS
         . = ALIGN(4);
         *(.sdata*)
         . = ALIGN(4);
-    } > RAM
+    }
 
     .bss (NOLOAD) : {
         . = ALIGN(4);
@@ -34,7 +31,8 @@ SECTIONS
         *(.sbss*)
         . = ALIGN(16);
         . += STACK_SIZE;
-    } > RAM
+        . = ALIGN(CELL_SIZE);
+    }
 
     __stack_pointer = .;
 }

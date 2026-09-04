@@ -18,5 +18,5 @@ target_include_directories(kernel.elf PRIVATE
 
 target_link_options(kernel.elf PRIVATE
     -T ${CMAKE_CURRENT_SOURCE_DIR}/ld/$ENV{TARGET_MCU}_$ENV{TARGET_ARCH}.ld -nostartfiles
-    -Wl,-Map=${CMAKE_BINARY_DIR}/kernel.map
+    -Wl,-Map=${CMAKE_BINARY_DIR}/kernel.map,--no-warn-rwx-segments
 )
