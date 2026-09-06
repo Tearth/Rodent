@@ -2,7 +2,7 @@
 
 void log_msg(log_level_t level, const char *msg)
 {
-    log_fmt(level, msg, nullptr);
+    log_fmt(level, msg, EOL);
 }
 
 void log_fmt(log_level_t level, const char *msg, ...)
@@ -29,7 +29,7 @@ void log_vargs(log_level_t level, const char *msg, va_list args)
 
     uart_send(msg);
 
-    while ((chunk = va_arg(args, const char *)) != nullptr)
+    while ((chunk = va_arg(args, const char *)) != EOL)
     {
         uart_send(chunk);
     }

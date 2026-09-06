@@ -4,7 +4,7 @@
 #include "mcu/mcu.h"
 #include "log.h"
 
-static void halt();
+__attribute__((noreturn)) static void halt();
 
 int kmain(boot_iface_t *boot_iface, boot_args_t *boot_args)
 {
@@ -27,10 +27,13 @@ int kmain(boot_iface_t *boot_iface, boot_args_t *boot_args)
 
     log_msg(LOG_LEVEL_OK, "Finished MCU initialization");
 
-    while (1);
+    halt();
 }
 
-static void halt()
+__attribute__((noreturn)) static void halt()
 {
-    while (1);
+    while (1)
+    {
+        __asm__ ("");
+    }
 }

@@ -139,12 +139,15 @@ static void irq_exception_handler(irq_state_t *state)
     log_msg(LOG_LEVEL_FAIL, " |        __   \\");
     log_msg(LOG_LEVEL_FAIL, "  \\_____//  \\__\\\\");
     log_msg(LOG_LEVEL_FAIL, "---------------------------------------");
-    log_fmt(LOG_LEVEL_FAIL, "Type: ", name, nullptr);
-    log_fmt(LOG_LEVEL_FAIL, "PC: 0x", pc_buf, nullptr);
-    log_fmt(LOG_LEVEL_FAIL, "SP: 0x", sp_buf, nullptr);
-    log_fmt(LOG_LEVEL_FAIL, "MTVAL: 0x", mtval_buf, nullptr);
+    log_fmt(LOG_LEVEL_FAIL, "Type: ", name, EOL);
+    log_fmt(LOG_LEVEL_FAIL, "PC: 0x", pc_buf, EOL);
+    log_fmt(LOG_LEVEL_FAIL, "SP: 0x", sp_buf, EOL);
+    log_fmt(LOG_LEVEL_FAIL, "MTVAL: 0x", mtval_buf, EOL);
 
-    while (1);
+    while (1)
+    {
+        __asm__ ("");
+    }
 }
 
 static void irq_unsupported_handler(irq_state_t *state)
@@ -152,5 +155,5 @@ static void irq_unsupported_handler(irq_state_t *state)
     char mcause_buf[16];
 
     itoa(state->mcause, mcause_buf, 16);
-    log_fmt(LOG_LEVEL_WARN, "Unknown interrupt type (", mcause_buf, ")", nullptr);
+    log_fmt(LOG_LEVEL_WARN, "Unknown interrupt type (", mcause_buf, ")", EOL);
 }

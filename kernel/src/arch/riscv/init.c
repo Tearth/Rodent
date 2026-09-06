@@ -52,7 +52,7 @@ bool arch_init_pmp()
     itoa(size / 1024, region_size_buf, 10);
 
     log_msg(LOG_LEVEL_OK, "Initialized PMP for kernel region");
-    log_fmt(LOG_LEVEL_INFO, " PMP_REGION0 @ 0x", region_from_buf, "-0x", region_to_buf, " (", region_size_buf, " KB)", nullptr);
+    log_fmt(LOG_LEVEL_INFO, " PMP_REGION0 @ 0x", region_from_buf, "-0x", region_to_buf, " (", region_size_buf, " KB)", EOL);
 
     return true;
 }

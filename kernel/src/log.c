@@ -11,7 +11,7 @@ void log_init(boot_iface_t *boot_iface)
 
 void log_msg(log_level_t level, const char *msg)
 {
-    log_fmt(level, msg, nullptr);
+    log_fmt(level, msg, EOL);
 }
 
 void log_fmt(log_level_t level, const char *msg, ...)

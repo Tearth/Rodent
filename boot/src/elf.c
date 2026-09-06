@@ -150,17 +150,17 @@ bool elf_load(const char *path, elf_data_t *data, void *addr)
     itoa(elf_header.entry + offset, entry_buf, 16);
     itoa(data_from + offset, addr_from_buf, 16);
     itoa(data_to + offset, addr_to_buf, 16);
-    itoa(data_to - data_from, addr_size_buf, 10);
+    itoa((data_to - data_from) / 1024, addr_size_buf, 10);
 
-    log_fmt(LOG_LEVEL_OK, "Loaded ", path, nullptr);
-    log_fmt(LOG_LEVEL_INFO, " Data @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " B)", nullptr);
+    log_fmt(LOG_LEVEL_OK, "Loaded ", path, EOL);
+    log_fmt(LOG_LEVEL_INFO, " Data @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " KB)", EOL);
 
     itoa(bss_from + offset, addr_from_buf, 16);
     itoa(bss_to + offset, addr_to_buf, 16);
-    itoa(bss_to - bss_from, addr_size_buf, 10);
+    itoa((bss_to - bss_from) / 1024, addr_size_buf, 10);
 
-    log_fmt(LOG_LEVEL_INFO, " BSS @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " B)", nullptr);
-    log_fmt(LOG_LEVEL_INFO, " Entry point @ 0x", entry_buf, nullptr);
+    log_fmt(LOG_LEVEL_INFO, " BSS @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " KB)", EOL);
+    log_fmt(LOG_LEVEL_INFO, " Entry point @ 0x", entry_buf, EOL);
 
     data->base = (void*)(data_from + offset);
     data->entry = (void*)(elf_header.entry + offset);

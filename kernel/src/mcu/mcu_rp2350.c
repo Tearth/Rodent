@@ -20,7 +20,7 @@ static bool mcu_init_systime()
 
     utoa(systime_get_current(), buf, 10);
     log_msg(LOG_LEVEL_OK, "Started system time");
-    log_fmt(LOG_LEVEL_INFO, " Now @ ", buf, " ticks", nullptr);
+    log_fmt(LOG_LEVEL_INFO, " Now @ ", buf, " ticks", EOL);
 
     return true;
 }

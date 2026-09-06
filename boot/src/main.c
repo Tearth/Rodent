@@ -13,7 +13,7 @@ static bool init_fs();
 static bool init_cfg(cfg_boot_t *cfg);
 static bool init_kernel(cfg_boot_t *cfg, elf_data_t *data);
 static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args);
-static void halt();
+__attribute__((noreturn)) static void halt();
 
 int main()
 {
@@ -99,7 +99,7 @@ static bool init_hw()
             case false: enabled_buf = "inactive"; break;
         }
 
-        log_fmt(LOG_LEVEL_INFO, " ", clks[i].name, " @ ", clks[i].src, " (", freq_buf, " MHz), ", enabled_buf, nullptr);
+        log_fmt(LOG_LEVEL_INFO, " ", clks[i].name, " @ ", clks[i].src, " (", freq_buf, " MHz), ", enabled_buf, EOL);
     }
 
     log_msg(LOG_LEVEL_OK, "Started UART");
@@ -121,7 +121,7 @@ static bool init_hw()
             case false: enabled_buf = "inactive"; break;
         }
 
-        log_fmt(LOG_LEVEL_INFO, " ", uarts[i].name, " @ ", baudrate_buf, "/", data_bits_buf, "/", stop_bits_buf, ", ", enabled_buf, nullptr);
+        log_fmt(LOG_LEVEL_INFO, " ", uarts[i].name, " @ ", baudrate_buf, "/", data_bits_buf, "/", stop_bits_buf, ", ", enabled_buf, EOL);
     }
 
     return true;
@@ -146,7 +146,7 @@ static bool init_fs()
         itoa(info.size / 1024, size_buf, 10);
 
         log_msg(LOG_LEVEL_OK, "Mounted filesystem");
-        log_fmt(LOG_LEVEL_INFO, " ", info.name, " @ 0x", base_addr_from_buf, "-0x", base_addr_to_buf, " (", size_buf, " KB)", nullptr);
+        log_fmt(LOG_LEVEL_INFO, " ", info.name, " @ 0x", base_addr_from_buf, "-0x", base_addr_to_buf, " (", size_buf, " KB)", EOL);
 
         return true;
     }
@@ -205,7 +205,10 @@ static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args
     return true;
 }
 
-static void halt()
+__attribute__((noreturn)) static void halt()
 {
-    while (1);
+    while (1)
+    {
+        __asm__ ("");
+    }
 }
