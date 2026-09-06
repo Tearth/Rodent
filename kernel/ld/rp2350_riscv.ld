@@ -1,5 +1,5 @@
 OUTPUT_FORMAT(elf32-littleriscv)
-ENTRY(kmain)
+ENTRY(_entry_point)
 SECTIONS
 {
     . = BASE_ADDR;
