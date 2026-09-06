@@ -12,7 +12,7 @@ target_include_directories(app2.elf PRIVATE
 )
 
 target_compile_options(app2.elf PRIVATE
-    -mcmodel=medany -fPIC
+    -mcmodel=medany -fPIE
 )
 
 target_link_options(app2.elf PRIVATE
