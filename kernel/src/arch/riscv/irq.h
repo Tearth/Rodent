@@ -76,4 +76,8 @@ typedef struct irq_state
     irq_cause_t mcause;
 } __attribute__((__packed__)) irq_state_t;
 
+bool irq_enable();
+bool irq_disable();
+bool irq_is_enabled();
+
 #endif

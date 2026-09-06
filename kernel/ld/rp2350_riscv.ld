@@ -2,7 +2,7 @@ OUTPUT_FORMAT(elf32-littleriscv)
 ENTRY(kmain)
 SECTIONS
 {
-    . = 0x20000000;
+    . = MM_BASE_ADDR;
 
     .text : {
         . = ALIGN(4);
@@ -38,6 +38,9 @@ SECTIONS
     .bss (NOLOAD) : {
         . = ALIGN(__filling);
     }
+
+    __kernel_start = MM_BASE_ADDR;
+    __kernel_end = .;
 
     __stack_pointer = .;
 }
