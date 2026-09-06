@@ -19,5 +19,5 @@ target_link_options(app1.elf PRIVATE
     -T ${CMAKE_CURRENT_SOURCE_DIR}/ld/app.ld -nostartfiles
     -Wl,-Map=${CMAKE_BINARY_DIR}/app1.map,--no-warn-rwx-segments
     -Wl,--defsym=STACK_SIZE=$ENV{RUNTIME_STACK_SIZE}
-    -Wl,--defsym=CELL_SIZE=$ENV{MEM_CELL_SIZE}
+    -Wl,--defsym=CELL_SIZE=$ENV{MM_CELL_SIZE}
 )

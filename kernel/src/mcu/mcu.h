@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 
-bool systime_init();
+bool mcu_init();
+
 uint64_t systime_get_current();
 
 #endif

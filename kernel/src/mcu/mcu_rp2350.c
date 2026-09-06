@@ -1,8 +1,28 @@
 #include "mcu_rp2350.h"
 
-bool systime_init()
+static bool mcu_init_systime();
+
+bool mcu_init()
 {
-    return timer_enable(), true;
+    if (!mcu_init_systime())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+static bool mcu_init_systime()
+{
+    char buf[16];
+
+    timer_enable();
+
+    utoa(systime_get_current(), buf, 10);
+    log_msg(LOG_LEVEL_OK, "Started system time");
+    log_fmt(LOG_LEVEL_INFO, " Now @ ", buf, " ticks", nullptr);
+
+    return true;
 }
 
 uint64_t systime_get_current()

@@ -125,8 +125,8 @@
             "RUNTIME_STACK_SIZE": "0x2000",
 
             // Memory
-            "MEM_BASE_ADDR": "0x20000000",
-            "MEM_CELL_SIZE": "0x1000",
+            "MM_BASE_ADDR": "0x20000000",
+            "MM_CELL_SIZE": "0x1000",
 
             // OpenOCD
             "ADAPTER_TARGET": "rp2350-riscv",

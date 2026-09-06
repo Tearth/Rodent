@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include "arch/irq_arch.h"
+#include "arch/arch.h"
 #include "log.h"
 
 typedef enum irq_cause

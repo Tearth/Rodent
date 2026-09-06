@@ -26,7 +26,7 @@ bool irq_enable()
     // Set BASE with DIRECT mode (single handler for all interrupts) in MTVEC
     "r"(mtvec),
     // Set MIE (Interrupt Enable) in MSTATUS
-    "r"((1u << 3)),
+    "r"(1u << 3),
     // Set MTIE (Timer Interrupt Enable) in MIE
     "r"(1u << 7));
 
@@ -36,10 +36,10 @@ bool irq_enable()
 bool irq_disable()
 {
     __asm__ volatile (
-        "csrc mstatus, %0\n" \
+        "csrc mstatus, %0"
     : :
     // Clear MIE (Interrupt Enable) in MSTATUS
-    "r"((1u << 3)));
+    "r"(1u << 3));
 
     return true;
 }
@@ -49,7 +49,7 @@ bool irq_is_enabled()
     uint32_t mstatus;
 
     // Read MIE in MSTATUS
-    __asm__ volatile  (
+    __asm__ volatile (
         "csrr %0, mstatus"
     : "=r"(mstatus));
 
