@@ -112,6 +112,7 @@
             // Target
             "TARGET_MCU": "rp2350",
             "TARGET_ARCH": "riscv",
+            "TARGET_REV": "a2",
 
             // Filesystem
             "FS_TYPE": "lfs",

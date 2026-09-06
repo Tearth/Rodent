@@ -9,6 +9,7 @@
             "defines": [
                 "MCU_RP2350",
                 "ARCH_RISCV",
+                "REV_A2",
                 "FS_LFS"
             ],
             "compilerPath": "riscv32-unknown-elf-gcc",

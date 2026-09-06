@@ -109,13 +109,12 @@ bool pmp_set_area(pmp_t region, void *addr, uint32_t size)
 
 void pmp_get_area(pmp_t region, void **base, uint32_t *size)
 {
-    // FIXME: Hazard3 clears 2 least-significant bits, which shouldn't be the case.
-    // Temporary workaround here is to fill these manually.
-
     uint8_t i = 0;
     uint32_t pmpaddr = pmp_read_pmpaddr(region);
 
+    #if defined(MCU_RP2350) && defined(REV_A2)
     pmpaddr |= 0x3;
+    #endif
 
     while ((pmpaddr & 1) == 1)
     {
@@ -129,13 +128,14 @@ void pmp_get_area(pmp_t region, void **base, uint32_t *size)
 
 void pmp_set_rwx(pmp_t region, bool r, bool w, bool x)
 {
-    // FIXME: Hazard3 has a wrong order of RWX (so it's XWR instead).
-    // This needs a proper support in the future.
-
     const pmp_def_t* region_sel = &pmp_defs[region];
-
     uint32_t pmpcfg = pmp_read_pmpcfg(region);
+
+    #if defined(MCU_RP2350) && defined(REV_A2)
     uint32_t rwx = (x | (w << 1) | (r << 2)) << region_sel->rwx_shift;
+    #else
+    uint32_t rwx = (r | (w << 1) | (x << 2)) << region_sel->rwx_shift;
+    #endif
 
     // Set RX_R, RX_W, RX_X
     pmpcfg = (pmpcfg & ~region_sel->rwx_mask) | rwx;
@@ -145,18 +145,21 @@ void pmp_set_rwx(pmp_t region, bool r, bool w, bool x)
 
 void pmp_get_rwx(pmp_t region, bool *r, bool *w, bool *x)
 {
-    // FIXME: Hazard3 has a wrong order of RWX (so it's XWR instead).
-    // This needs a proper support in the future.
-
     const pmp_def_t* region_sel = &pmp_defs[region];
     uint32_t pmpcfg = pmp_read_pmpcfg(region);
 
     // Read RX_R, RX_W, RX_X
     uint32_t rwx = pmpcfg >> region_sel->rwx_shift;
 
+    #if defined(MCU_RP2350) && defined(REV_A2)
     *x = (rwx & (1u << 0)) != 0;
     *w = (rwx & (1u << 1)) != 0;
     *r = (rwx & (1u << 2)) != 0;
+    #else
+    *r = (rwx & (1u << 0)) != 0;
+    *w = (rwx & (1u << 1)) != 0;
+    *x = (rwx & (1u << 2)) != 0;
+    #endif
 }
 
 uint32_t pmp_read_pmpcfg(pmp_t region)
