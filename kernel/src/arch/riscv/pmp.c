@@ -1,8 +1,6 @@
 #include "pmp.h"
 
 static uint32_t pmp_read_pmpcfg(pmp_t region);
-static void pmp_set_pmpcfg(pmp_t region, uint32_t mask);
-static void pmp_clear_pmpcfg(pmp_t region, uint32_t mask);
 static void pmp_write_pmpcfg(pmp_t region, uint32_t pmpcfg);
 static uint32_t pmp_read_pmpaddr(pmp_t region);
 static uint32_t pmp_read_pmpaddr(pmp_t region);
@@ -76,13 +74,12 @@ void pmp_set_mode(pmp_t region, pmp_mode_t mode)
     // Set RX_A (Address Matching Type)
     pmpcfg = (pmpcfg & ~region_sel->mode_mask) | (mode << region_sel->mode_shift);
 
-    pmp_set_pmpcfg(region, pmpcfg);
+    pmp_write_pmpcfg(region, pmpcfg);
 }
 
 pmp_mode_t pmp_get_mode(pmp_t region, pmp_mode_t mode)
 {
     const pmp_def_t* region_sel = &pmp_defs[region];
-    uint32_t pmpcfg = pmp_read_pmpcfg(region);
 
     // Set RX_A (Address Matching Type)
     return (pmp_read_pmpcfg(region) & region_sel->mode_mask) >> region_sel->mode_shift;
@@ -193,68 +190,6 @@ uint32_t pmp_read_pmpcfg(pmp_t region)
     }
 
     return pmpcfg;
-}
-
-void pmp_set_pmpcfg(pmp_t region, uint32_t mask)
-{
-    switch (region)
-    {
-        case PMP_REGION0:
-        case PMP_REGION1:
-        case PMP_REGION2:
-        case PMP_REGION3:
-        {
-            __asm__ volatile (
-                "csrs pmpcfg0, %0"
-            : :
-            "r"(mask));
-
-            break;
-        }
-        case PMP_REGION4:
-        case PMP_REGION5:
-        case PMP_REGION6:
-        case PMP_REGION7:
-        {
-            __asm__ volatile (
-                "csrs pmpcfg1, %0"
-            : :
-            "r"(mask));
-
-            break;
-        }
-    }
-}
-
-void pmp_clear_pmpcfg(pmp_t region, uint32_t mask)
-{
-    switch (region)
-    {
-        case PMP_REGION0:
-        case PMP_REGION1:
-        case PMP_REGION2:
-        case PMP_REGION3:
-        {
-            __asm__ volatile (
-                "csrc pmpcfg0, %0"
-            : :
-            "r"(mask));
-
-            break;
-        }
-        case PMP_REGION4:
-        case PMP_REGION5:
-        case PMP_REGION6:
-        case PMP_REGION7:
-        {
-            __asm__ volatile (
-                "csrc pmpcfg1, %0"
-            : :
-            "r"(mask));
-
-            break;
-        }
-    }
 }
 
 void pmp_write_pmpcfg(pmp_t region, uint32_t pmpcfg)
