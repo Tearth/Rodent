@@ -7,8 +7,9 @@ add_executable(kernel.elf
     src/main.c
     src/log.c
     src/arch/riscv/startup.s
-    src/arch/riscv/irq.s
     src/arch/riscv/irq.c
+    src/arch/riscv/irq.s
+    src/arch/riscv/pmp.c
     src/mcu/mcu_rp2350.c
 )
 
