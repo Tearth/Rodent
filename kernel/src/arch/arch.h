@@ -3,6 +3,4 @@
 
 bool arch_init();
 
-void irq_attach_timer_handler(void (*handler)());
-
 #endif

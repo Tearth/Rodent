@@ -1,4 +1,8 @@
-#include "init.h"
+#include <stdint.h>
+#include "arch/arch.h"
+#include "irq.h"
+#include "pmp.h"
+#include "log.h"
 
 extern uint32_t __kernel_start;
 extern uint32_t __kernel_end;

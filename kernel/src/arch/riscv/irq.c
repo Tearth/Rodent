@@ -6,7 +6,9 @@ static void irq_user_ecall_handler(irq_state_t *state);
 static void irq_timer_handler(irq_state_t *state);
 static void irq_exception_handler(irq_state_t *state);
 static void irq_unsupported_handler(irq_state_t *state);
+
 static void (*timer_handler)();
+static void (*ecall_handler)();
 
 bool irq_enable()
 {
@@ -59,6 +61,11 @@ bool irq_is_enabled()
 void irq_attach_timer_handler(void (*handler)())
 {
     timer_handler = handler;
+}
+
+void irq_attach_ecall_handler(void (*handler)())
+{
+    ecall_handler = handler;
 }
 
 void irq_handler(irq_state_t *state)

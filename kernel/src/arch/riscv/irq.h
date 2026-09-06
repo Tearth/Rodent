@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include "arch/arch.h"
 #include "log.h"
 
 typedef enum irq_cause
@@ -79,5 +78,10 @@ typedef struct irq_state
 bool irq_enable();
 bool irq_disable();
 bool irq_is_enabled();
+
+void irq_attach_timer_handler(void (*handler)());
+void irq_attach_ecall_handler(void (*handler)());
+
+void irq_handler(irq_state_t *state);
 
 #endif
