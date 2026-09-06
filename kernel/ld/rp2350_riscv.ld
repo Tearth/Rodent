@@ -2,7 +2,7 @@ OUTPUT_FORMAT(elf32-littleriscv)
 ENTRY(kmain)
 SECTIONS
 {
-    . = MM_BASE_ADDR;
+    . = BASE_ADDR;
 
     .text : {
         . = ALIGN(4);
@@ -29,7 +29,8 @@ SECTIONS
         *(.bss*)
         . = ALIGN(4);
         *(.sbss*)
-        . = ALIGN(4);
+        . = ALIGN(16);
+        . += STACK_SIZE;
     }
 
     /* Fill the rest of bss section, so the kernel size will be a power of 2 */
@@ -39,7 +40,7 @@ SECTIONS
         . = ALIGN(__filling);
     }
 
-    __kernel_start = MM_BASE_ADDR;
+    __kernel_start = BASE_ADDR;
     __kernel_end = .;
 
     __stack_pointer = .;
