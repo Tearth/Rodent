@@ -1,5 +1,5 @@
 OUTPUT_FORMAT(elf32-littleriscv)
-ENTRY(main)
+ENTRY(_entry_point)
 SECTIONS
 {
     . = 0x00000000;

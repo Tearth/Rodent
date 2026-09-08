@@ -5,6 +5,7 @@ project(app1.elf LANGUAGES C ASM)
 add_executable(app1.elf
     $<TARGET_OBJECTS:mcu>
     src/main.c
+    src/startup.s
 )
 
 target_include_directories(app1.elf PRIVATE
