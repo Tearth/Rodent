@@ -13,7 +13,7 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${LIBC_PATH}/include)
 
 link_directories(${LIBC_PATH}/lib)
-link_libraries(libc.a)
+link_libraries(libgcc.a libc.a)
 
 string(TOUPPER $ENV{TARGET_MCU} TARGET_MCU_UPPER)
 string(TOUPPER $ENV{TARGET_ARCH} TARGET_ARCH_UPPER)
