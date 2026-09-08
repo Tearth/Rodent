@@ -7,10 +7,10 @@ static void irq_timer_handler(irq_state_t *state);
 static void irq_exception_handler(irq_state_t *state);
 static void irq_unsupported_handler(irq_state_t *state);
 
-static void (*timer_handler)();
+static void (*timer_handler)(regs_t *regs);
 static void (*ecall_handler)();
 
-bool irq_enable()
+bool irq_init()
 {
     uintptr_t mtvec = (uintptr_t)_irq_handler_entry;
 
@@ -22,28 +22,30 @@ bool irq_enable()
 
     __asm__ volatile (
         "csrw mtvec, %0\n" \
-        "csrs mstatus, %1\n" \
-        "csrs mie, %2\n" \
+        "csrs mie, %1\n" \
     : :
     // Set BASE with DIRECT mode (single handler for all interrupts) in MTVEC
     "r"(mtvec),
-    // Set MIE (Interrupt Enable) in MSTATUS
-    "r"(1u << 3),
     // Set MTIE (Timer Interrupt Enable) in MIE
     "r"(1u << 7));
 
     return true;
 }
 
-bool irq_disable()
+void irq_enable()
 {
+    // Set MIE (Interrupt Enable) in MSTATUS
+    __asm__ volatile (
+        "csrs mstatus, %0"
+    : : "r"(1u << 3));
+}
+
+void irq_disable()
+{
+    // Clear MIE (Interrupt Enable) in MSTATUS
     __asm__ volatile (
         "csrc mstatus, %0"
-    : :
-    // Clear MIE (Interrupt Enable) in MSTATUS
-    "r"(1u << 3));
-
-    return true;
+    : : "r"(1u << 3));
 }
 
 bool irq_is_enabled()
@@ -58,7 +60,7 @@ bool irq_is_enabled()
     return (mstatus & (1u << 3)) != 0;
 }
 
-void irq_attach_timer_handler(void (*handler)())
+void irq_attach_timer_handler(void (*handler)(regs_t *regs))
 {
     timer_handler = handler;
 }
@@ -100,7 +102,7 @@ static void irq_timer_handler(irq_state_t *state)
 {
     if (timer_handler != nullptr)
     {
-        timer_handler();
+        timer_handler(&state->regs);
     }
 }
 
@@ -133,7 +135,7 @@ static void irq_exception_handler(irq_state_t *state)
 
     itoa(state->mepc, pc_buf, 16);
     itoa(state->mtval, mtval_buf, 16);
-    itoa(state->sp, sp_buf, 16);
+    itoa(state->regs.sp, sp_buf, 16);
 
     log_msg(LOG_LEVEL_FAIL, "");
     log_msg(LOG_LEVEL_FAIL, "             \\\\__\\\\");

@@ -6,13 +6,23 @@ add_executable(kernel.elf
     $<TARGET_OBJECTS:mcu>
     src/main.c
     src/log.c
-    src/arch/riscv/arch.c
-    src/arch/riscv/irq.c
-    src/arch/riscv/irq.s
-    src/arch/riscv/pmp.c
-    src/arch/riscv/startup.s
-    src/mcu/mcu_rp2350.c
+    src/sched.c
 )
+
+if($ENV{TARGET_MCU} STREQUAL "rp2350")
+    target_sources(kernel.elf PRIVATE src/mcu/mcu_rp2350.c)
+endif()
+
+if($ENV{TARGET_ARCH} STREQUAL "riscv")
+    target_sources(kernel.elf PRIVATE
+        src/arch/riscv/arch.c
+        src/arch/riscv/irq.c
+        src/arch/riscv/irq.s
+        src/arch/riscv/pmp.c
+        src/arch/riscv/startup.s
+        src/arch/riscv/uspace.s
+    )
+endif()
 
 target_include_directories(kernel.elf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src

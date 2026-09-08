@@ -3,6 +3,7 @@
 #include "irq.h"
 #include "pmp.h"
 #include "log.h"
+#include "uspace.h"
 
 extern uint32_t __kernel_start;
 extern uint32_t __kernel_end;
@@ -25,9 +26,9 @@ bool arch_init()
     return true;
 }
 
-bool arch_init_irq()
+static bool arch_init_irq()
 {
-    if (!irq_enable())
+    if (!irq_init())
     {
         return log_msg(LOG_LEVEL_FAIL, "Failed to init interrupts"), false;
     }
@@ -37,7 +38,7 @@ bool arch_init_irq()
     return true;
 }
 
-bool arch_init_pmp()
+static bool arch_init_pmp()
 {
     uint32_t kernel_start = (uint32_t)&__kernel_start;
     uint32_t kernel_end = (uint32_t)&__kernel_end;
@@ -59,4 +60,19 @@ bool arch_init_pmp()
     log_fmt(LOG_LEVEL_INFO, " PMP_REGION0 @ 0x", region_from_buf, "-0x", region_to_buf, " (", region_size_buf, " KB)", EOL);
 
     return true;
+}
+
+void arch_irq_enable()
+{
+    irq_enable();
+}
+
+void arch_attach_timer_handler(void (*handler)(regs_t *regs))
+{
+    irq_attach_timer_handler(handler);
+}
+
+void arch_attach_ecall_handler(void (*handler)())
+{
+    irq_attach_ecall_handler(handler);
 }

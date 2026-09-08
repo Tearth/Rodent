@@ -3,6 +3,7 @@
 #include "shared/boot.h"
 #include "mcu/mcu.h"
 #include "log.h"
+#include "sched.h"
 
 __attribute__((noreturn)) static void halt();
 
@@ -26,6 +27,15 @@ int kmain(boot_iface_t *boot_iface, boot_args_t *boot_args)
     }
 
     log_msg(LOG_LEVEL_OK, "Finished MCU initialization");
+
+    arch_irq_enable();
+    log_msg(LOG_LEVEL_OK, "Enabled interrupts");
+
+    sched_init(boot_args->procs);
+    log_msg(LOG_LEVEL_OK, "Initialized scheduler");
+
+    log_msg(LOG_LEVEL_INFO, "Entering uspace");
+    sched_run();
 
     halt();
 }

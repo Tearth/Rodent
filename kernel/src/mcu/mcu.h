@@ -5,6 +5,8 @@
 
 bool mcu_init();
 
-uint64_t systime_get_current();
+uint32_t mcu_sysclk_get_freq();
+uint64_t mcu_systime_get_current();
+void mcu_systime_set_comparator(uint64_t value);
 
 #endif
