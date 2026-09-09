@@ -1,5 +1,5 @@
-#ifndef GPIO_H
-#define GPIO_H
+#ifndef MCU_GPIO_H
+#define MCU_GPIO_H
 
 #include <stdint.h>
 #include "common.h"

@@ -1,5 +1,5 @@
-#ifndef QMI_H
-#define QMI_H
+#ifndef MCU_QMI_H
+#define MCU_QMI_H
 
 #include <stddef.h>
 #include <stdint.h>

@@ -1,5 +1,5 @@
-#ifndef CFG_H
-#define CFG_H
+#ifndef BOOT_CFG_H
+#define BOOT_CFG_H
 
 #include <stddef.h>
 #include "fs/fs.h"

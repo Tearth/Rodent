@@ -1,9 +1,9 @@
-#ifndef UART_H
-#define UART_H
+#ifndef MCU_UART_H
+#define MCU_UART_H
 
 #include <stdint.h>
 #include "common.h"
-#include "clock.h"
+#include "clk.h"
 #include "reset.h"
 
 #define UART0_REG_BASE 0x40070000

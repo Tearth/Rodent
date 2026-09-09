@@ -1,5 +1,5 @@
-#ifndef RESET_H
-#define RESET_H
+#ifndef MCU_RESET_H
+#define MCU_RESET_H
 
 #include "common.h"
 

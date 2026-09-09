@@ -1,5 +1,5 @@
-#ifndef LOG_H
-#define LOG_H
+#ifndef KERNEL_LOG_H
+#define KERNEL_LOG_H
 
 #include <stdarg.h>
 #include "shared/boot.h"

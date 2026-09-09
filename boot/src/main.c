@@ -3,70 +3,18 @@
 #include "cfg/defs.h"
 #include "cfg/cfg.h"
 #include "shared/boot.h"
+#include "shared/halt.h"
 #include "mcu/mcu.h"
 #include "fs/fs.h"
 #include "elf.h"
 #include "log.h"
 
-static bool init_hw();
-static bool init_fs();
-static bool init_cfg(cfg_boot_t *cfg);
 static bool init_kernel(cfg_boot_t *cfg, elf_data_t *data);
 static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args);
-__attribute__((noreturn)) static void halt();
 
 int main()
 {
     cfg_boot_t cfg;
-
-    if (!init_hw())
-    {
-        halt();
-    }
-
-    if (!init_fs())
-    {
-        halt();
-    }
-
-    if (!init_cfg(&cfg))
-    {
-        halt();
-    }
-
-    boot_iface_t iface;
-    iface.log_msg = log_msg;
-    iface.log_vargs = log_vargs;
-
-    boot_args_t args;
-    elf_data_t kernel_data;
-
-    if (!init_kernel(&cfg, &kernel_data))
-    {
-        halt();
-    }
-
-    if (!init_srv(&cfg, &kernel_data, &args))
-    {
-        halt();
-    }
-
-    log_msg(LOG_LEVEL_INFO, "Jumping to kernel");
-    log_msg(LOG_LEVEL_INFO, "---------------------------------------");
-    jmp(kernel_data.entry, &iface, &args);
-}
-
-static bool init_hw()
-{
-    if (!clk_init())
-    {
-        return false;
-    }
-
-    if (!uart_init())
-    {
-        return false;
-    }
 
     log_msg(LOG_LEVEL_INFO, "");
     log_msg(LOG_LEVEL_INFO, "             \\\\__\\\\");
@@ -79,91 +27,48 @@ static bool init_hw()
     log_msg(LOG_LEVEL_INFO, " |        __   \\");
     log_msg(LOG_LEVEL_INFO, "  \\_____//  \\__\\\\");
     log_msg(LOG_LEVEL_INFO, "---------------------------------------");
-
     log_msg(LOG_LEVEL_OK, "Rodent Bootloader");
-    log_msg(LOG_LEVEL_OK, "Started clocks");
 
-    clk_info_t clks[8];
-    uart_info_t uarts[8];
-
-    for (size_t i = 0; i < clk_get_list(clks, 8); i++)
+    if (!mcu_init())
     {
-        char freq_buf[16];
-        const char *enabled_buf;
-
-        itoa(clks[i].freq / 1'000'000, freq_buf, 10);
-
-        switch (clks[i].enabled)
-        {
-            case true: enabled_buf = "active"; break;
-            case false: enabled_buf = "inactive"; break;
-        }
-
-        log_fmt(LOG_LEVEL_INFO, " ", clks[i].name, " @ ", clks[i].src, " (", freq_buf, " MHz), ", enabled_buf, EOL);
+        HALT();
     }
 
-    log_msg(LOG_LEVEL_OK, "Started UART");
+    log_msg(LOG_LEVEL_OK, "Finished CPU initialization");
+    log_set_mode(LOG_MODE_UART);
 
-    for (size_t i = 0; i < uart_get_list(uarts, 8); i++)
+    if (!fs_init())
     {
-        char baudrate_buf[16];
-        char data_bits_buf[16];
-        char stop_bits_buf[16];
-        const char *enabled_buf;
-
-        itoa(uarts[i].baudrate, baudrate_buf, 10);
-        itoa(uarts[i].data_bits, data_bits_buf, 10);
-        itoa(uarts[i].stop_bits, stop_bits_buf, 10);
-
-        switch (uarts[i].enabled)
-        {
-            case true: enabled_buf = "active"; break;
-            case false: enabled_buf = "inactive"; break;
-        }
-
-        log_fmt(LOG_LEVEL_INFO, " ", uarts[i].name, " @ ", baudrate_buf, "/", data_bits_buf, "/", stop_bits_buf, ", ", enabled_buf, EOL);
+        HALT();
     }
 
-    return true;
-}
-
-static bool init_fs()
-{
-    if (fs_mount((void*)FS_BASE_ADDR))
-    {
-        fs_info_t info = {};
-        char base_addr_from_buf[16];
-        char base_addr_to_buf[16];
-        char size_buf[16];
-
-        if (!fs_get_info(&info))
-        {
-            return log_msg(LOG_LEVEL_FAIL, "Failed to read filesystem info"), false;
-        }
-
-        itoa((uint32_t)info.base_addr, base_addr_from_buf, 16);
-        itoa((uint32_t)(info.base_addr + info.size), base_addr_to_buf, 16);
-        itoa(info.size / 1024, size_buf, 10);
-
-        log_msg(LOG_LEVEL_OK, "Mounted filesystem");
-        log_fmt(LOG_LEVEL_INFO, " ", info.name, " @ 0x", base_addr_from_buf, "-0x", base_addr_to_buf, " (", size_buf, " KB)", EOL);
-
-        return true;
-    }
-    else
-    {
-        return log_msg(LOG_LEVEL_FAIL, "Failed to mount filesystem"), false;
-    }
-}
-
-static bool init_cfg(cfg_boot_t *cfg)
-{
-    if (!cfg_load(BOOT_CFG, cfg))
+    if (!cfg_load(BOOT_CFG, &cfg))
     {
         return log_fmt(LOG_LEVEL_FAIL, "Failed to load ", BOOT_CFG, nullptr), false;
     }
 
-    return log_fmt(LOG_LEVEL_OK, "Loaded ", BOOT_CFG, nullptr), true;
+    log_fmt(LOG_LEVEL_OK, "Loaded ", BOOT_CFG, nullptr);
+
+    boot_iface_t iface;
+    iface.log_msg = log_msg;
+    iface.log_vargs = log_vargs;
+
+    boot_args_t args;
+    elf_data_t kernel_data;
+
+    if (!init_kernel(&cfg, &kernel_data))
+    {
+        HALT();
+    }
+
+    if (!init_srv(&cfg, &kernel_data, &args))
+    {
+        HALT();
+    }
+
+    log_msg(LOG_LEVEL_INFO, "Jumping to kernel");
+    log_msg(LOG_LEVEL_INFO, "---------------------------------------");
+    jmp(kernel_data.entry, &iface, &args);
 }
 
 static bool init_kernel(cfg_boot_t *cfg, elf_data_t *data)
@@ -203,12 +108,4 @@ static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args
     }
 
     return true;
-}
-
-__attribute__((noreturn)) static void halt()
-{
-    while (1)
-    {
-        __asm__ ("");
-    }
 }

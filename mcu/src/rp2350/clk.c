@@ -1,4 +1,4 @@
-#include "clock.h"
+#include "clk.h"
 
 static const clk_def_t clk_defs[] =
 {

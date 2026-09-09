@@ -112,6 +112,7 @@ void pmp_get_area(pmp_t region, void **base, uint32_t *size)
     uint8_t i = 0;
     uint32_t pmpaddr = pmp_read_pmpaddr(region);
 
+    // RP2350 A2 has first two bits cleared
     #if defined(MCU_RP2350) && defined(REV_A2)
     pmpaddr |= 0x3;
     #endif
@@ -131,6 +132,7 @@ void pmp_set_rwx(pmp_t region, bool r, bool w, bool x)
     const pmp_def_t* region_sel = &pmp_defs[region];
     uint32_t pmpcfg = pmp_read_pmpcfg(region);
 
+    // RWX order on RP2350 A2 is reversed, fixed in A4
     #if defined(MCU_RP2350) && defined(REV_A2)
     uint32_t rwx = (x | (w << 1) | (r << 2)) << region_sel->rwx_shift;
     #else
@@ -151,6 +153,7 @@ void pmp_get_rwx(pmp_t region, bool *r, bool *w, bool *x)
     // Read RX_R, RX_W, RX_X
     uint32_t rwx = pmpcfg >> region_sel->rwx_shift;
 
+    // RWX order on RP2350 A2 is reversed, fixed in A4
     #if defined(MCU_RP2350) && defined(REV_A2)
     *x = (rwx & (1u << 0)) != 0;
     *w = (rwx & (1u << 1)) != 0;

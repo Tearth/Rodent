@@ -1,11 +1,10 @@
 #include <stdlib.h>
 #include "arch/arch.h"
 #include "shared/boot.h"
+#include "shared/halt.h"
 #include "mcu/mcu.h"
 #include "log.h"
 #include "sched.h"
-
-__attribute__((noreturn)) static void halt();
 
 int kmain(boot_iface_t *boot_iface, boot_args_t *boot_args)
 {
@@ -15,7 +14,7 @@ int kmain(boot_iface_t *boot_iface, boot_args_t *boot_args)
     if (!arch_init())
     {
         log_msg(LOG_LEVEL_FAIL, "Failed to init CPU");
-        halt();
+        HALT();
     }
 
     log_msg(LOG_LEVEL_OK, "Finished CPU initialization");
@@ -23,7 +22,7 @@ int kmain(boot_iface_t *boot_iface, boot_args_t *boot_args)
     if (!mcu_init())
     {
         log_msg(LOG_LEVEL_FAIL, "Failed to init MCU");
-        halt();
+        HALT();
     }
 
     log_msg(LOG_LEVEL_OK, "Finished MCU initialization");
@@ -37,13 +36,5 @@ int kmain(boot_iface_t *boot_iface, boot_args_t *boot_args)
     log_msg(LOG_LEVEL_INFO, "Entering uspace");
     sched_run();
 
-    halt();
-}
-
-__attribute__((noreturn)) static void halt()
-{
-    while (1)
-    {
-        __asm__ ("");
-    }
+    HALT();
 }

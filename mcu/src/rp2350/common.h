@@ -1,5 +1,5 @@
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef MCU_COMMON_H
+#define MCU_COMMON_H
 
 #include <stdint.h>
 

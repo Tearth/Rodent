@@ -1,5 +1,5 @@
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef MCU_TIMER_H
+#define MCU_TIMER_H
 
 #include <stdint.h>
 #include "common.h"

@@ -1,5 +1,5 @@
-#ifndef FS_LFS_H
-#define FS_LFS_H
+#ifndef BOOT_FS_LFS_H
+#define BOOT_FS_LFS_H
 
 #define FS_LFS_MAGIC
 #define FS_LFS_CACHE_SIZE 16

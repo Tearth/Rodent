@@ -110,8 +110,8 @@
             "BUILD_LIBC_PATH": "/usr/local/picolibc/rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp",
 
             // Target
-            "TARGET_MCU": "rp2350",
             "TARGET_ARCH": "riscv",
+            "TARGET_MCU": "rp2350",
             "TARGET_REV": "a2",
 
             // Filesystem

@@ -15,14 +15,14 @@ include_directories(${LIBC_PATH}/include)
 link_directories(${LIBC_PATH}/lib)
 link_libraries(libgcc.a libc.a)
 
-string(TOUPPER $ENV{TARGET_MCU} TARGET_MCU_UPPER)
 string(TOUPPER $ENV{TARGET_ARCH} TARGET_ARCH_UPPER)
+string(TOUPPER $ENV{TARGET_MCU} TARGET_MCU_UPPER)
 string(TOUPPER $ENV{TARGET_REV} TARGET_REV_UPPER)
 string(TOUPPER $ENV{FS_TYPE} FS_TYPE_UPPER)
 
 add_compile_definitions(
-    MCU_${TARGET_MCU_UPPER}
     ARCH_${TARGET_ARCH_UPPER}
+    MCU_${TARGET_MCU_UPPER}
     REV_${TARGET_REV_UPPER}
     FS_${FS_TYPE_UPPER}
 )

@@ -1,5 +1,5 @@
-#ifndef ARCH_H
-#define ARCH_H
+#ifndef KERNEL_ARCH_H
+#define KERNEL_ARCH_H
 
 #ifdef ARCH_RISCV
 #include "riscv/irq.h"

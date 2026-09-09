@@ -1,5 +1,5 @@
-#ifndef SCHED_H
-#define SCHED_H
+#ifndef KERNEL_SCHED_H
+#define KERNEL_SCHED_H
 
 #include <string.h>
 #include "arch/arch.h"

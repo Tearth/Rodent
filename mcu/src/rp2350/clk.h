@@ -1,5 +1,5 @@
-#ifndef CLOCK_H
-#define CLOCK_H
+#ifndef MCU_CLK_H
+#define MCU_CLK_H
 
 #include <stdint.h>
 #include "common.h"

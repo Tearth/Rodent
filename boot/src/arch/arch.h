@@ -1,5 +1,5 @@
-#ifndef ARCH_H
-#define ARCH_H
+#ifndef BOOT_ARCH_H
+#define BOOT_ARCH_H
 
 __attribute__((noreturn)) void jmp(void *addr, void *iface, void *args);
 

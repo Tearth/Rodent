@@ -8,6 +8,7 @@ add_executable(bootloader.elf
     src/elf.c
     src/log.c
     src/cfg/cfg.c
+    src/fs/fs.c
 )
 
 target_include_directories(bootloader.elf PRIVATE
@@ -21,9 +22,12 @@ target_link_options(bootloader.elf PRIVATE
 
 if($ENV{TARGET_MCU} STREQUAL "rp2350")
     target_sources(bootloader.elf PRIVATE
-        src/mcu/rp2350/image_$ENV{TARGET_ARCH}.s
-        src/mcu/rp2350/startup_$ENV{TARGET_ARCH}.s
-        src/mcu/mcu_rp2350.c
+        src/mcu/rp2350/$ENV{TARGET_ARCH}/image.s
+        src/mcu/rp2350/$ENV{TARGET_ARCH}/startup.s
+        src/mcu/rp2350/clk.c
+        src/mcu/rp2350/flash.c
+        src/mcu/rp2350/mcu.c
+        src/mcu/rp2350/uart.c
     )
 endif()
 

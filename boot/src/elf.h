@@ -1,5 +1,5 @@
-#ifndef ELF_H
-#define ELF_H
+#ifndef BOOT_ELF_H
+#define BOOT_ELF_H
 
 #include <stdint.h>
 #include <stdlib.h>

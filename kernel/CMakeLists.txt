@@ -9,10 +9,6 @@ add_executable(kernel.elf
     src/sched.c
 )
 
-if($ENV{TARGET_MCU} STREQUAL "rp2350")
-    target_sources(kernel.elf PRIVATE src/mcu/mcu_rp2350.c)
-endif()
-
 if($ENV{TARGET_ARCH} STREQUAL "riscv")
     target_sources(kernel.elf PRIVATE
         src/arch/riscv/arch.c
@@ -22,6 +18,10 @@ if($ENV{TARGET_ARCH} STREQUAL "riscv")
         src/arch/riscv/startup.s
         src/arch/riscv/uspace.s
     )
+endif()
+
+if($ENV{TARGET_MCU} STREQUAL "rp2350")
+    target_sources(kernel.elf PRIVATE src/mcu/mcu_rp2350.c)
 endif()
 
 target_include_directories(kernel.elf PRIVATE
