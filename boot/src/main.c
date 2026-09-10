@@ -9,12 +9,13 @@
 #include "elf.h"
 #include "log.h"
 
-static bool init_kernel(cfg_boot_t *cfg, elf_data_t *data);
 static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args);
 
-int main()
+__attribute__((noreturn)) int main()
 {
     cfg_boot_t cfg;
+    boot_args_t boot_args;
+    elf_data_t kernel_data;
 
     log_msg(LOG_LEVEL_INFO, "");
     log_msg(LOG_LEVEL_INFO, "             \\\\__\\\\");
@@ -34,7 +35,6 @@ int main()
         HALT();
     }
 
-    log_msg(LOG_LEVEL_OK, "Finished CPU initialization");
     log_set_mode(LOG_MODE_UART);
 
     if (!fs_init())
@@ -44,41 +44,22 @@ int main()
 
     if (!cfg_load(BOOT_CFG, &cfg))
     {
-        return log_fmt(LOG_LEVEL_FAIL, "Failed to load ", BOOT_CFG, nullptr), false;
+        HALT();
     }
 
-    log_fmt(LOG_LEVEL_OK, "Loaded ", BOOT_CFG, nullptr);
-
-    boot_iface_t iface;
-    iface.log_msg = log_msg;
-    iface.log_vargs = log_vargs;
-
-    boot_args_t args;
-    elf_data_t kernel_data;
-
-    if (!init_kernel(&cfg, &kernel_data))
+    if (!elf_load(cfg.kernel_path, &kernel_data, nullptr))
     {
         HALT();
     }
 
-    if (!init_srv(&cfg, &kernel_data, &args))
+    if (!init_srv(&cfg, &kernel_data, &boot_args))
     {
         HALT();
     }
 
     log_msg(LOG_LEVEL_INFO, "Jumping to kernel");
     log_msg(LOG_LEVEL_INFO, "---------------------------------------");
-    jmp(kernel_data.entry, &iface, &args);
-}
-
-static bool init_kernel(cfg_boot_t *cfg, elf_data_t *data)
-{
-    if (!elf_load(cfg->kernel_path, data, nullptr))
-    {
-        return log_fmt(LOG_LEVEL_FAIL, "Failed to load ", cfg->kernel_path, nullptr), false;
-    }
-
-    return true;
+    jmp(kernel_data.entry, &boot_args);
 }
 
 static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args)

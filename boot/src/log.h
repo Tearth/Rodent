@@ -17,7 +17,6 @@ typedef enum log_mode
 
 void log_msg(log_level_t level, const char *msg);
 void log_fmt(log_level_t level, const char *msg, ...);
-void log_vargs(log_level_t level, const char *msg, va_list args);
 void log_set_mode(log_mode_t mode);
 
 #endif

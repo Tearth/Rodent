@@ -14,17 +14,10 @@ void log_msg(log_level_t level, const char *msg)
 
 void log_fmt(log_level_t level, const char *msg, ...)
 {
+    const char *chunk;
+
     va_list args;
     va_start(args, msg);
-
-    log_vargs(level, msg, args);
-
-    va_end(args);
-}
-
-void log_vargs(log_level_t level, const char *msg, va_list args)
-{
-    const char *chunk;
 
     switch (level)
     {
@@ -42,6 +35,8 @@ void log_vargs(log_level_t level, const char *msg, va_list args)
     }
 
     log_internal("\r\n");
+
+    va_end(args);
 }
 
 void log_set_mode(log_mode_t mode)

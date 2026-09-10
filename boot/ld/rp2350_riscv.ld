@@ -4,7 +4,7 @@ MEMORY
     FLASH(rx) : ORIGIN = 0x10000000, LENGTH = 4M
     RAM(rw) : ORIGIN = 0x20080000, LENGTH = 8k
 }
-ENTRY(_entry_point)
+ENTRY(entry_point)
 SECTIONS
 {
     .image : {

@@ -12,7 +12,7 @@ bool mcu_init()
 {
     if (!clk_init())
     {
-        return false;
+        return log_msg(LOG_LEVEL_FAIL, "Failed to initialize clock"), false;
     }
 
     log_msg(LOG_LEVEL_OK, "Started clocks");
@@ -20,7 +20,7 @@ bool mcu_init()
 
     if (!uart_init())
     {
-        return false;
+        return log_msg(LOG_LEVEL_FAIL, "Failed to initialize UART"), false;
     }
 
     log_msg(LOG_LEVEL_OK, "Started UART");

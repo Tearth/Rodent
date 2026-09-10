@@ -1,18 +1,9 @@
 .section .reset, "ax"
-.global _entry_point
+.global reset_handler
 
 # Input: none
 # Output: none
-_entry_point:
-    li  t0, 0x7dfc
-    jr  t0
-
-.section .text
-.global _reset_handler
-
-# Input: none
-# Output: none
-_reset_handler:
+reset_handler:
     la      a0, __data_pointer
     la      a1, __data_start
     la      a2, __data_end
@@ -21,6 +12,15 @@ _reset_handler:
     la      a1, __bss_end
     call    clear_bss
     j       main
+
+.section .text
+.global entry_point
+
+# Input: none
+# Output: none
+entry_point:
+    li  t0, 0x7dfc
+    jr  t0
 
 # Input:
 # - a0 - initial source address

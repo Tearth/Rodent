@@ -23,14 +23,14 @@ blocks_begin:
 # | 0    | 0x44            | Block Type: ENTRY_POINT |
 # | 1    | 0x03            | Block Size: 3 words     |
 # | 2-3  | 0x0000          | Pad                     |
-# | 4-7  | _reset_handler  | Initial Program Counter |
+# | 4-7  | reset_handler   | Initial Program Counter |
 # | 8-11 | __stack_pointer | Initial Stack Pointer   |
 # |--------------------------------------------------|
 
 .byte   0x44
 .byte   0x03
 .hword  0x00
-.word   _reset_handler
+.word   reset_handler
 .word   __stack_pointer
 
 blocks_end:

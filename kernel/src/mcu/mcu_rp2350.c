@@ -40,3 +40,8 @@ void mcu_systime_set_comparator(uint64_t value)
 {
     timer_set_comparator(value);
 }
+
+void uart_send(const char *str)
+{
+    uart_send_str(UART0, str);
+}

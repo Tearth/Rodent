@@ -5,8 +5,9 @@ static void cfg_parse(const char *section, const char *name, const char *value, 
 bool cfg_load(const char *path, cfg_boot_t *cfg)
 {
     fs_fhandle_t handle = {};
+    int32_t read_bytes = 0;
     uint32_t pos = 0;
-    char buf[256] = {};
+    char buf[256];
 
     if (!fs_file_open(path, &handle))
     {
@@ -15,7 +16,7 @@ bool cfg_load(const char *path, cfg_boot_t *cfg)
 
     do
     {
-        int32_t read_bytes = fs_file_read(&handle, buf, sizeof(buf));
+        read_bytes = fs_file_read(&handle, buf, sizeof(buf));
 
         if (read_bytes < 0)
         {
@@ -70,13 +71,9 @@ bool cfg_load(const char *path, cfg_boot_t *cfg)
                 return log_msg(LOG_LEVEL_FAIL, "Failed to seek kernel ELF"), false;
             }
         }
-        else
-        {
-            break;
-        }
-    } while (true);
+    } while (read_bytes == sizeof(buf));
 
-    return true;
+    return log_fmt(LOG_LEVEL_OK, "Loaded ", path, nullptr), true;
 }
 
 static void cfg_parse(const char *section, const char *name, const char *value, cfg_boot_t *cfg)

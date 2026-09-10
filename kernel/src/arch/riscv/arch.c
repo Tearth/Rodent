@@ -30,7 +30,7 @@ static bool arch_init_irq()
 {
     if (!irq_init())
     {
-        return log_msg(LOG_LEVEL_FAIL, "Failed to init interrupts"), false;
+        return log_msg(LOG_LEVEL_FAIL, "Failed to initialize interrupts"), false;
     }
 
     log_msg(LOG_LEVEL_OK, "Initialized interrupts");

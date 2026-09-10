@@ -1,5 +1,5 @@
 OUTPUT_FORMAT(elf32-littleriscv)
-ENTRY(_entry_point)
+ENTRY(entry_point)
 SECTIONS
 {
     . = BASE_ADDR;

@@ -20,6 +20,10 @@ target_link_options(bootloader.elf PRIVATE
     -Wl,-Map=${CMAKE_BINARY_DIR}/bootloader.map
 )
 
+if($ENV{TARGET_ARCH} STREQUAL "riscv")
+    target_sources(bootloader.elf PRIVATE src/arch/arch_riscv.c)
+endif()
+
 if($ENV{TARGET_MCU} STREQUAL "rp2350")
     target_sources(bootloader.elf PRIVATE
         src/mcu/rp2350/$ENV{TARGET_ARCH}/image.s
@@ -29,10 +33,6 @@ if($ENV{TARGET_MCU} STREQUAL "rp2350")
         src/mcu/rp2350/mcu.c
         src/mcu/rp2350/uart.c
     )
-endif()
-
-if($ENV{TARGET_ARCH} STREQUAL "riscv")
-    target_sources(bootloader.elf PRIVATE src/arch/arch_riscv.c)
 endif()
 
 if($ENV{FS_TYPE} STREQUAL "lfs")
