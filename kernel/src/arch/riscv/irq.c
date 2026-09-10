@@ -153,10 +153,7 @@ static void irq_exception_handler(irq_state_t *state)
     log_fmt(LOG_LEVEL_FAIL, "SP: 0x", sp_buf, EOL);
     log_fmt(LOG_LEVEL_FAIL, "MTVAL: 0x", mtval_buf, EOL);
 
-    while (1)
-    {
-        __asm__ ("");
-    }
+    HALT();
 }
 
 static void irq_unsupported_handler(irq_state_t *state)

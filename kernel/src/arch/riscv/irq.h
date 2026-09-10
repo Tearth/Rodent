@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include "shared/halt.h"
 #include "regs.h"
 #include "log.h"
 #include "uspace.h"
