@@ -72,7 +72,7 @@ void arch_attach_timer_handler(void (*handler)(regs_t *regs))
     irq_attach_timer_handler(handler);
 }
 
-void arch_attach_ecall_handler(void (*handler)())
+void arch_attach_syscall_handler(void (*handler)(regs_t *regs))
 {
-    irq_attach_ecall_handler(handler);
+    irq_attach_syscall_handler(handler);
 }

@@ -8,6 +8,8 @@ static void sched_timer_arm_deadline(uint64_t deadline);
 
 void sched_init(boot_proc_t *boot_procs)
 {
+    arch_attach_timer_handler(sched_irq_handler);
+
     for (size_t i = 0; i < MAX_BOOT_PROCS; i++)
     {
         if (boot_procs[i].type == BOOT_PROC_TYPE_NONE)
@@ -24,11 +26,13 @@ void sched_init(boot_proc_t *boot_procs)
         procs[i].regs.pc = (uint32_t)boot_procs[i].entry;
     }
 
-    arch_attach_timer_handler(sched_timer_handler);
+    log_msg(LOG_LEVEL_OK, "Initialized scheduler");
 }
 
 void sched_run()
 {
+    log_msg(LOG_LEVEL_INFO, "Entering uspace");
+
     if (procs[0].status == PROC_STATUS_IDLE)
     {
         sched_timer_arm_delay(20);
@@ -38,7 +42,7 @@ void sched_run()
     log_msg(LOG_LEVEL_FAIL, "Failed to run scheduler, no process available");
 }
 
-void sched_timer_handler(regs_t *regs)
+void sched_irq_handler(regs_t *regs)
 {
     procs[current_pid].status = PROC_STATUS_IDLE;
     memcpy(&procs[current_pid].regs, regs, sizeof(regs_t));

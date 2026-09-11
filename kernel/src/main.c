@@ -5,6 +5,7 @@
 #include "mcu/mcu.h"
 #include "log.h"
 #include "sched.h"
+#include "syscall/syscall.h"
 
 __attribute__((noreturn)) int kmain(boot_args_t *boot_args)
 {
@@ -21,12 +22,8 @@ __attribute__((noreturn)) int kmain(boot_args_t *boot_args)
     }
 
     arch_irq_enable();
-    log_msg(LOG_LEVEL_OK, "Enabled interrupts");
-
+    syscall_init();
     sched_init(boot_args->procs);
-    log_msg(LOG_LEVEL_OK, "Initialized scheduler");
-
-    log_msg(LOG_LEVEL_INFO, "Entering uspace");
     sched_run();
 
     HALT();

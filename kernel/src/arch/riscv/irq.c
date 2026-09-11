@@ -2,13 +2,13 @@
 
 extern void _irq_handler_entry();
 
-static void irq_user_ecall_handler(irq_state_t *state);
 static void irq_timer_handler(irq_state_t *state);
+static void irq_user_syscall_handler(irq_state_t *state);
 static void irq_exception_handler(irq_state_t *state);
 static void irq_unsupported_handler(irq_state_t *state);
 
 static void (*timer_handler)(regs_t *regs);
-static void (*ecall_handler)();
+static void (*syscall_handler)(regs_t *regs);
 
 bool irq_init()
 {
@@ -65,16 +65,18 @@ void irq_attach_timer_handler(void (*handler)(regs_t *regs))
     timer_handler = handler;
 }
 
-void irq_attach_ecall_handler(void (*handler)())
+void irq_attach_syscall_handler(void (*handler)(regs_t *regs))
 {
-    ecall_handler = handler;
+    syscall_handler = handler;
 }
 
 void irq_handler(irq_state_t *state)
 {
     switch (state->mcause)
     {
-        case IRQ_CAUSE_U_ECALL_EXCEPTION: irq_user_ecall_handler(state); break;
+        case IRQ_CAUSE_U_ECALL_EXCEPTION:
+        case IRQ_CAUSE_S_ECALL_EXCEPTION:
+        case IRQ_CAUSE_M_ECALL_EXCEPTION: irq_user_syscall_handler(state); break;
         case IRQ_CAUSE_MACHINE_TIMER_INTERRUPT: irq_timer_handler(state); break;
         default:
         {
@@ -92,10 +94,14 @@ void irq_handler(irq_state_t *state)
     }
 }
 
-static void irq_user_ecall_handler(irq_state_t *state)
+static void irq_user_syscall_handler(irq_state_t *state)
 {
-    // TODO: syscalls
     state->mepc += 4;
+
+    if (syscall_handler != nullptr)
+    {
+        syscall_handler(&state->regs);
+    }
 }
 
 static void irq_timer_handler(irq_state_t *state)

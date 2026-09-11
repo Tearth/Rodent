@@ -30,6 +30,7 @@ add_compile_definitions(
 project(rodent)
 add_subdirectory(mcu)
 add_subdirectory(boot)
+add_subdirectory(sysapi)
 add_subdirectory(kernel)
 add_subdirectory(usr/app1)
 add_subdirectory(usr/app2)

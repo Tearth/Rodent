@@ -52,7 +52,7 @@ void irq_disable();
 bool irq_is_enabled();
 
 void irq_attach_timer_handler(void (*handler)(regs_t *regs));
-void irq_attach_ecall_handler(void (*handler)());
+void irq_attach_syscall_handler(void (*handler)(regs_t *regs));
 
 void irq_handler(irq_state_t *state);
 

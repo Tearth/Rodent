@@ -1,5 +1,5 @@
-#ifndef SHARED_BOOT_H
-#define SHARED_BOOT_H
+#ifndef INCLUDE_BOOT_H
+#define INCLUDE_BOOT_H
 
 #include <stdarg.h>
 #include <stdint.h>

@@ -28,7 +28,6 @@ typedef struct proc
 
 void sched_init(boot_proc_t *boot_procs);
 void sched_run();
-
-void sched_timer_handler(regs_t *regs);
+void sched_irq_handler(regs_t *regs);
 
 #endif

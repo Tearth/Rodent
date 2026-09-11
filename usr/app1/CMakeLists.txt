@@ -4,12 +4,14 @@ project(app1.elf LANGUAGES C ASM)
 
 add_executable(app1.elf
     $<TARGET_OBJECTS:mcu>
+    $<TARGET_OBJECTS:sysapi>
     src/main.c
     src/startup.s
 )
 
 target_include_directories(app1.elf PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/sysapi/src
 )
 
 target_compile_options(app1.elf PRIVATE
