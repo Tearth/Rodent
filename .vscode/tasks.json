@@ -7,8 +7,7 @@
             "type": "shell",
             "problemMatcher": [],
             "group": {
-                "kind": "build",
-                "isDefault": true
+                "kind": "build"
             },
             "options": {
                 "cwd": "${workspaceFolder}/tools/scripts/"
@@ -22,8 +21,7 @@
                 "$gcc"
             ],
             "group": {
-                "kind": "build",
-                "isDefault": true
+                "kind": "build"
             },
             "options": {
                 "cwd": "${workspaceFolder}/tools/scripts/"
@@ -35,8 +33,7 @@
             "type": "shell",
             "problemMatcher": [],
             "group": {
-                "kind": "build",
-                "isDefault": true
+                "kind": "build"
             },
             "options": {
                 "cwd": "${workspaceFolder}/tools/scripts/"
@@ -47,10 +44,6 @@
             "command": "./flash.sh",
             "type": "shell",
             "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
             "options": {
                 "cwd": "${workspaceFolder}/tools/scripts/"
             },
@@ -60,46 +53,18 @@
             "label": "Debug",
             "command": "./debug.sh",
             "type": "shell",
-            "problemMatcher": [
-                {
-                    "pattern": [
-                        {
-                            "regexp": ".",
-                            "file": 1,
-                            "location": 2,
-                            "message": 3
-                        }
-                    ],
-                    "background": {
-                        "activeOnStart": true,
-                        "beginsPattern": ".",
-                        "endsPattern": ".",
-                    }
-                }
-            ],
-            "isBackground": true,
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
             "options": {
                 "cwd": "${workspaceFolder}/tools/scripts/"
             },
             "dependsOn": "Flash"
         },
         {
-            "label": "Terminate All Tasks",
-            "command": "echo ${input:terminate}",
+            "label": "Stop",
+            "command": "./stop.sh",
             "type": "shell",
-            "problemMatcher": []
-        }
-    ],
-    "inputs": [
-        {
-            "id": "terminate",
-            "type": "command",
-            "command": "workbench.action.tasks.terminate",
-            "args": "terminateAll"
+            "options": {
+                "cwd": "${workspaceFolder}/tools/scripts/"
+            },
         }
     ],
     "options": {
