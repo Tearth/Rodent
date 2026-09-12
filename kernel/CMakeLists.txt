@@ -11,7 +11,7 @@ add_executable(kernel.elf
     src/syscall/thread.c
 )
 
-target_include_directories(kernel.elf PRIVATE
+target_include_directories(kernel.elf BEFORE PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 

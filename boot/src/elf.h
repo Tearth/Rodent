@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <shared/math.h>
 #include "fs.h"
 #include "log.h"
 
@@ -12,9 +13,6 @@
 #ifdef ARCH_RISCV
 #define ELF_MACHINE 243
 #endif
-
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
 
 typedef struct elf_header
 {

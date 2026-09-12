@@ -9,6 +9,7 @@
 bool arch_init();
 
 void arch_irq_enable();
+void arch_irq_wait();
 void arch_attach_timer_handler(void (*handler)(regs_t *regs));
 void arch_attach_syscall_handler(void (*handler)(regs_t *regs));
 

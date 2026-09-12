@@ -1,10 +1,10 @@
 #include "sched.h"
 
 static proc_t procs[MAX_PROCS] = {};
-static uint8_t current_pid = 0;
+static uint8_t current_pid = UINT8_MAX;
 
-static void sched_timer_arm_delay(uint32_t delay);
-static void sched_timer_arm_deadline(uint64_t deadline);
+static void sched_next();
+static uint64_t sched_duration_to_deadline(uint32_t duration);
 
 void sched_init(boot_proc_t *boot_procs)
 {
@@ -35,7 +35,7 @@ void sched_run()
 
     if (procs[0].status == PROC_STATUS_IDLE)
     {
-        sched_timer_arm_delay(20);
+        mcu_systime_set_comparator(sched_duration_to_deadline(20));
         uspace_enter(&procs[0].regs);
     }
 
@@ -44,34 +44,93 @@ void sched_run()
 
 void sched_irq_handler(regs_t *regs)
 {
-    procs[current_pid].status = PROC_STATUS_IDLE;
+    if (current_pid != UINT8_MAX)
+    {
+        procs[current_pid].status = PROC_STATUS_IDLE;
+        memcpy(&procs[current_pid].regs, regs, sizeof(regs_t));
+    }
+
+    sched_next();
+}
+
+void sched_sleep(regs_t *regs, uint32_t duration)
+{
+    procs[current_pid].status = PROC_STATUS_SLEEPING;
+    procs[current_pid].deadline = sched_duration_to_deadline(duration);
     memcpy(&procs[current_pid].regs, regs, sizeof(regs_t));
 
-    sched_timer_arm_delay(20);
+    sched_next();
+}
 
-    for (size_t i = 0; i < MAX_PROCS; i++)
+static void sched_next()
+{
+    uint64_t systime = mcu_systime_get_current();
+    uint64_t deadline = UINT64_MAX;
+    uint8_t next_pid = UINT8_MAX;
+
+    // Find any sleeping thread with expired deadline
+    for (size_t i = 0; i <= MAX_PROCS; i++)
     {
         size_t pid = (current_pid + i + 1) % MAX_PROCS;
-        if (procs[pid].status == PROC_STATUS_IDLE)
-        {
-            procs[pid].status = PROC_STATUS_RUNNING;
-            current_pid = pid;
 
-            uspace_enter(&procs[pid].regs);
+        if (procs[pid].status == PROC_STATUS_SLEEPING)
+        {
+            if (procs[pid].deadline <= systime)
+            {
+                next_pid = pid;
+            }
+            else if (procs[pid].deadline < deadline)
+            {
+                deadline = procs[pid].deadline;
+            }
         }
+    }
+
+    if (next_pid == UINT8_MAX)
+    {
+        // Find any idle thread ready to run
+        for (size_t i = 0; i <= MAX_PROCS; i++)
+        {
+            size_t pid = (current_pid + i + 1) % MAX_PROCS;
+
+            if (procs[pid].status == PROC_STATUS_IDLE)
+            {
+                next_pid = pid;
+                break;
+            }
+        }
+    }
+
+    if (deadline == UINT64_MAX)
+    {
+        deadline = sched_duration_to_deadline(20);
+    }
+
+    mcu_systime_set_comparator(deadline);
+
+    if (next_pid != UINT8_MAX)
+    {
+        procs[next_pid].status = PROC_STATUS_RUNNING;
+        current_pid = next_pid;
+
+        uspace_enter(&procs[next_pid].regs);
+    }
+
+    // No available thread was found, wait for the next interrupt
+    current_pid = UINT8_MAX;
+
+    while(1)
+    {
+        arch_irq_enable();
+        arch_irq_wait();
     }
 }
 
-static void sched_timer_arm_delay(uint32_t delay_ms)
+static uint64_t sched_duration_to_deadline(uint32_t duration)
 {
     uint64_t systime = mcu_systime_get_current();
     uint64_t freq = mcu_sysclk_get_freq();
-    uint64_t delta = delay_ms * freq / 1000;
+    uint64_t delta = duration * freq / 1000;
 
-    mcu_systime_set_comparator(systime + delta);
-}
-
-static void sched_timer_arm_deadline(uint64_t deadline)
-{
-    mcu_systime_set_comparator(deadline);
+    return systime + delta;
 }

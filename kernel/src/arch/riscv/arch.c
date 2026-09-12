@@ -67,6 +67,11 @@ void arch_irq_enable()
     irq_enable();
 }
 
+void arch_irq_wait()
+{
+    irq_wait();
+}
+
 void arch_attach_timer_handler(void (*handler)(regs_t *regs))
 {
     irq_attach_timer_handler(handler);

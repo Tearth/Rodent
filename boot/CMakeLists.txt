@@ -11,7 +11,7 @@ add_executable(bootloader.elf
     src/fs.c
 )
 
-target_include_directories(bootloader.elf PRIVATE
+target_include_directories(bootloader.elf BEFORE PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 

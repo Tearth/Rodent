@@ -9,7 +9,7 @@ add_executable(app2.elf
     src/startup.s
 )
 
-target_include_directories(app2.elf PRIVATE
+target_include_directories(app2.elf BEFORE PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/sysapi/src
 )

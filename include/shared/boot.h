@@ -4,7 +4,6 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include "def.h"
-#include "log.h"
 
 typedef enum boot_proc_type
 {

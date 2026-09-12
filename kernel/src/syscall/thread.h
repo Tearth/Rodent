@@ -3,6 +3,7 @@
 
 #include <shared/syscall.h>
 #include "arch.h"
+#include "sched.h"
 
 void syscall_thread_sleep(regs_t *regs);
 

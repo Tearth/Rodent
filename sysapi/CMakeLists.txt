@@ -6,7 +6,7 @@ add_library(sysapi OBJECT
     src/rodent/thread.c
 )
 
-target_include_directories(sysapi PRIVATE
+target_include_directories(sysapi BEFORE PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 

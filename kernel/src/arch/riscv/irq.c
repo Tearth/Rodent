@@ -60,6 +60,11 @@ bool irq_is_enabled()
     return (mstatus & (1u << 3)) != 0;
 }
 
+void irq_wait()
+{
+    __asm__ volatile ("wfi");
+}
+
 void irq_attach_timer_handler(void (*handler)(regs_t *regs))
 {
     timer_handler = handler;
@@ -97,6 +102,7 @@ void irq_handler(irq_state_t *state)
 static void irq_user_syscall_handler(irq_state_t *state)
 {
     state->mepc += 4;
+    state->regs.pc += 4;
 
     if (syscall_handler != nullptr)
     {
