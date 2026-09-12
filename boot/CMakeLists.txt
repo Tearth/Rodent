@@ -7,8 +7,8 @@ add_executable(bootloader.elf
     src/main.c
     src/elf.c
     src/log.c
-    src/cfg/cfg.c
-    src/fs/fs.c
+    src/cfg.c
+    src/fs.c
 )
 
 target_include_directories(bootloader.elf PRIVATE
@@ -21,7 +21,7 @@ target_link_options(bootloader.elf PRIVATE
 )
 
 if($ENV{TARGET_ARCH} STREQUAL "riscv")
-    target_sources(bootloader.elf PRIVATE src/arch/arch_riscv.c)
+    target_sources(bootloader.elf PRIVATE src/arch/riscv.c)
 endif()
 
 if($ENV{TARGET_MCU} STREQUAL "rp2350")
@@ -37,7 +37,7 @@ endif()
 
 if($ENV{FS_TYPE} STREQUAL "lfs")
     target_sources(bootloader.elf PRIVATE
-        src/fs/fs_lfs.c
+        src/fs/lfs.c
         ../lib/littlefs/src/lfs.c
         ../lib/littlefs/src/lfs_util.c
     )
@@ -56,6 +56,6 @@ set(FS_BASE_ADDR $ENV{FS_BASE_ADDR})
 set(BOOT_CFG $ENV{BOOT_CFG})
 
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/cfg/defs.h.in
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/cfg/defs.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/def.h.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/def.h
 )

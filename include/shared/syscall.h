@@ -1,5 +1,5 @@
-#ifndef INCLUDE_SYSCALL_H
-#define INCLUDE_SYSCALL_H
+#ifndef SHARED_SYSCALL_H
+#define SHARED_SYSCALL_H
 
 #include <stdint.h>
 #include "syscall/thread.h"

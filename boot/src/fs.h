@@ -2,11 +2,11 @@
 #define BOOT_FS_H
 
 #include <stdlib.h>
-#include "cfg/defs.h"
+#include "def.h"
 #include "log.h"
 
 #ifdef FS_LFS
-#include "fs_lfs.h"
+#include "fs/lfs.h"
 #endif
 
 bool fs_init();

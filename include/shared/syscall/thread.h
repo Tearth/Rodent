@@ -1,5 +1,5 @@
-#ifndef INCLUDE_THREAD_H
-#define INCLUDE_THREAD_H
+#ifndef SHARED_THREAD_H
+#define SHARED_THREAD_H
 
 #include <stdint.h>
 

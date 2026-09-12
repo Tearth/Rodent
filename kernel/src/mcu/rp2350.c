@@ -1,4 +1,4 @@
-#include "mcu_rp2350.h"
+#include "rp2350.h"
 
 static bool mcu_init_systime();
 

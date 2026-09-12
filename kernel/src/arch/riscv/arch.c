@@ -1,8 +1,8 @@
 #include <stdint.h>
-#include "arch/arch.h"
+#include "arch.h"
 #include "irq.h"
-#include "pmp.h"
 #include "log.h"
+#include "pmp.h"
 #include "uspace.h"
 
 extern uint32_t __kernel_start;

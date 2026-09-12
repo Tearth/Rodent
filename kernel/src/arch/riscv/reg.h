@@ -1,5 +1,5 @@
-#ifndef KERNEL_REGS_H
-#define KERNEL_REGS_H
+#ifndef KERNEL_REG_H
+#define KERNEL_REG_H
 
 #include <stdint.h>
 

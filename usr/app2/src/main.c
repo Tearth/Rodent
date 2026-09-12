@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "rp2350/uart.h"
+#include <rp2350/uart.h>
 
 int main()
 {

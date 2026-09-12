@@ -1,13 +1,13 @@
 #include <stdlib.h>
-#include "arch/arch.h"
-#include "cfg/defs.h"
-#include "cfg/cfg.h"
-#include "shared/boot.h"
-#include "shared/halt.h"
-#include "mcu/mcu.h"
-#include "fs/fs.h"
+#include <shared/boot.h>
+#include <shared/halt.h>
+#include "arch.h"
+#include "cfg.h"
+#include "def.h"
 #include "elf.h"
+#include "fs.h"
 #include "log.h"
+#include "mcu.h"
 
 static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args);
 

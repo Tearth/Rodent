@@ -3,7 +3,7 @@
 
 #include <stdarg.h>
 #include <string.h>
-#include "mcu/mcu.h"
+#include "mcu.h"
 
 #define LOG_BUFFER_SIZE 2048
 #define EOL (const char *)nullptr

@@ -7,7 +7,7 @@ add_executable(kernel.elf
     src/main.c
     src/log.c
     src/sched.c
-    src/syscall/syscall.c
+    src/syscall.c
     src/syscall/thread.c
 )
 
@@ -34,5 +34,5 @@ if($ENV{TARGET_ARCH} STREQUAL "riscv")
 endif()
 
 if($ENV{TARGET_MCU} STREQUAL "rp2350")
-    target_sources(kernel.elf PRIVATE src/mcu/mcu_rp2350.c)
+    target_sources(kernel.elf PRIVATE src/mcu/rp2350.c)
 endif()

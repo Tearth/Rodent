@@ -1,5 +1,5 @@
-#ifndef INCLUDE_DEFS_H
-#define INCLUDE_DEFS_H
+#ifndef SHARED_DEF_H
+#define SHARED_DEF_H
 
 #define MAX_BOOT_PROCS 8
 #define MAX_PROCS 32

@@ -2,8 +2,8 @@
 #define BOOT_CFG_H
 
 #include <stddef.h>
-#include "fs/fs.h"
-#include "shared/defs.h"
+#include <shared/def.h>
+#include "fs.h"
 #include "log.h"
 
 #define NAME_LEN 64

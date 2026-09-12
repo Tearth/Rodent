@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include "fs/fs.h"
+#include "fs.h"
 #include "log.h"
 
 #define ELF_MAGIC 0x464c457f

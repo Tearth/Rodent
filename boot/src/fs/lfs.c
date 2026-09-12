@@ -1,4 +1,4 @@
-#include "fs_lfs.h"
+#include "lfs.h"
 
 static lfs_t lfs;
 static uint8_t read_buf[FS_LFS_CACHE_SIZE];

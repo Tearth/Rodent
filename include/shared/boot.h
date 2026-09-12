@@ -1,9 +1,9 @@
-#ifndef INCLUDE_BOOT_H
-#define INCLUDE_BOOT_H
+#ifndef SHARED_BOOT_H
+#define SHARED_BOOT_H
 
 #include <stdarg.h>
 #include <stdint.h>
-#include "defs.h"
+#include "def.h"
 #include "log.h"
 
 typedef enum boot_proc_type

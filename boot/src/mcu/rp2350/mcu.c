@@ -1,9 +1,9 @@
 #include <stdlib.h>
-#include "mcu/mcu.h"
 #include "clk.h"
 #include "flash.h"
-#include "uart.h"
 #include "log.h"
+#include "mcu.h"
+#include "uart.h"
 
 static bool log_clk_info();
 static bool log_uart_info();

@@ -1,10 +1,13 @@
 #include <stdlib.h>
-#include "rp2350/uart.h"
+#include <rp2350/uart.h>
+#include <rodent.h>
 
 int main()
 {
     uint32_t i = 0;
     char buf[16] = {};
+
+    sleep(100);
 
     while(1)
     {

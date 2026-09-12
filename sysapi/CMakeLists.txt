@@ -12,7 +12,7 @@ target_include_directories(sysapi PRIVATE
 
 if($ENV{TARGET_ARCH} STREQUAL "riscv")
     target_sources(sysapi PRIVATE
-        src/arch/arch_riscv.c
+        src/arch/riscv.c
     )
 
     target_compile_options(sysapi PRIVATE

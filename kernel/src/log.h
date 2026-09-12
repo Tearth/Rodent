@@ -2,7 +2,7 @@
 #define KERNEL_LOG_H
 
 #include <stdarg.h>
-#include "mcu/mcu.h"
+#include "mcu.h"
 
 #define EOL (const char *)nullptr
 

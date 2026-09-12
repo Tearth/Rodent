@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include "shared/halt.h"
-#include "regs.h"
+#include <shared/halt.h>
 #include "log.h"
+#include "reg.h"
 #include "uspace.h"
 
 typedef enum irq_cause

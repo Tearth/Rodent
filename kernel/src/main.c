@@ -1,11 +1,11 @@
 #include <stdlib.h>
-#include "arch/arch.h"
-#include "shared/boot.h"
-#include "shared/halt.h"
-#include "mcu/mcu.h"
+#include <shared/boot.h>
+#include <shared/halt.h>
+#include "arch.h"
 #include "log.h"
+#include "mcu.h"
 #include "sched.h"
-#include "syscall/syscall.h"
+#include "syscall.h"
 
 __attribute__((noreturn)) int kmain(boot_args_t *boot_args)
 {

@@ -2,8 +2,8 @@
 #define KERNEL_ARCH_H
 
 #ifdef ARCH_RISCV
-#include "riscv/irq.h"
-#include "riscv/uspace.h"
+#include "arch/riscv/irq.h"
+#include "arch/riscv/uspace.h"
 #endif
 
 bool arch_init();

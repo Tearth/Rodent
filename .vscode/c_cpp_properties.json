@@ -4,10 +4,11 @@
             "name": "RISC-V",
             "includePath": [
                 "${workspaceFolder}/boot/src",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/lib/littlefs/src",
                 "${workspaceFolder}/kernel/src",
                 "${workspaceFolder}/mcu/src",
                 "${workspaceFolder}/sysapi/src",
-                "${workspaceFolder}/include",
                 "/usr/local/picolibc/rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp/include"
             ],
             "defines": [

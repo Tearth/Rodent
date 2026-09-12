@@ -1,5 +1,5 @@
-#ifndef BOOT_FS_LFS_H
-#define BOOT_FS_LFS_H
+#ifndef BOOT_LFS_H
+#define BOOT_LFS_H
 
 #define FS_LFS_MAGIC
 #define FS_LFS_CACHE_SIZE 16
@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <lfs.h>
-#include "mcu/mcu.h"
+#include "mcu.h"
 
 typedef struct lfs_config lfs_config_t;
 typedef struct lfs_file_config lfs_file_config_t;

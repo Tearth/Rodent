@@ -2,10 +2,10 @@
 #define KERNEL_SCHED_H
 
 #include <string.h>
-#include "arch/arch.h"
-#include "mcu/mcu.h"
-#include "shared/defs.h"
-#include "shared/boot.h"
+#include <shared/def.h>
+#include <shared/boot.h>
+#include "arch.h"
+#include "mcu.h"
 
 typedef enum proc_status
 {

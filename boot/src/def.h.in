@@ -1,5 +1,5 @@
-#ifndef BOOT_DEFS_H
-#define BOOT_DEFS_H
+#ifndef BOOT_DEF_H
+#define BOOT_DEF_H
 
 #define FS_BASE_ADDR @FS_BASE_ADDR@
 #define BOOT_CFG "@BOOT_CFG@"
