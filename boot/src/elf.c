@@ -91,7 +91,7 @@ bool elf_load(const char *path, elf_data_t *data, void *addr)
                     return log_msg(LOG_LEVEL_FAIL, "Failed to read ELF file"), false;
                 }
 
-                memcpy(vaddr + offset, buf, MIN(data_left, sizeof(buf)));
+                memcpy(vaddr + offset, buf, MIN((size_t)data_left, sizeof(buf)));
 
                 vaddr += sizeof(buf);
                 data_left -= sizeof(buf);

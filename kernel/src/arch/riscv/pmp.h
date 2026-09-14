@@ -72,7 +72,7 @@ typedef struct pmp_def
 } pmp_def_t;
 
 void pmp_set_mode(pmp_t region, pmp_mode_t mode);
-pmp_mode_t pmp_get_mode(pmp_t region, pmp_mode_t mode);
+pmp_mode_t pmp_get_mode(pmp_t region);
 
 bool pmp_set_area(pmp_t region, void *base, uint32_t size);
 void pmp_get_area(pmp_t region, void **base, uint32_t *size);

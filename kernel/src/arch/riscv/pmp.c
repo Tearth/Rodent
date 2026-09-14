@@ -12,56 +12,56 @@ static const pmp_def_t pmp_defs[] =
     {
         .rwx_shift = PMP_REGION0_RWX_SHIFT,
         .rwx_mask = PMP_REGION0_RWX_MASK,
-        .rwx_shift = PMP_REGION0_MODE_SHIFT,
+        .mode_shift = PMP_REGION0_MODE_SHIFT,
         .mode_mask = PMP_REGION0_MODE_MASK
     },
     // PMP_REGION1
     {
         .rwx_shift = PMP_REGION1_RWX_SHIFT,
         .rwx_mask = PMP_REGION1_RWX_MASK,
-        .mode_mask = PMP_REGION1_MODE_SHIFT,
+        .mode_shift = PMP_REGION1_MODE_SHIFT,
         .mode_mask = PMP_REGION1_MODE_MASK
     },
     // PMP_REGION2
     {
         .rwx_shift = PMP_REGION2_RWX_SHIFT,
         .rwx_mask = PMP_REGION2_RWX_MASK,
-        .mode_mask = PMP_REGION2_MODE_SHIFT,
+        .mode_shift = PMP_REGION2_MODE_SHIFT,
         .mode_mask = PMP_REGION2_MODE_MASK
     },
     // PMP_REGION3
     {
         .rwx_shift = PMP_REGION3_RWX_SHIFT,
         .rwx_mask = PMP_REGION3_RWX_MASK,
-        .mode_mask = PMP_REGION3_MODE_SHIFT,
+        .mode_shift = PMP_REGION3_MODE_SHIFT,
         .mode_mask = PMP_REGION3_MODE_MASK
     },
     // PMP_REGION4
     {
         .rwx_shift = PMP_REGION4_RWX_SHIFT,
         .rwx_mask = PMP_REGION4_RWX_MASK,
-        .mode_mask = PMP_REGION4_MODE_SHIFT,
+        .mode_shift = PMP_REGION4_MODE_SHIFT,
         .mode_mask = PMP_REGION4_MODE_MASK
     },
     // PMP_REGION5
     {
         .rwx_shift = PMP_REGION5_RWX_SHIFT,
         .rwx_mask = PMP_REGION5_RWX_MASK,
-        .mode_mask = PMP_REGION5_MODE_SHIFT,
+        .mode_shift = PMP_REGION5_MODE_SHIFT,
         .mode_mask = PMP_REGION5_MODE_MASK
     },
     // PMP_REGION6
     {
         .rwx_shift = PMP_REGION6_RWX_SHIFT,
         .rwx_mask = PMP_REGION6_RWX_MASK,
-        .mode_mask = PMP_REGION6_MODE_SHIFT,
+        .mode_shift = PMP_REGION6_MODE_SHIFT,
         .mode_mask = PMP_REGION6_MODE_MASK
     },
     // PMP_REGION7
     {
         .rwx_shift = PMP_REGION7_RWX_SHIFT,
         .rwx_mask = PMP_REGION7_RWX_MASK,
-        .mode_mask = PMP_REGION7_MODE_SHIFT,
+        .mode_shift = PMP_REGION7_MODE_SHIFT,
         .mode_mask = PMP_REGION7_MODE_MASK
     },
 };
@@ -77,7 +77,7 @@ void pmp_set_mode(pmp_t region, pmp_mode_t mode)
     pmp_write_pmpcfg(region, pmpcfg);
 }
 
-pmp_mode_t pmp_get_mode(pmp_t region, pmp_mode_t mode)
+pmp_mode_t pmp_get_mode(pmp_t region)
 {
     const pmp_def_t* region_sel = &pmp_defs[region];
 

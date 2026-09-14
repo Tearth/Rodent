@@ -29,7 +29,7 @@ bool cfg_load(const char *path, cfg_boot_t *cfg)
         char value[VALUE_LEN];
         char section[SECTION_LEN];
 
-        for (size_t c = 0; c < read_bytes; c++)
+        for (size_t c = 0; c < (size_t)read_bytes; c++)
         {
             if (buf[c] == '[')
             {

@@ -89,15 +89,15 @@ int lfs_read(const lfs_config_t *cfg, lfs_block_t block, lfs_off_t off, void *bu
 
 int lfs_prog(const lfs_config_t *cfg, lfs_block_t block, lfs_off_t off, const void *buf, lfs_size_t size)
 {
-    return LFS_ERR_OK;
+    return (void)cfg, (void)block, (void)off, (void)buf, (void)size, LFS_ERR_OK;
 }
 
 int lfs_erase(const lfs_config_t *cfg, lfs_block_t block)
 {
-    return LFS_ERR_OK;
+    return (void)cfg, (void)block, LFS_ERR_OK;
 }
 
 int lfs_sync(const lfs_config_t *cfg)
 {
-    return LFS_ERR_OK;
+    return (void)cfg, LFS_ERR_OK;
 }
