@@ -34,28 +34,28 @@ void uart_send(const char *str)
     uart_send_str(UART0, str);
 }
 
-size_t uart_get_info(uart_info_t *uarts, size_t len)
+size_t uart_get_info(uart_info_t *uarts, const size_t len)
 {
-    const uart_t uart_types[] = { UART0, UART1 };
-    size_t count = len < 2 ? len : 2;
+    const uart_t types[] = { UART0, UART1 };
+    const size_t count = len < LEN(types) ? len : LEN(types);
 
     for (size_t i = 0; i < count; i++)
     {
         const char *uart_name;
 
-        switch (uart_types[i])
+        switch (types[i])
         {
             case UART0: uart_name = "UART0"; break;
             case UART1: uart_name = "UART1"; break;
-            default: uart_name = "UART_INVALID"; break;
+            default: uart_name = "INVALID"; break;
         }
 
         strncpy(uarts[i].name, uart_name, sizeof(uarts[i].name));
 
-        uarts[i].enabled = uart_is_enabled(uart_types[i]);
-        uarts[i].baudrate = uart_get_baudrate(uart_types[i]);
-        uarts[i].data_bits = uart_get_data_bits(uart_types[i]);
-        uarts[i].stop_bits = uart_get_stop_bits(uart_types[i]);
+        uarts[i].enabled = uart_is_enabled(types[i]);
+        uarts[i].baudrate = uart_get_baudrate(types[i]);
+        uarts[i].data_bits = uart_get_data_bits(types[i]);
+        uarts[i].stop_bits = uart_get_stop_bits(types[i]);
     }
 
     return count;

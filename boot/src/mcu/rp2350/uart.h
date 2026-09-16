@@ -6,6 +6,7 @@
 #include <string.h>
 #include <rp2350/gpio.h>
 #include <rp2350/uart.h>
+#include <shared/macro.h>
 
 typedef struct uart_info
 {
@@ -18,6 +19,6 @@ typedef struct uart_info
 
 bool uart_init();
 void uart_send(const char *str);
-size_t uart_get_info(uart_info_t *uarts, size_t max_len);
+size_t uart_get_info(uart_info_t *uarts, const size_t len);
 
 #endif

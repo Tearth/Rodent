@@ -5,6 +5,6 @@
 #include <shared/syscall.h>
 #include "arch.h"
 
-void sleep(uint32_t duration);
+void sleep(const uint32_t duration);
 
 #endif

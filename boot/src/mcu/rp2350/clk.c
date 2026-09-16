@@ -43,25 +43,25 @@ bool clk_init()
     return true;
 }
 
-size_t clk_get_info(clk_info_t *clks, size_t len)
+size_t clk_get_info(clk_info_t *clks, const size_t len)
 {
-    const clk_t clk_types[] = { CLK_REF, CLK_SYS, CLK_PERI };
-    size_t count = len < 3 ? len : 3;
+    const clk_t types[] = { CLK_REF, CLK_SYS, CLK_PERI };
+    const size_t count = len < LEN(types) ? len : LEN(types);
 
     for (size_t i = 0; i < count; i++)
     {
         const char *clk_name;
         const char *clk_src_name;
 
-        switch (clk_types[i])
+        switch (types[i])
         {
             case CLK_REF: clk_name = "CLK_REF"; break;
             case CLK_SYS: clk_name = "CLK_SYS"; break;
             case CLK_PERI: clk_name = "CLK_PERI"; break;
-            default: clk_name = "CLK_INVALID"; break;
+            default: clk_name = "INVALID"; break;
         }
 
-        switch (clk_get_src(clk_types[i]))
+        switch (clk_get_src(types[i]))
         {
             case CLK_SRC_REF: clk_src_name = "CLK_SRC_REF"; break;
             case CLK_SRC_SYS: clk_src_name = "CLK_SRC_SYS"; break;
@@ -70,14 +70,14 @@ size_t clk_get_info(clk_info_t *clks, size_t len)
             case CLK_SRC_LPOSC: clk_src_name = "CLK_SRC_LPOSC"; break;
             case CLK_SRC_PLL_SYS: clk_src_name = "CLK_SRC_PLL_SYS"; break;
             case CLK_SRC_PLL_USB: clk_src_name = "CLK_SRC_PLL_USB"; break;
-            default: clk_src_name = "CLK_SRC_INVALID"; break;
+            default: clk_src_name = "INVALID"; break;
         }
 
         strncpy(clks[i].name, clk_name, sizeof(clks[i].name));
         strncpy(clks[i].src, clk_src_name, sizeof(clks[i].src));
 
-        clks[i].enabled = clk_is_enabled(clk_types[i]);
-        clks[i].freq = clk_get_freq(clk_types[i]);
+        clks[i].enabled = clk_is_enabled(types[i]);
+        clks[i].freq = clk_get_freq(types[i]);
     }
 
     return count;

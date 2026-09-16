@@ -1,12 +1,11 @@
 #include "elf.h"
 
-static bool elf_get_base_vaddr(fs_fhandle_t *handle, elf_header_t *elf_header, uint32_t *base_vaddr);
-static bool elf_get_strtab_offset(fs_fhandle_t *handle, elf_header_t *elf_header, uint32_t *offset);
-static bool elf_get_strtab_entry(fs_fhandle_t *handle, uint32_t strtab_offset, char *val, size_t len);
+static bool elf_get_base_vaddr(fs_fhandle_t *handle, const elf_header_t *elf_header, uint32_t *base_vaddr);
+static bool elf_get_strtab_offset(fs_fhandle_t *handle, const elf_header_t *elf_header, uint32_t *offset);
+static bool elf_get_strtab_entry(fs_fhandle_t *handle, const uint32_t strtab_offset, char *val, size_t len);
 
 bool elf_load(const char *path, elf_data_t *data, void *addr)
 {
-    char buf[256];
     fs_fhandle_t handle = {};
     elf_header_t elf_header;
 
@@ -86,6 +85,8 @@ bool elf_load(const char *path, elf_data_t *data, void *addr)
 
             do
             {
+                char buf[256];
+
                 if (fs_file_read(&handle, buf, sizeof(buf)) < 0)
                 {
                     return log_msg(LOG_LEVEL_FAIL, "Failed to read ELF file"), false;
@@ -98,10 +99,10 @@ bool elf_load(const char *path, elf_data_t *data, void *addr)
             }
             while (data_left > 0);
 
+            memset((uint8_t *)(pheader.vaddr + pheader.fsize + offset), 0, pheader.msize - pheader.fsize);
+
             data_from = MIN(data_from, pheader.vaddr);
             data_to = MAX(data_to, pheader.vaddr + pheader.fsize);
-
-            memset((uint8_t *)(pheader.vaddr + pheader.fsize + offset), 0, pheader.msize - pheader.fsize);
             bss_from = MIN(bss_from, pheader.vaddr + pheader.fsize);
             bss_to = MAX(bss_to, pheader.vaddr + pheader.msize);
         }
@@ -109,18 +110,19 @@ bool elf_load(const char *path, elf_data_t *data, void *addr)
 
     for (size_t i = 0; i < elf_header.shnum; i++)
     {
-        char name[256];
-        elf_sheader_t sheader;
-
         if (!fs_file_seek(&handle, elf_header.shoff + sizeof(elf_sheader_t) * i))
         {
             return log_msg(LOG_LEVEL_FAIL, "Failed to seek ELF file"), false;
         }
 
+        elf_sheader_t sheader;
+
         if (fs_file_read(&handle, &sheader, sizeof(elf_sheader_t)) < 0)
         {
             return log_msg(LOG_LEVEL_FAIL, "Failed to read ELF file"), false;
         }
+
+        char name[256];
 
         if (!elf_get_strtab_entry(&handle, strtab_offset + sheader.name, name, sizeof(name)))
         {
@@ -169,18 +171,18 @@ bool elf_load(const char *path, elf_data_t *data, void *addr)
     return true;
 }
 
-static bool elf_get_base_vaddr(fs_fhandle_t *handle, elf_header_t *elf_header, uint32_t *base_vaddr)
+static bool elf_get_base_vaddr(fs_fhandle_t *handle, const elf_header_t *elf_header, uint32_t *base_vaddr)
 {
     *base_vaddr = UINT32_MAX;
 
     for (size_t i = 0; i < elf_header->phnum; i++)
     {
-        elf_pheader_t pheader;
-
         if (!fs_file_seek(handle, elf_header->phoff + sizeof(elf_pheader_t) * i))
         {
             return log_msg(LOG_LEVEL_FAIL, "Failed to seek ELF file"), false;
         }
+
+        elf_pheader_t pheader;
 
         if (fs_file_read(handle, &pheader, sizeof(elf_pheader_t)) < 0)
         {
@@ -197,35 +199,37 @@ static bool elf_get_base_vaddr(fs_fhandle_t *handle, elf_header_t *elf_header, u
     return true;
 }
 
-static bool elf_get_strtab_offset(fs_fhandle_t *handle, elf_header_t *elf_header, uint32_t *offset)
+static bool elf_get_strtab_offset(fs_fhandle_t *handle, const elf_header_t *elf_header, uint32_t *offset)
 {
-    elf_sheader_t sheader;
-    uint32_t pos_old = fs_file_pos(handle);
+    const uint32_t pos = fs_file_pos(handle);
 
     if (!fs_file_seek(handle, elf_header->shoff + sizeof(elf_sheader_t) * elf_header->shstrndx))
     {
         return log_msg(LOG_LEVEL_FAIL, "Failed to seek ELF file"), false;
     }
 
+    elf_sheader_t sheader;
+
     if (fs_file_read(handle, &sheader, sizeof(elf_sheader_t)) < 0)
     {
         return log_msg(LOG_LEVEL_FAIL, "Failed to read ELF file"), false;
     }
 
-    fs_file_seek(handle, pos_old);
+    fs_file_seek(handle, pos);
 
     return *offset = sheader.offset, true;
 }
 
-static bool elf_get_strtab_entry(fs_fhandle_t *handle, uint32_t strtab_offset, char *val, size_t len)
+static bool elf_get_strtab_entry(fs_fhandle_t *handle, const uint32_t strtab_offset, char *val, size_t len)
 {
-    char buf[256];
-    uint32_t pos_old = fs_file_pos(handle);
+    const uint32_t pos = fs_file_pos(handle);
 
     if (!fs_file_seek(handle, strtab_offset))
     {
         return log_msg(LOG_LEVEL_FAIL, "Failed to seek ELF file"), false;
     }
+
+    char buf[256];
 
     if (fs_file_read(handle, buf, sizeof(buf)) < 0)
     {
@@ -233,7 +237,7 @@ static bool elf_get_strtab_entry(fs_fhandle_t *handle, uint32_t strtab_offset, c
     }
 
     strncpy(val, buf, len);
-    fs_file_seek(handle, pos_old);
+    fs_file_seek(handle, pos);
 
     return true;
 }

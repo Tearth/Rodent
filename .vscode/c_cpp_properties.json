@@ -12,8 +12,8 @@
                 "/usr/local/picolibc/rv32ima_zicsr_zifencei_zba_zbb_zbs_zbkb_zca_zcb_zcmp/include"
             ],
             "defines": [
-                "MCU_RP2350",
                 "ARCH_RISCV",
+                "MCU_RP2350",
                 "REV_A2",
                 "FS_LFS"
             ],

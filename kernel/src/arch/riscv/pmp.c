@@ -66,28 +66,27 @@ static const pmp_def_t pmp_defs[] =
     },
 };
 
-void pmp_set_mode(pmp_t region, pmp_mode_t mode)
+void pmp_set_mode(const pmp_t region, const pmp_mode_t mode)
 {
-    const pmp_def_t* region_sel = &pmp_defs[region];
-    uint32_t pmpcfg = pmp_read_pmpcfg(region);
+    const pmp_def_t *region_sel = &pmp_defs[region];
 
     // Set RX_A (Address Matching Type)
-    pmpcfg = (pmpcfg & ~region_sel->mode_mask) | (mode << region_sel->mode_shift);
+    const uint32_t pmpcfg = (pmp_read_pmpcfg(region) & ~region_sel->mode_mask) | (mode << region_sel->mode_shift);
 
     pmp_write_pmpcfg(region, pmpcfg);
 }
 
-pmp_mode_t pmp_get_mode(pmp_t region)
+pmp_mode_t pmp_get_mode(const pmp_t region)
 {
-    const pmp_def_t* region_sel = &pmp_defs[region];
+    const pmp_def_t *region_sel = &pmp_defs[region];
 
     // Set RX_A (Address Matching Type)
     return (pmp_read_pmpcfg(region) & region_sel->mode_mask) >> region_sel->mode_shift;
 }
 
-bool pmp_set_area(pmp_t region, void *addr, uint32_t size)
+bool pmp_set_area(const pmp_t region, const void *addr, const uint32_t size)
 {
-    uint32_t base = (uint32_t)addr;
+    const uint32_t base = (uint32_t)addr;
 
     if (base < 4 || size < 8)
     {
@@ -99,23 +98,24 @@ bool pmp_set_area(pmp_t region, void *addr, uint32_t size)
         return false;
     }
 
-    uint32_t trail = (size >> 3) - 1;
-    uint32_t pmpaddr = (base >> 2) | trail;
+    const uint32_t trail = (size >> 3) - 1;
+    const uint32_t pmpaddr = (base >> 2) | trail;
 
     pmp_write_pmpaddr(region, pmpaddr);
 
     return true;
 }
 
-void pmp_get_area(pmp_t region, void **base, uint32_t *size)
+void pmp_get_area(const pmp_t region, void **base, uint32_t *size)
 {
-    uint8_t i = 0;
     uint32_t pmpaddr = pmp_read_pmpaddr(region);
 
     // RP2350 A2 has first two bits cleared
     #if defined(MCU_RP2350) && defined(REV_A2)
     pmpaddr |= 0x3;
     #endif
+
+    uint8_t i = 0;
 
     while ((pmpaddr & 1) == 1)
     {
@@ -127,10 +127,9 @@ void pmp_get_area(pmp_t region, void **base, uint32_t *size)
     *base = (void *)((pmpaddr >> 1) << (i + 3));
 }
 
-void pmp_set_rwx(pmp_t region, bool r, bool w, bool x)
+void pmp_set_rwx(const pmp_t region, const bool r, const bool w, const bool x)
 {
-    const pmp_def_t* region_sel = &pmp_defs[region];
-    uint32_t pmpcfg = pmp_read_pmpcfg(region);
+    const pmp_def_t *region_sel = &pmp_defs[region];
 
     // RWX order on RP2350 A2 is reversed, fixed in A4
     #if defined(MCU_RP2350) && defined(REV_A2)
@@ -140,18 +139,17 @@ void pmp_set_rwx(pmp_t region, bool r, bool w, bool x)
     #endif
 
     // Set RX_R, RX_W, RX_X
-    pmpcfg = (pmpcfg & ~region_sel->rwx_mask) | rwx;
+    const uint32_t pmpcfg = (pmp_read_pmpcfg(region) & ~region_sel->rwx_mask) | rwx;
 
     pmp_write_pmpcfg(region, pmpcfg);
 }
 
-void pmp_get_rwx(pmp_t region, bool *r, bool *w, bool *x)
+void pmp_get_rwx(const pmp_t region, bool *r, bool *w, bool *x)
 {
-    const pmp_def_t* region_sel = &pmp_defs[region];
-    uint32_t pmpcfg = pmp_read_pmpcfg(region);
+    const pmp_def_t *region_sel = &pmp_defs[region];
 
     // Read RX_R, RX_W, RX_X
-    uint32_t rwx = pmpcfg >> region_sel->rwx_shift;
+    const uint32_t rwx = pmp_read_pmpcfg(region) >> region_sel->rwx_shift;
 
     // RWX order on RP2350 A2 is reversed, fixed in A4
     #if defined(MCU_RP2350) && defined(REV_A2)
@@ -165,7 +163,7 @@ void pmp_get_rwx(pmp_t region, bool *r, bool *w, bool *x)
     #endif
 }
 
-uint32_t pmp_read_pmpcfg(pmp_t region)
+uint32_t pmp_read_pmpcfg(const pmp_t region)
 {
     uint32_t pmpcfg;
 
@@ -198,7 +196,7 @@ uint32_t pmp_read_pmpcfg(pmp_t region)
     return pmpcfg;
 }
 
-void pmp_write_pmpcfg(pmp_t region, uint32_t pmpcfg)
+void pmp_write_pmpcfg(const pmp_t region, const uint32_t pmpcfg)
 {
     switch (region)
     {
@@ -227,7 +225,7 @@ void pmp_write_pmpcfg(pmp_t region, uint32_t pmpcfg)
     }
 }
 
-uint32_t pmp_read_pmpaddr(pmp_t region)
+uint32_t pmp_read_pmpaddr(const pmp_t region)
 {
     uint32_t pmpaddr;
 
@@ -246,7 +244,7 @@ uint32_t pmp_read_pmpaddr(pmp_t region)
     return pmpaddr;
 }
 
-void pmp_write_pmpaddr(pmp_t region, uint32_t pmpaddr)
+void pmp_write_pmpaddr(const pmp_t region, const uint32_t pmpaddr)
 {
     switch (region)
     {

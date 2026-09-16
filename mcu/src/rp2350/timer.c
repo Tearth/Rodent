@@ -36,7 +36,7 @@ uint64_t timer_get_current()
     return ((uint64_t)mtimeh << 32) | mtime;
 }
 
-void timer_set_comparator(uint64_t value)
+void timer_set_comparator(const uint64_t value)
 {
     // Set MTIMECMP to a value guaranteeing no accidental interrupt
     *TIMER_SIO_REG_MTIMECMP = UINT32_MAX;

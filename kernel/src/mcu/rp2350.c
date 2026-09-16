@@ -36,7 +36,7 @@ uint64_t mcu_systime_get_current()
     return timer_get_current();
 }
 
-void mcu_systime_set_comparator(uint64_t value)
+void mcu_systime_set_comparator(const uint64_t value)
 {
     timer_set_comparator(value);
 }

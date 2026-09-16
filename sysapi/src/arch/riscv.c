@@ -1,6 +1,6 @@
 #include "arch.h"
 
-void syscall(syscall_t type, void *data)
+void syscall(const syscall_t type, void *data)
 {
     __asm__ volatile (
         "mv a0, %0\n"

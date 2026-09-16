@@ -1,6 +1,6 @@
 #include "reset.h"
 
-bool reset_subsys(reset_subsys_t subsys)
+bool reset_subsys(const reset_subsys_t subsys)
 {
     const uint32_t bit = (1u << subsys);
 

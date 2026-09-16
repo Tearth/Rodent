@@ -16,6 +16,6 @@ void timer_disable();
 bool timer_is_enabled();
 
 uint64_t timer_get_current();
-void timer_set_comparator(uint64_t value);
+void timer_set_comparator(const uint64_t value);
 
 #endif

@@ -5,6 +5,6 @@
 #include "arch.h"
 #include "sched.h"
 
-void syscall_thread_sleep(regs_t *regs);
+void syscall_thread_sleep(regs_t *regs, syscall_thread_sleep_t *data);
 
 #endif

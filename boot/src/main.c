@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <shared/boot.h>
-#include <shared/halt.h>
+#include <shared/macro.h>
 #include "arch.h"
 #include "cfg.h"
 #include "def.h"
@@ -9,7 +9,7 @@
 #include "log.h"
 #include "mcu.h"
 
-static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args);
+static bool init_srv(const cfg_boot_t *cfg, const elf_data_t *kernel_data, boot_args_t *args);
 
 __attribute__((noreturn)) int main()
 {
@@ -62,7 +62,7 @@ __attribute__((noreturn)) int main()
     jmp(kernel_data.entry, &boot_args);
 }
 
-static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args)
+static bool init_srv(const cfg_boot_t *cfg, const elf_data_t *kernel_data, boot_args_t *args)
 {
     uint32_t addr = (uint32_t)kernel_data->base + kernel_data->size;
 

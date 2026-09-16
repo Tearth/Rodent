@@ -1,17 +1,12 @@
 #include "log.h"
 
-void log_msg(log_level_t level, const char *msg)
+void log_msg(const log_level_t level, const char *msg)
 {
     log_fmt(level, msg, EOL);
 }
 
-void log_fmt(log_level_t level, const char *msg, ...)
+void log_fmt(const log_level_t level, const char *msg, ...)
 {
-    const char *chunk;
-
-    va_list args;
-    va_start(args, msg);
-
     switch (level)
     {
         case LOG_LEVEL_OK: uart_send("[  \033[32mOK\033[0m  ] "); break;
@@ -21,6 +16,10 @@ void log_fmt(log_level_t level, const char *msg, ...)
     }
 
     uart_send(msg);
+
+    va_list args;
+    va_start(args, msg);
+    const char *chunk;
 
     while ((chunk = va_arg(args, const char *)) != EOL)
     {

@@ -76,8 +76,7 @@ typedef enum clk
 {
     CLK_REF,
     CLK_SYS,
-    CLK_PERI,
-    CLK_INVALID
+    CLK_PERI
 } clk_t;
 
 typedef enum clk_src
@@ -121,24 +120,24 @@ typedef struct clk_pll_def
     volatile uint32_t *reg_prim;
 } clk_pll_def_t;
 
-bool clk_enable(clk_t clk);
-bool clk_disable(clk_t clk);
-bool clk_is_enabled(clk_t clk);
+bool clk_enable(const clk_t clk);
+bool clk_disable(const clk_t clk);
+bool clk_is_enabled(const clk_t clk);
 
-bool clk_src_enable(clk_src_t src);
-bool clk_src_disable(clk_src_t src);
-bool clk_src_is_enabled(clk_src_t src);
-bool clk_src_is_stable(clk_src_t src);
+bool clk_src_enable(const clk_src_t src);
+bool clk_src_disable(const clk_src_t src);
+bool clk_src_is_enabled(const clk_src_t src);
+bool clk_src_is_stable(const clk_src_t src);
 
-clk_src_t clk_get_src(clk_t clk);
-bool clk_set_src(clk_t clk, clk_src_t src);
+clk_src_t clk_get_src(const clk_t clk);
+bool clk_set_src(const clk_t clk, const clk_src_t src);
 
-bool clk_pll_enable(clk_pll_t pll, uint8_t refdiv, uint16_t fbdiv, uint8_t pdiv1, uint8_t pdiv2);
-void clk_pll_disable(clk_pll_t pll);
-bool clk_pll_is_enabled(clk_pll_t pll);
+bool clk_pll_enable(const clk_pll_t pll, const uint8_t refdiv, const uint16_t fbdiv, const uint8_t pdiv1, const uint8_t pdiv2);
+void clk_pll_disable(const clk_pll_t pll);
+bool clk_pll_is_enabled(const clk_pll_t pll);
 bool clk_pll_reset();
 
-uint32_t clk_get_freq(clk_t clk);
-uint32_t clk_measure_freq(clk_t clk);
+uint32_t clk_get_freq(const clk_t clk);
+uint32_t clk_measure_freq(const clk_t clk);
 
 #endif

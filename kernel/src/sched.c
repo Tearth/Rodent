@@ -4,11 +4,11 @@ static proc_t procs[MAX_PROCS] = {};
 static uint8_t current_pid = UINT8_MAX;
 
 static void sched_next();
-static uint64_t sched_duration_to_deadline(uint32_t duration);
+static uint64_t sched_duration_to_deadline(const uint32_t duration);
 
-void sched_init(boot_proc_t *boot_procs)
+void sched_init(const boot_proc_t *boot_procs)
 {
-    arch_attach_timer_handler(sched_irq_handler);
+    arch_attach_timer_handler(sched_timer_handler);
 
     for (size_t i = 0; i < MAX_BOOT_PROCS; i++)
     {
@@ -42,7 +42,7 @@ void sched_run()
     log_msg(LOG_LEVEL_FAIL, "Failed to run scheduler, no process available");
 }
 
-void sched_irq_handler(regs_t *regs)
+void sched_timer_handler(regs_t *regs)
 {
     if (current_pid != UINT8_MAX)
     {
@@ -53,7 +53,7 @@ void sched_irq_handler(regs_t *regs)
     sched_next();
 }
 
-void sched_sleep(regs_t *regs, uint32_t duration)
+void sched_sleep(regs_t *regs, const uint32_t duration)
 {
     procs[current_pid].status = PROC_STATUS_SLEEPING;
     procs[current_pid].deadline = sched_duration_to_deadline(duration);
@@ -64,14 +64,15 @@ void sched_sleep(regs_t *regs, uint32_t duration)
 
 static void sched_next()
 {
-    uint64_t systime = mcu_systime_get_current();
+    const uint64_t systime = mcu_systime_get_current();
+
     uint64_t deadline = UINT64_MAX;
     uint8_t next_pid = UINT8_MAX;
 
     // Find any sleeping thread with expired deadline
     for (size_t i = 0; i <= MAX_PROCS; i++)
     {
-        size_t pid = (current_pid + i + 1) % MAX_PROCS;
+        const size_t pid = (current_pid + i + 1) % MAX_PROCS;
 
         if (procs[pid].status == PROC_STATUS_SLEEPING)
         {
@@ -91,7 +92,7 @@ static void sched_next()
         // Find any idle thread ready to run
         for (size_t i = 0; i <= MAX_PROCS; i++)
         {
-            size_t pid = (current_pid + i + 1) % MAX_PROCS;
+            const size_t pid = (current_pid + i + 1) % MAX_PROCS;
 
             if (procs[pid].status == PROC_STATUS_IDLE)
             {
@@ -126,11 +127,11 @@ static void sched_next()
     }
 }
 
-static uint64_t sched_duration_to_deadline(uint32_t duration)
+static uint64_t sched_duration_to_deadline(const uint32_t duration)
 {
-    uint64_t systime = mcu_systime_get_current();
-    uint64_t freq = mcu_sysclk_get_freq();
-    uint64_t delta = duration * freq / 1000;
+    const uint64_t systime = mcu_systime_get_current();
+    const uint64_t freq = mcu_sysclk_get_freq();
+    const uint64_t delta = duration * freq / 1000;
 
     return systime + delta;
 }

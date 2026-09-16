@@ -32,12 +32,12 @@ typedef enum gpio_func
     GPIO_FUNC_NONE = 31
 } gpio_func_t;
 
-void gpio_enable(uint8_t gpio);
-void gpio_disable(uint8_t gpio);
-bool gpio_is_enabled(uint8_t gpio);
+void gpio_enable(const uint8_t gpio);
+void gpio_disable(const uint8_t gpio);
+bool gpio_is_enabled(const uint8_t gpio);
 bool gpio_reset();
 
-void gpio_set_func(uint8_t gpio, gpio_func_t func);
-void gpio_set_mode(uint8_t gpio, bool input, bool output, bool pull_down, bool pull_up);
+void gpio_set_func(const uint8_t gpio, const gpio_func_t func);
+void gpio_set_mode(const uint8_t gpio, const bool input, const bool output, const bool pull_down, const bool pull_up);
 
 #endif

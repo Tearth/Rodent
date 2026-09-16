@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <shared/halt.h>
+#include <shared/macro.h>
 #include "log.h"
 #include "reg.h"
 #include "uspace.h"

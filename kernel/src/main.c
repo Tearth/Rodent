@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <shared/boot.h>
-#include <shared/halt.h>
+#include <shared/macro.h>
 #include "arch.h"
 #include "log.h"
 #include "mcu.h"

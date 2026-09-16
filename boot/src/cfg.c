@@ -16,9 +16,7 @@ bool cfg_load(const char *path, cfg_boot_t *cfg)
 
     do
     {
-        read_bytes = fs_file_read(&handle, buf, sizeof(buf));
-
-        if (read_bytes < 0)
+        if ((read_bytes = fs_file_read(&handle, buf, sizeof(buf))) < 0)
         {
             return log_msg(LOG_LEVEL_FAIL, "Failed to read configuration file"), false;
         }

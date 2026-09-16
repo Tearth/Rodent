@@ -7,18 +7,13 @@ size_t buffer_pos = 0;
 static void log_internal(const char *msg);
 static void log_flush();
 
-void log_msg(log_level_t level, const char *msg)
+void log_msg(const log_level_t level, const char *msg)
 {
     log_fmt(level, msg, EOL);
 }
 
-void log_fmt(log_level_t level, const char *msg, ...)
+void log_fmt(const log_level_t level, const char *msg, ...)
 {
-    const char *chunk;
-
-    va_list args;
-    va_start(args, msg);
-
     switch (level)
     {
         case LOG_LEVEL_OK: log_internal("[  \033[32mOK\033[0m  ] "); break;
@@ -28,6 +23,10 @@ void log_fmt(log_level_t level, const char *msg, ...)
     }
 
     log_internal(msg);
+
+    va_list args;
+    va_start(args, msg);
+    const char *chunk;
 
     while ((chunk = va_arg(args, const char *)) != EOL)
     {
@@ -39,7 +38,7 @@ void log_fmt(log_level_t level, const char *msg, ...)
     va_end(args);
 }
 
-void log_set_mode(log_mode_t mode)
+void log_set_mode(const log_mode_t mode)
 {
     log_mode = mode;
     log_flush();

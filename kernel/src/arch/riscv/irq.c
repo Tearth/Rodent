@@ -12,7 +12,7 @@ static void (*syscall_handler)(regs_t *regs);
 
 bool irq_init()
 {
-    uintptr_t mtvec = (uintptr_t)_irq_handler_entry;
+    const uintptr_t mtvec = (uintptr_t)_irq_handler_entry;
 
     // Handler address has to be aligned
     if ((mtvec & 0x3) != 0)

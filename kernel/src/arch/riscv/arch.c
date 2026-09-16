@@ -33,16 +33,14 @@ static bool arch_init_irq()
         return log_msg(LOG_LEVEL_FAIL, "Failed to initialize interrupts"), false;
     }
 
-    log_msg(LOG_LEVEL_OK, "Initialized interrupts");
-
-    return true;
+    return log_msg(LOG_LEVEL_OK, "Initialized interrupts"), true;
 }
 
 static bool arch_init_pmp()
 {
-    uint32_t kernel_start = (uint32_t)&__kernel_start;
-    uint32_t kernel_end = (uint32_t)&__kernel_end;
-    uint32_t size = kernel_end - kernel_start;
+    const uint32_t kernel_start = (uint32_t)&__kernel_start;
+    const uint32_t kernel_end = (uint32_t)&__kernel_end;
+    const uint32_t size = kernel_end - kernel_start;
 
     pmp_set_area(PMP_REGION0, (void *)kernel_start, size);
     pmp_set_rwx(PMP_REGION0, false, false, false);

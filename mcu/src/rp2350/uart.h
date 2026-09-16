@@ -25,8 +25,7 @@
 typedef enum uart
 {
     UART0,
-    UART1,
-    UART_INVALID
+    UART1
 } uart_t;
 
 typedef struct uart_def
@@ -39,20 +38,20 @@ typedef struct uart_def
     volatile uint32_t *reg_cr;
 } uart_def_t;
 
-bool uart_enable(uart_t uart, uint32_t baudrate, uint8_t data_bits, uint8_t stop_bits);
-void uart_disable(uart_t uart);
-bool uart_is_enabled(uart_t uart);
-bool uart_reset(uart_t uart);
+bool uart_enable(const uart_t uart, const uint32_t baudrate, const uint8_t data_bits, const uint8_t stop_bits);
+void uart_disable(const uart_t uart);
+bool uart_is_enabled(const uart_t uart);
+bool uart_reset(const uart_t uart);
 
-bool uart_set_baudrate(uart_t uart, uint32_t baudrate);
-uint32_t uart_get_baudrate(uart_t uart);
+bool uart_set_baudrate(const uart_t uart, const uint32_t baudrate);
+uint32_t uart_get_baudrate(const uart_t uart);
 
-bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits);
-uint8_t uart_get_data_bits(uart_t uart);
-uint8_t uart_get_stop_bits(uart_t uart);
+bool uart_set_format(const uart_t uart, const uint8_t data_bits, const uint8_t stop_bits);
+uint8_t uart_get_data_bits(const uart_t uart);
+uint8_t uart_get_stop_bits(const uart_t uart);
 
-uint8_t uart_read_byte(uart_t uart);
-void uart_send_byte(uart_t uart, uint8_t byte);
-void uart_send_str(uart_t uart, const char *str);
+uint8_t uart_read_byte(const uart_t uart);
+void uart_send_byte(const uart_t uart, const uint8_t byte);
+void uart_send_str(const uart_t uart, const char *str);
 
 #endif

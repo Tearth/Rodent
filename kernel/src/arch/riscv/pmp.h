@@ -71,13 +71,13 @@ typedef struct pmp_def
     uint32_t mode_mask;
 } pmp_def_t;
 
-void pmp_set_mode(pmp_t region, pmp_mode_t mode);
-pmp_mode_t pmp_get_mode(pmp_t region);
+void pmp_set_mode(const pmp_t region, const pmp_mode_t mode);
+pmp_mode_t pmp_get_mode(const pmp_t region);
 
-bool pmp_set_area(pmp_t region, void *base, uint32_t size);
-void pmp_get_area(pmp_t region, void **base, uint32_t *size);
+bool pmp_set_area(const pmp_t region, const void *base, const uint32_t size);
+void pmp_get_area(const pmp_t region, void **base, uint32_t *size);
 
-void pmp_set_rwx(pmp_t region, bool r, bool w, bool x);
-void pmp_get_rwx(pmp_t region, bool *r, bool *w, bool *x);
+void pmp_set_rwx(const pmp_t region, const bool r, const bool w, const bool x);
+void pmp_get_rwx(const pmp_t region, bool *r, bool *w, bool *x);
 
 #endif

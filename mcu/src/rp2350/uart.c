@@ -22,7 +22,7 @@ static const uart_def_t uart_defs[] =
     },
 };
 
-bool uart_enable(uart_t uart, uint32_t baudrate, uint8_t data_bits, uint8_t stop_bits)
+bool uart_enable(const uart_t uart, const uint32_t baudrate, const uint8_t data_bits, const uint8_t stop_bits)
 {
     if (!uart_set_baudrate(uart, baudrate))
     {
@@ -40,19 +40,19 @@ bool uart_enable(uart_t uart, uint32_t baudrate, uint8_t data_bits, uint8_t stop
     return true;
 }
 
-void uart_disable(uart_t uart)
+void uart_disable(const uart_t uart)
 {
     // Clear UARTEN, TXE, RXE
     *uart_defs[uart].reg_cr &= ~(1u | (1u << 8) | (1u << 9));
 }
 
-bool uart_is_enabled(uart_t uart)
+bool uart_is_enabled(const uart_t uart)
 {
     // Read UARTEN
     return (*uart_defs[uart].reg_cr & 1u) != 0;
 }
 
-bool uart_reset(uart_t uart)
+bool uart_reset(const uart_t uart)
 {
     switch (uart)
     {
@@ -62,7 +62,7 @@ bool uart_reset(uart_t uart)
     }
 }
 
-bool uart_set_baudrate(uart_t uart, uint32_t baudrate)
+bool uart_set_baudrate(const uart_t uart, const uint32_t baudrate)
 {
     const uart_def_t *uart_sel = &uart_defs[uart];
     const uint32_t freq = clk_get_freq(CLK_PERI);
@@ -85,7 +85,7 @@ bool uart_set_baudrate(uart_t uart, uint32_t baudrate)
     return true;
 }
 
-uint32_t uart_get_baudrate(uart_t uart)
+uint32_t uart_get_baudrate(const uart_t uart)
 {
     const uart_def_t *uart_sel = &uart_defs[uart];
     const uint32_t freq = clk_get_freq(CLK_PERI);
@@ -99,7 +99,7 @@ uint32_t uart_get_baudrate(uart_t uart)
     return (4 * freq) / (64 * ibrd + fbrd);
 }
 
-bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits)
+bool uart_set_format(const uart_t uart, const uint8_t data_bits, const uint8_t stop_bits)
 {
     if (data_bits < 5 || data_bits > 8)
     {
@@ -117,19 +117,19 @@ bool uart_set_format(uart_t uart, uint8_t data_bits, uint8_t stop_bits)
     return true;
 }
 
-uint8_t uart_get_data_bits(uart_t uart)
+uint8_t uart_get_data_bits(const uart_t uart)
 {
     // Read WLEN (Word Length)
     return ((*uart_defs[uart].reg_lcr >> 5) & 0x3) + 5;
 }
 
-uint8_t uart_get_stop_bits(uart_t uart)
+uint8_t uart_get_stop_bits(const uart_t uart)
 {
     // Read STP2 (Stop Bits)
     return ((*uart_defs[uart].reg_lcr >> 3) & 0x1) + 1;
 }
 
-uint8_t uart_read_byte(uart_t uart)
+uint8_t uart_read_byte(const uart_t uart)
 {
     const uart_def_t *uart_sel = &uart_defs[uart];
 
@@ -139,7 +139,7 @@ uint8_t uart_read_byte(uart_t uart)
     return *uart_sel->reg_dr;
 }
 
-void uart_send_byte(uart_t uart, uint8_t byte)
+void uart_send_byte(const uart_t uart, const uint8_t byte)
 {
     const uart_def_t *uart_sel = &uart_defs[uart];
 
@@ -149,7 +149,7 @@ void uart_send_byte(uart_t uart, uint8_t byte)
     *uart_sel->reg_dr = byte;
 }
 
-void uart_send_str(uart_t uart, const char *str)
+void uart_send_str(const uart_t uart, const char *str)
 {
     for (const char *ptr = str; *ptr != 0; ptr++)
     {

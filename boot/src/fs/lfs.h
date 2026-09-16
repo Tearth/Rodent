@@ -1,7 +1,6 @@
 #ifndef BOOT_LFS_H
 #define BOOT_LFS_H
 
-#define FS_LFS_MAGIC
 #define FS_LFS_CACHE_SIZE 16
 #define FS_LFS_BLOCK_SIZE 4096
 #define FS_LFS_BLOCK_CYCLES 512
@@ -31,11 +30,11 @@ typedef struct fs_fhandle
     uint8_t buf[16];
 } fs_fhandle_t;
 
-bool fs_mount(void* base);
+bool fs_mount(void *base);
 bool fs_file_open(const char *path, fs_fhandle_t *handle);
-int32_t fs_file_read(fs_fhandle_t *handle, void *buf, uint32_t size);
+int32_t fs_file_read(fs_fhandle_t *handle, void *buf, const size_t size);
 uint32_t fs_file_pos(fs_fhandle_t *handle);
-bool fs_file_seek(fs_fhandle_t *handle, uint32_t pos);
+bool fs_file_seek(fs_fhandle_t *handle, const uint32_t pos);
 bool fs_get_info(fs_info_t *info);
 
 int lfs_read(const lfs_config_t *cfg, lfs_block_t block, lfs_off_t off, void *buf, lfs_size_t size);

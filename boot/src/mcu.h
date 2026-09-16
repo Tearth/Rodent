@@ -6,6 +6,6 @@
 
 bool mcu_init();
 void uart_send(const char *str);
-void flash_read(void *buf, const void *addr, size_t size);
+void flash_read(void *buf, const void *addr, const size_t size);
 
 #endif

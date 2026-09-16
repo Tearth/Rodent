@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <rp2350/clk.h>
+#include <shared/macro.h>
 
 typedef struct clk_info
 {
@@ -15,6 +16,6 @@ typedef struct clk_info
 } clk_info_t;
 
 bool clk_init();
-size_t clk_get_info(clk_info_t *clks, size_t max_len);
+size_t clk_get_info(clk_info_t *clks, const size_t len);
 
 #endif

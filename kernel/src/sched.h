@@ -4,7 +4,7 @@
 #include <string.h>
 #include <shared/boot.h>
 #include <shared/def.h>
-#include <shared/math.h>
+#include <shared/macro.h>
 #include "arch.h"
 #include "mcu.h"
 
@@ -29,9 +29,9 @@ typedef struct proc
     regs_t regs;
 } proc_t;
 
-void sched_init(boot_proc_t *boot_procs);
+void sched_init(const boot_proc_t *boot_procs);
 void sched_run();
-void sched_irq_handler(regs_t *regs);
-void sched_sleep(regs_t *regs, uint32_t duration);
+void sched_timer_handler(regs_t *regs);
+void sched_sleep(regs_t *regs, const uint32_t duration);
 
 #endif

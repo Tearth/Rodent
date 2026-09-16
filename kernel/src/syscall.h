@@ -6,6 +6,6 @@
 #include "arch.h"
 
 void syscall_init();
-void syscall_irq_handler(regs_t *regs);
+void syscall_handler(regs_t *regs);
 
 #endif

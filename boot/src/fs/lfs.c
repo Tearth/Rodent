@@ -6,10 +6,10 @@ static uint8_t prog_buf[FS_LFS_CACHE_SIZE];
 static uint8_t lookahead_buf[FS_LFS_CACHE_SIZE];
 
 static lfs_config_t cfg = {
-    .read  = lfs_read,
-    .prog  = lfs_prog,
+    .read = lfs_read,
+    .prog = lfs_prog,
     .erase = lfs_erase,
-    .sync  = lfs_sync,
+    .sync = lfs_sync,
 
     .read_size = FS_LFS_CACHE_SIZE,
     .prog_size = FS_LFS_CACHE_SIZE,
@@ -23,7 +23,7 @@ static lfs_config_t cfg = {
     .lookahead_buffer = lookahead_buf
 };
 
-bool fs_mount(void* base_addr)
+bool fs_mount(void *base_addr)
 {
     uint32_t m1 = *((uint32_t *)base_addr + 2);
     uint32_t m2 = *((uint32_t *)base_addr + 3);
@@ -50,7 +50,7 @@ bool fs_file_open(const char *path, fs_fhandle_t *handle)
     return lfs_file_opencfg(&lfs, &handle->file, path, LFS_O_RDONLY, &handle->cfg) == LFS_ERR_OK;
 }
 
-int32_t fs_file_read(fs_fhandle_t *handle, void *buf, uint32_t size)
+int32_t fs_file_read(fs_fhandle_t *handle, void *buf, const size_t size)
 {
     return lfs_file_read(&lfs, &handle->file, buf, size);
 }
@@ -60,7 +60,7 @@ uint32_t fs_file_pos(fs_fhandle_t *handle)
     return lfs_file_tell(&lfs, &handle->file);
 }
 
-bool fs_file_seek(fs_fhandle_t *handle, uint32_t pos)
+bool fs_file_seek(fs_fhandle_t *handle, const uint32_t pos)
 {
     return lfs_file_seek(&lfs, &handle->file, pos, LFS_SEEK_SET) >= 0;
 }

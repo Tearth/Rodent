@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <shared/macro.h>
 #include "clk.h"
 #include "flash.h"
 #include "log.h"
@@ -33,17 +34,20 @@ static bool log_clk_info()
 {
     clk_info_t clks[8];
 
-    for (size_t i = 0; i < clk_get_info(clks, 8); i++)
+    for (size_t i = 0; i < clk_get_info(clks, LEN(clks)); i++)
     {
         char freq_buf[16];
         const char *enabled_buf;
 
         itoa(clks[i].freq / 1'000'000, freq_buf, 10);
 
-        switch (clks[i].enabled)
+        if (clks[i].enabled)
         {
-            case true: enabled_buf = "active"; break;
-            case false: enabled_buf = "inactive"; break;
+            enabled_buf = "active";
+        }
+        else
+        {
+            enabled_buf = "inactive";
         }
 
         log_fmt(LOG_LEVEL_INFO, " ", clks[i].name, " @ ", clks[i].src, " (", freq_buf, " MHz), ", enabled_buf, EOL);
@@ -56,7 +60,7 @@ static bool log_uart_info()
 {
     uart_info_t uarts[8];
 
-    for (size_t i = 0; i < uart_get_info(uarts, 8); i++)
+    for (size_t i = 0; i < uart_get_info(uarts, LEN(uarts)); i++)
     {
         char baudrate_buf[16];
         char data_bits_buf[16];
@@ -67,10 +71,13 @@ static bool log_uart_info()
         itoa(uarts[i].data_bits, data_bits_buf, 10);
         itoa(uarts[i].stop_bits, stop_bits_buf, 10);
 
-        switch (uarts[i].enabled)
+        if (uarts[i].enabled)
         {
-            case true: enabled_buf = "active"; break;
-            case false: enabled_buf = "inactive"; break;
+            enabled_buf = "active";
+        }
+        else
+        {
+            enabled_buf = "inactive";
         }
 
         log_fmt(LOG_LEVEL_INFO, " ", uarts[i].name, " @ ", baudrate_buf, "/", data_bits_buf, "/", stop_bits_buf, ", ", enabled_buf, EOL);

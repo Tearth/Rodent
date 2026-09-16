@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <shared/math.h>
+#include <shared/macro.h>
 #include "fs.h"
 #include "log.h"
 
