@@ -2,7 +2,7 @@
 
 bool fs_init()
 {
-    if (fs_mount((void*)FS_BASE_ADDR))
+    if (fs_mount((void *)FS_BASE_ADDR))
     {
         fs_info_t info = {};
         char base_addr_from_buf[16];

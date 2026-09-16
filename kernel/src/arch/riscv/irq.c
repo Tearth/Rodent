@@ -21,8 +21,8 @@ bool irq_init()
     }
 
     __asm__ volatile (
-        "csrw mtvec, %0\n" \
-        "csrs mie, %1\n" \
+        "csrw mtvec, %0\n"
+        "csrs mie, %1\n"
     : :
     // Set BASE with DIRECT mode (single handler for all interrupts) in MTVEC
     "r"(mtvec),

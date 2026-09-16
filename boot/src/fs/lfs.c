@@ -25,8 +25,8 @@ static lfs_config_t cfg = {
 
 bool fs_mount(void* base_addr)
 {
-    uint32_t m1 = *((uint32_t*)base_addr + 2);
-    uint32_t m2 = *((uint32_t*)base_addr + 3);
+    uint32_t m1 = *((uint32_t *)base_addr + 2);
+    uint32_t m2 = *((uint32_t *)base_addr + 3);
 
     if (m1 == FS_LFS_MAGIC_WORDH && m2 == FS_LFS_MAGIC_WORDL)
     {
@@ -84,7 +84,7 @@ bool fs_get_info(fs_info_t *info)
 
 int lfs_read(const lfs_config_t *cfg, lfs_block_t block, lfs_off_t off, void *buf, lfs_size_t size)
 {
-    return flash_read(buf, (const void*)((uint8_t*)cfg->context + block * cfg->block_size + off), size), LFS_ERR_OK;
+    return flash_read(buf, (const void *)((uint8_t *)cfg->context + block * cfg->block_size + off), size), LFS_ERR_OK;
 }
 
 int lfs_prog(const lfs_config_t *cfg, lfs_block_t block, lfs_off_t off, const void *buf, lfs_size_t size)

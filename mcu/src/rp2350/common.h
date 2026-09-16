@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define REG(addr) ((volatile uint32_t*)addr)
+#define REG(addr) ((volatile uint32_t *)addr)
 #define WAIT(func, timeout) \
 { \
     int t = timeout; \

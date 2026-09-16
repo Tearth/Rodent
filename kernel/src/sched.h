@@ -2,8 +2,8 @@
 #define KERNEL_SCHED_H
 
 #include <string.h>
-#include <shared/def.h>
 #include <shared/boot.h>
+#include <shared/def.h>
 #include <shared/math.h>
 #include "arch.h"
 #include "mcu.h"

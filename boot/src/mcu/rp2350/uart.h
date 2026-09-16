@@ -1,8 +1,8 @@
 #ifndef BOOT_UART_H
 #define BOOT_UART_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <string.h>
 #include <rp2350/gpio.h>
 #include <rp2350/uart.h>

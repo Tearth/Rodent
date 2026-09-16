@@ -77,7 +77,7 @@ bool elf_load(const char *path, elf_data_t *data, void *addr)
         if (pheader.type == 0x1)
         {
             int32_t data_left = pheader.fsize;
-            uint8_t *vaddr = (uint8_t*)(pheader.vaddr);
+            uint8_t *vaddr = (uint8_t *)(pheader.vaddr);
 
             if (!fs_file_seek(&handle, pheader.offset))
             {
@@ -101,7 +101,7 @@ bool elf_load(const char *path, elf_data_t *data, void *addr)
             data_from = MIN(data_from, pheader.vaddr);
             data_to = MAX(data_to, pheader.vaddr + pheader.fsize);
 
-            memset((uint8_t*)(pheader.vaddr + pheader.fsize + offset), 0, pheader.msize - pheader.fsize);
+            memset((uint8_t *)(pheader.vaddr + pheader.fsize + offset), 0, pheader.msize - pheader.fsize);
             bss_from = MIN(bss_from, pheader.vaddr + pheader.fsize);
             bss_to = MAX(bss_to, pheader.vaddr + pheader.msize);
         }
@@ -131,7 +131,7 @@ bool elf_load(const char *path, elf_data_t *data, void *addr)
         {
             for (size_t j = 0; j < sheader.size / sheader.entsize; j++)
             {
-                uint32_t *entry = (uint32_t *)((uint8_t*)sheader.addr + offset + j * sheader.entsize);
+                uint32_t *entry = (uint32_t *)((uint8_t *)sheader.addr + offset + j * sheader.entsize);
 
                 // Some addresses like 0x0 or 0xffffffff probably shouldn't be touched
                 if (*entry != 0 && *entry != UINT32_MAX)
@@ -162,8 +162,8 @@ bool elf_load(const char *path, elf_data_t *data, void *addr)
     log_fmt(LOG_LEVEL_INFO, " BSS @ 0x", addr_from_buf, "-0x", addr_to_buf, " (", addr_size_buf, " KB)", EOL);
     log_fmt(LOG_LEVEL_INFO, " Entry point @ 0x", entry_buf, EOL);
 
-    data->base = (void*)(data_from + offset);
-    data->entry = (void*)(elf_header.entry + offset);
+    data->base = (void *)(data_from + offset);
+    data->entry = (void *)(elf_header.entry + offset);
     data->size = bss_to - data_from;
 
     return true;

@@ -119,7 +119,7 @@ static void sched_next()
     // No available thread was found, wait for the next interrupt
     current_pid = UINT8_MAX;
 
-    while(1)
+    while (1)
     {
         arch_irq_enable();
         arch_irq_wait();

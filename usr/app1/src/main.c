@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include <rp2350/uart.h>
 #include <rodent.h>
+#include <rp2350/uart.h>
 
 int main()
 {
@@ -9,7 +9,7 @@ int main()
 
     sleep(100);
 
-    while(1)
+    while (1)
     {
         itoa(i, buf, 10);
         uart_send_str(0, "App 1: ");

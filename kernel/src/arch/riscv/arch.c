@@ -44,7 +44,7 @@ static bool arch_init_pmp()
     uint32_t kernel_end = (uint32_t)&__kernel_end;
     uint32_t size = kernel_end - kernel_start;
 
-    pmp_set_area(PMP_REGION0, (void*)kernel_start, size);
+    pmp_set_area(PMP_REGION0, (void *)kernel_start, size);
     pmp_set_rwx(PMP_REGION0, false, false, false);
     pmp_set_mode(PMP_REGION0, PMP_MODE_NATOP);
 

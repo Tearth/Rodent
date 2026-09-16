@@ -6,7 +6,7 @@ int main()
     uint32_t i = 0;
     char buf[16] = {};
 
-    while(1)
+    while (1)
     {
         itoa(i, buf, 10);
         uart_send_str(0, "App 2: ");

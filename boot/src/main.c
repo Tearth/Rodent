@@ -72,7 +72,7 @@ static bool init_srv(cfg_boot_t *cfg, elf_data_t *kernel_data, boot_args_t *args
         {
             elf_data_t data;
 
-            if (!elf_load(cfg->srv_path[i], &data, (void*)addr))
+            if (!elf_load(cfg->srv_path[i], &data, (void *)addr))
             {
                 return log_fmt(LOG_LEVEL_FAIL, "Failed to load ", cfg->kernel_path, nullptr), false;
             }

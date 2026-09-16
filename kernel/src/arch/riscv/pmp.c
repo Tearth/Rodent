@@ -124,7 +124,7 @@ void pmp_get_area(pmp_t region, void **base, uint32_t *size)
     }
 
     *size = 1u << (i + 3);
-    *base = (void*)((pmpaddr >> 1) << (i + 3));
+    *base = (void *)((pmpaddr >> 1) << (i + 3));
 }
 
 void pmp_set_rwx(pmp_t region, bool r, bool w, bool x)
