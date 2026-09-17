@@ -23,7 +23,7 @@ typedef struct boot_proc
 
 typedef struct boot_args
 {
-    boot_proc_t procs[MAX_BOOT_PROCS];
+    boot_proc_t procs[MAX_BOOT_THREADS];
 } boot_args_t;
 
 #endif

@@ -66,7 +66,7 @@ static bool init_srv(const cfg_boot_t *cfg, const elf_data_t *kernel_data, boot_
 {
     uint32_t addr = (uint32_t)kernel_data->base + kernel_data->size;
 
-    for (size_t i = 0; i < MAX_BOOT_PROCS; i++)
+    for (size_t i = 0; i < MAX_BOOT_THREADS; i++)
     {
         if (cfg->srv_path[i][0] != 0)
         {

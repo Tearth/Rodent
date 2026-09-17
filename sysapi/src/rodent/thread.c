@@ -11,11 +11,22 @@ uint8_t get_pid()
     return data.pid;
 }
 
-uint8_t get_priority(const uint8_t pid)
+uint8_t get_tid()
+{
+    syscall_thread_get_tid_data_t data =
+    {
+
+    };
+    syscall(SYSCALL_THREAD_GET_TID, &data);
+
+    return data.tid;
+}
+
+uint8_t get_priority(const uint8_t tid)
 {
     syscall_thread_get_priority_data_t data =
     {
-        .pid = pid
+        .tid = tid
     };
     syscall(SYSCALL_THREAD_GET_PRIORITY, &data);
 

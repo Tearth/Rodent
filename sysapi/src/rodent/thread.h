@@ -6,7 +6,8 @@
 #include "arch.h"
 
 uint8_t get_pid();
-uint8_t get_priority(const uint8_t pid);
+uint8_t get_tid();
+uint8_t get_priority(const uint8_t tid);
 bool set_priority(const uint8_t priority);
 void sleep(const uint32_t duration);
 

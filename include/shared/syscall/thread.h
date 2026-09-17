@@ -9,10 +9,16 @@ typedef struct syscall_thread_get_pid_data
     uint8_t pid;
 } syscall_thread_get_pid_data_t;
 
+typedef struct syscall_thread_get_tid_data
+{
+    // Response
+    uint8_t tid;
+} syscall_thread_get_tid_data_t;
+
 typedef struct syscall_thread_get_priority_data
 {
     // Request
-    uint8_t pid;
+    uint8_t tid;
 
     // Response
     uint8_t priority;

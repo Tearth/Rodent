@@ -1,7 +1,9 @@
 #include "sched.h"
 
 static proc_t procs[MAX_PROCS] = {};
+static thread_t threads[MAX_THREADS] = {};
 static uint8_t current_pid = UINT8_MAX;
+static uint8_t current_tid = UINT8_MAX;
 
 static void sched_next();
 static uint64_t sched_duration_to_deadline(const uint32_t duration);
@@ -10,7 +12,7 @@ void sched_init(const boot_proc_t *boot_procs)
 {
     arch_attach_timer_handler(sched_timer_handler);
 
-    for (size_t i = 0; i < MAX_BOOT_PROCS; i++)
+    for (size_t i = 0; i < MAX_BOOT_THREADS; i++)
     {
         if (boot_procs[i].type == BOOT_PROC_TYPE_NONE)
         {
@@ -19,12 +21,15 @@ void sched_init(const boot_proc_t *boot_procs)
 
         memcpy(procs[i].path, boot_procs[i].path, MAX_PATH_LEN);
 
+        procs[i].status = PROC_STATUS_RUNNING;
         procs[i].base = boot_procs[i].base;
         procs[i].entry = boot_procs[i].entry;
         procs[i].size = boot_procs[i].size;
-        procs[i].status = PROC_STATUS_IDLE;
-        procs[i].priority = MIN_PRIORITY;
-        procs[i].regs.pc = (uint32_t)boot_procs[i].entry;
+
+        threads[i].pid = i;
+        threads[i].status = THREAD_STATUS_IDLE;
+        threads[i].priority = MIN_PRIORITY;
+        threads[i].regs.pc = (uint32_t)boot_procs[i].entry;
     }
 
     log_msg(LOG_LEVEL_OK, "Initialized scheduler");
@@ -34,10 +39,10 @@ void sched_run()
 {
     log_msg(LOG_LEVEL_INFO, "Entering uspace");
 
-    if (procs[0].status == PROC_STATUS_IDLE)
+    if (threads[0].status == THREAD_STATUS_IDLE)
     {
         mcu_systime_set_comparator(sched_duration_to_deadline(20));
-        uspace_enter(&procs[0].regs);
+        uspace_enter(&threads[0].regs);
     }
 
     log_msg(LOG_LEVEL_FAIL, "Failed to run scheduler, no process available");
@@ -45,10 +50,10 @@ void sched_run()
 
 void sched_timer_handler(regs_t *regs)
 {
-    if (current_pid != UINT8_MAX)
+    if (current_tid != UINT8_MAX)
     {
-        procs[current_pid].status = PROC_STATUS_IDLE;
-        memcpy(&procs[current_pid].regs, regs, sizeof(regs_t));
+        threads[current_tid].status = THREAD_STATUS_IDLE;
+        memcpy(&threads[current_tid].regs, regs, sizeof(regs_t));
     }
 
     sched_next();
@@ -56,9 +61,9 @@ void sched_timer_handler(regs_t *regs)
 
 void sched_sleep(regs_t *regs, const uint32_t duration)
 {
-    procs[current_pid].status = PROC_STATUS_SLEEPING;
-    procs[current_pid].deadline = sched_duration_to_deadline(duration);
-    memcpy(&procs[current_pid].regs, regs, sizeof(regs_t));
+    threads[current_tid].status = THREAD_STATUS_SLEEPING;
+    threads[current_tid].deadline = sched_duration_to_deadline(duration);
+    memcpy(&threads[current_tid].regs, regs, sizeof(regs_t));
 
     sched_next();
 }
@@ -68,19 +73,24 @@ uint8_t sched_get_current_pid()
     return current_pid;
 }
 
-uint8_t sched_get_priority(const uint8_t pid)
+uint8_t sched_get_current_tid()
 {
-    if (procs[pid].status == PROC_STATUS_NONE)
+    return current_tid;
+}
+
+uint8_t sched_get_priority(const uint8_t tid)
+{
+    if (threads[tid].status == THREAD_STATUS_NONE)
     {
         return UINT8_MAX;
     }
 
-    return procs[pid].priority;
+    return threads[tid].priority;
 }
 
-bool sched_set_priority(const uint8_t pid, const uint8_t priority)
+bool sched_set_priority(const uint8_t tid, const uint8_t priority)
 {
-    if (procs[pid].status == PROC_STATUS_NONE)
+    if (threads[tid].status == THREAD_STATUS_NONE)
     {
         return false;
     }
@@ -90,7 +100,7 @@ bool sched_set_priority(const uint8_t pid, const uint8_t priority)
         return false;
     }
 
-    return procs[pid].priority = priority, true;
+    return threads[tid].priority = priority, true;
 }
 
 static void sched_next()
@@ -98,48 +108,48 @@ static void sched_next()
     const uint64_t systime = mcu_systime_get_current();
 
     uint64_t deadline = UINT64_MAX;
-    uint8_t next_pid = UINT8_MAX;
+    uint8_t next_tid = UINT8_MAX;
 
-    for (uint8_t p = MAX_PRIORITY; p >= MIN_PRIORITY && next_pid == UINT8_MAX; p--)
+    for (uint8_t p = MAX_PRIORITY; p >= MIN_PRIORITY && next_tid == UINT8_MAX; p--)
     {
         // Find any sleeping thread with expired deadline
-        for (size_t i = 0; i <= MAX_PROCS; i++)
+        for (size_t i = 0; i <= MAX_THREADS; i++)
         {
-            const size_t pid = (current_pid + i + 1) % MAX_PROCS;
+            const size_t tid = (current_tid + i + 1) % MAX_THREADS;
 
-            if (procs[pid].priority != p)
+            if (threads[tid].priority != p)
             {
                 continue;
             }
 
-            if (procs[pid].status == PROC_STATUS_SLEEPING)
+            if (threads[tid].status == THREAD_STATUS_SLEEPING)
             {
-                if (procs[pid].deadline <= systime)
+                if (threads[tid].deadline <= systime)
                 {
-                    next_pid = pid;
+                    next_tid = tid;
                 }
-                else if (procs[pid].deadline < deadline)
+                else if (threads[tid].deadline < deadline)
                 {
-                    deadline = procs[pid].deadline;
+                    deadline = threads[tid].deadline;
                 }
             }
         }
 
-        if (next_pid == UINT8_MAX)
+        if (next_tid == UINT8_MAX)
         {
             // Find any idle thread ready to run
-            for (size_t i = 0; i <= MAX_PROCS; i++)
+            for (size_t i = 0; i <= MAX_THREADS; i++)
             {
-                const size_t pid = (current_pid + i + 1) % MAX_PROCS;
+                const size_t tid = (current_tid + i + 1) % MAX_THREADS;
 
-                if (procs[pid].priority != p)
+                if (threads[tid].priority != p)
                 {
                     continue;
                 }
 
-                if (procs[pid].status == PROC_STATUS_IDLE)
+                if (threads[tid].status == THREAD_STATUS_IDLE)
                 {
-                    next_pid = pid;
+                    next_tid = tid;
                     break;
                 }
             }
@@ -153,16 +163,18 @@ static void sched_next()
 
     mcu_systime_set_comparator(deadline);
 
-    if (next_pid != UINT8_MAX)
+    if (next_tid != UINT8_MAX)
     {
-        procs[next_pid].status = PROC_STATUS_RUNNING;
-        current_pid = next_pid;
+        threads[next_tid].status = THREAD_STATUS_RUNNING;
+        current_pid = threads[next_tid].pid;
+        current_tid = next_tid;
 
-        uspace_enter(&procs[next_pid].regs);
+        uspace_enter(&threads[next_tid].regs);
     }
 
     // No available thread was found, wait for the next interrupt
     current_pid = UINT8_MAX;
+    current_tid = UINT8_MAX;
 
     while (1)
     {
