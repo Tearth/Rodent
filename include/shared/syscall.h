@@ -6,6 +6,9 @@
 
 typedef enum syscall
 {
+    SYSCALL_THREAD_GET_PID,
+    SYSCALL_THREAD_GET_PRIORITY,
+    SYSCALL_THREAD_SET_PRIORITY,
     SYSCALL_THREAD_SLEEP
 } syscall_t;
 

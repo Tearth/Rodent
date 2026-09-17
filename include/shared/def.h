@@ -5,4 +5,7 @@
 #define MAX_PROCS 32
 #define MAX_PATH_LEN 128
 
+#define MIN_PRIORITY 1
+#define MAX_PRIORITY 8
+
 #endif

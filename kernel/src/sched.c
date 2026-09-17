@@ -23,6 +23,7 @@ void sched_init(const boot_proc_t *boot_procs)
         procs[i].entry = boot_procs[i].entry;
         procs[i].size = boot_procs[i].size;
         procs[i].status = PROC_STATUS_IDLE;
+        procs[i].priority = MIN_PRIORITY;
         procs[i].regs.pc = (uint32_t)boot_procs[i].entry;
     }
 
@@ -62,6 +63,36 @@ void sched_sleep(regs_t *regs, const uint32_t duration)
     sched_next();
 }
 
+uint8_t sched_get_current_pid()
+{
+    return current_pid;
+}
+
+uint8_t sched_get_priority(const uint8_t pid)
+{
+    if (procs[pid].status == PROC_STATUS_NONE)
+    {
+        return UINT8_MAX;
+    }
+
+    return procs[pid].priority;
+}
+
+bool sched_set_priority(const uint8_t pid, const uint8_t priority)
+{
+    if (procs[pid].status == PROC_STATUS_NONE)
+    {
+        return false;
+    }
+
+    if (priority < MIN_PRIORITY || priority > MAX_PRIORITY)
+    {
+        return false;
+    }
+
+    return procs[pid].priority = priority, true;
+}
+
 static void sched_next()
 {
     const uint64_t systime = mcu_systime_get_current();
@@ -69,35 +100,48 @@ static void sched_next()
     uint64_t deadline = UINT64_MAX;
     uint8_t next_pid = UINT8_MAX;
 
-    // Find any sleeping thread with expired deadline
-    for (size_t i = 0; i <= MAX_PROCS; i++)
+    for (uint8_t p = MAX_PRIORITY; p >= MIN_PRIORITY && next_pid == UINT8_MAX; p--)
     {
-        const size_t pid = (current_pid + i + 1) % MAX_PROCS;
-
-        if (procs[pid].status == PROC_STATUS_SLEEPING)
-        {
-            if (procs[pid].deadline <= systime)
-            {
-                next_pid = pid;
-            }
-            else if (procs[pid].deadline < deadline)
-            {
-                deadline = procs[pid].deadline;
-            }
-        }
-    }
-
-    if (next_pid == UINT8_MAX)
-    {
-        // Find any idle thread ready to run
+        // Find any sleeping thread with expired deadline
         for (size_t i = 0; i <= MAX_PROCS; i++)
         {
             const size_t pid = (current_pid + i + 1) % MAX_PROCS;
 
-            if (procs[pid].status == PROC_STATUS_IDLE)
+            if (procs[pid].priority != p)
             {
-                next_pid = pid;
-                break;
+                continue;
+            }
+
+            if (procs[pid].status == PROC_STATUS_SLEEPING)
+            {
+                if (procs[pid].deadline <= systime)
+                {
+                    next_pid = pid;
+                }
+                else if (procs[pid].deadline < deadline)
+                {
+                    deadline = procs[pid].deadline;
+                }
+            }
+        }
+
+        if (next_pid == UINT8_MAX)
+        {
+            // Find any idle thread ready to run
+            for (size_t i = 0; i <= MAX_PROCS; i++)
+            {
+                const size_t pid = (current_pid + i + 1) % MAX_PROCS;
+
+                if (procs[pid].priority != p)
+                {
+                    continue;
+                }
+
+                if (procs[pid].status == PROC_STATUS_IDLE)
+                {
+                    next_pid = pid;
+                    break;
+                }
             }
         }
     }
