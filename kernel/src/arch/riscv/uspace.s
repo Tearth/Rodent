@@ -23,7 +23,7 @@ uspace_enter:
     # Restore MSTATUS
     # li      t0, 0x1800
     # csrc    mstatus, t0
-    li      t0, 0x1888
+    li      t0, 0x1880
     csrs    mstatus, t0
 
     # Restore all registers except ZERO and A0
