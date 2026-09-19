@@ -37,6 +37,6 @@ typedef struct regs
     uint32_t t4;
     uint32_t t5;
     uint32_t t6;
-} __attribute__((__packed__)) regs_t;
+} regs_t;
 
 #endif

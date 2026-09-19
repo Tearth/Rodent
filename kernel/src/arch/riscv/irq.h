@@ -44,7 +44,7 @@ typedef struct irq_state
     uint32_t mepc;
     uint32_t mtval;
     irq_cause_t mcause;
-} __attribute__((__packed__)) irq_state_t;
+} irq_state_t;
 
 bool irq_init();
 void irq_enable();

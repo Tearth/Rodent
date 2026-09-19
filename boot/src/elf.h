@@ -35,7 +35,7 @@ typedef struct elf_header
     uint16_t shentsize;
     uint16_t shnum;
     uint16_t shstrndx;
-} __attribute__((__packed__)) elf_header_t;
+} elf_header_t;
 
 typedef struct elf_pheader
 {
@@ -47,7 +47,7 @@ typedef struct elf_pheader
     uint32_t msize;
     uint32_t flags;
     uint32_t align;
-} __attribute__((__packed__)) elf_pheader_t;
+} elf_pheader_t;
 
 typedef struct elf_sheader
 {
@@ -61,7 +61,7 @@ typedef struct elf_sheader
     uint32_t info;
     uint32_t align;
     uint32_t entsize;
-} __attribute__((__packed__)) elf_sheader_t;
+} elf_sheader_t;
 
 typedef struct elf_data
 {
