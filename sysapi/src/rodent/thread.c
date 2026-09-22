@@ -22,24 +22,26 @@ uint8_t get_tid()
     return data.tid;
 }
 
-uint8_t get_priority(const uint8_t tid)
+void get_sched(sched_policy_t *policy, sched_params_t *params)
 {
-    syscall_thread_get_priority_data_t data =
+    syscall_thread_get_sched_data_t data =
     {
-        .tid = tid
-    };
-    syscall(SYSCALL_THREAD_GET_PRIORITY, &data);
 
-    return data.priority;
+    };
+    syscall(SYSCALL_THREAD_GET_SCHED, &data);
+
+    *policy = (sched_policy_t)data.policy;
+    *params = data.params;
 }
 
-bool set_priority(const uint8_t priority)
+bool set_sched(const sched_policy_t policy, const sched_params_t *params)
 {
-    syscall_thread_set_priority_data_t data =
+    syscall_thread_set_sched_data_t data =
     {
-        .priority = priority
+        .policy = (syscall_thread_sched_policy_t)policy,
+        .params = *params
     };
-    syscall(SYSCALL_THREAD_SET_PRIORITY, &data);
+    syscall(SYSCALL_THREAD_SET_SCHED, &data);
 
     return data.success;
 }

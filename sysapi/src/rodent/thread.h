@@ -5,10 +5,17 @@
 #include <shared/syscall.h>
 #include "arch.h"
 
+typedef enum sched_policy
+{
+    SCHED_POLICY_ROUND_ROBIN = SYSCALL_THREAD_SCHED_POLICY_ROUND_ROBIN,
+    SCHED_POLICY_REAL_TIME = SYSCALL_THREAD_SCHED_POLICY_REAL_TIME,
+} sched_policy_t;
+typedef syscall_thread_sched_params_t sched_params_t;
+
 uint8_t get_pid();
 uint8_t get_tid();
-uint8_t get_priority(const uint8_t tid);
-bool set_priority(const uint8_t priority);
+void get_sched(sched_policy_t *policy, sched_params_t *params);
+bool set_sched(const sched_policy_t policy, const sched_params_t *params);
 void sleep(const uint32_t duration);
 
 #endif

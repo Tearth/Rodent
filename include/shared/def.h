@@ -9,4 +9,6 @@
 #define MIN_PRIORITY 1
 #define MAX_PRIORITY 8
 
+#define DEFAULT_SCHED_SLICE 1
+
 #endif

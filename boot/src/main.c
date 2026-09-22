@@ -60,6 +60,8 @@ __attribute__((noreturn)) int main()
     log_msg(LOG_LEVEL_INFO, "Jumping to kernel");
     log_msg(LOG_LEVEL_INFO, "---------------------------------------");
     jmp(kernel_data.entry, &boot_args);
+
+    HALT();
 }
 
 static bool init_srv(const cfg_boot_t *cfg, const elf_data_t *kernel_data, boot_args_t *args)
