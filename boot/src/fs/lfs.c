@@ -87,17 +87,17 @@ int lfs_read(const lfs_config_t *cfg, lfs_block_t block, lfs_off_t off, void *bu
     return flash_read(buf, (const void *)((uint8_t *)cfg->context + block * cfg->block_size + off), size), LFS_ERR_OK;
 }
 
-int lfs_prog(const lfs_config_t *cfg, lfs_block_t block, lfs_off_t off, const void *buf, lfs_size_t size)
+int lfs_prog(UNUSED const lfs_config_t *cfg, UNUSED lfs_block_t block, UNUSED lfs_off_t off, UNUSED const void *buf, UNUSED lfs_size_t size)
 {
-    return (void)cfg, (void)block, (void)off, (void)buf, (void)size, LFS_ERR_OK;
+    return LFS_ERR_OK;
 }
 
-int lfs_erase(const lfs_config_t *cfg, lfs_block_t block)
+int lfs_erase(UNUSED const lfs_config_t *cfg, UNUSED lfs_block_t block)
 {
-    return (void)cfg, (void)block, LFS_ERR_OK;
+    return LFS_ERR_OK;
 }
 
-int lfs_sync(const lfs_config_t *cfg)
+int lfs_sync(UNUSED const lfs_config_t *cfg)
 {
-    return (void)cfg, LFS_ERR_OK;
+    return LFS_ERR_OK;
 }

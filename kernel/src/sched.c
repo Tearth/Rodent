@@ -52,60 +52,6 @@ void sched_run()
     sched_next();
 }
 
-void sched_timer_handler(regs_t *regs)
-{
-    if (current_tid != UINT8_MAX)
-    {
-        threads[current_tid].status = THREAD_STATUS_READY;
-        sched_save_thread(regs);
-    }
-
-    sched_next();
-}
-
-void sched_sleep(regs_t *regs, const uint32_t duration)
-{
-    const uint64_t systime = mcu_systime_get_current();
-
-    threads[current_tid].status = THREAD_STATUS_WAITING;
-    threads[current_tid].awake_time = systime + sched_duration_to_systime(duration);
-
-    sched_save_thread(regs);
-    sched_next();
-}
-
-void sched_yield_thread(regs_t *regs)
-{
-    threads[current_tid].status = THREAD_STATUS_READY;
-
-    sched_save_thread(regs);
-    sched_next();
-}
-
-void sched_yield_budget(regs_t *regs)
-{
-    if (threads[current_tid].sched_policy == SCHED_POLICY_REAL_TIME)
-    {
-        threads[current_tid].status = THREAD_STATUS_READY;
-        threads[current_tid].budget = 0;
-    }
-
-    sched_save_thread(regs);
-    sched_next();
-}
-
-void sched_yield_period(regs_t *regs)
-{
-    if (threads[current_tid].sched_policy == SCHED_POLICY_REAL_TIME)
-    {
-        threads[current_tid].status = THREAD_STATUS_WAITING;
-        threads[current_tid].awake_time = threads[current_tid].replenishment;
-    }
-
-    sched_save_thread(regs);
-    sched_next();
-}
-
 uint8_t sched_get_current_pid()
 {
     return current_pid;
@@ -174,6 +120,60 @@ bool sched_set_params(const uint8_t tid, const sched_params_t *params)
     }
 
     return threads[tid].sched_params = *params, true;
+}
+
+void sched_timer_handler(regs_t *regs)
+{
+    if (current_tid != UINT8_MAX)
+    {
+        threads[current_tid].status = THREAD_STATUS_READY;
+        sched_save_thread(regs);
+    }
+
+    sched_next();
+}
+
+void sched_sleep(regs_t *regs, const uint32_t duration)
+{
+    const uint64_t systime = mcu_systime_get_current();
+
+    threads[current_tid].status = THREAD_STATUS_WAITING;
+    threads[current_tid].awake_time = systime + sched_duration_to_systime(duration);
+
+    sched_save_thread(regs);
+    sched_next();
+}
+
+void sched_yield_thread(regs_t *regs)
+{
+    threads[current_tid].status = THREAD_STATUS_READY;
+
+    sched_save_thread(regs);
+    sched_next();
+}
+
+void sched_yield_budget(regs_t *regs)
+{
+    if (threads[current_tid].sched_policy == SCHED_POLICY_REAL_TIME)
+    {
+        threads[current_tid].status = THREAD_STATUS_READY;
+        threads[current_tid].budget = 0;
+    }
+
+    sched_save_thread(regs);
+    sched_next();
+}
+
+void sched_yield_period(regs_t *regs)
+{
+    if (threads[current_tid].sched_policy == SCHED_POLICY_REAL_TIME)
+    {
+        threads[current_tid].status = THREAD_STATUS_WAITING;
+        threads[current_tid].awake_time = threads[current_tid].replenishment;
+    }
+
+    sched_save_thread(regs);
+    sched_next();
 }
 
 static void sched_next()

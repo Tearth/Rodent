@@ -7,10 +7,11 @@
 #define FS_LFS_MAGIC_WORDH 0x7474696c
 #define FS_LFS_MAGIC_WORDL 0x7366656c
 
+#include <lfs.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-#include <lfs.h>
+#include <shared/macro.h>
 #include "mcu.h"
 
 typedef struct lfs_config lfs_config_t;
