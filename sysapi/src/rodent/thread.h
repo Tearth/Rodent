@@ -17,5 +17,8 @@ uint8_t get_tid();
 void get_sched(sched_policy_t *policy, sched_params_t *params);
 bool set_sched(const sched_policy_t policy, const sched_params_t *params);
 void sleep(const uint32_t duration);
+void yield_thread();
+void yield_budget();
+void yield_period();
 
 #endif

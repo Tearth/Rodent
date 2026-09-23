@@ -54,3 +54,30 @@ void sleep(const uint32_t duration)
     };
     syscall(SYSCALL_THREAD_SLEEP, &data);
 }
+
+void yield_thread()
+{
+    syscall_thread_yield_thread_data_t data =
+    {
+
+    };
+    syscall(SYSCALL_THREAD_YIELD_THREAD, &data);
+}
+
+void yield_budget()
+{
+    syscall_thread_yield_budget_data_t data =
+    {
+
+    };
+    syscall(SYSCALL_THREAD_YIELD_BUDGET, &data);
+}
+
+void yield_period()
+{
+    syscall_thread_yield_period_data_t data =
+    {
+
+    };
+    syscall(SYSCALL_THREAD_YIELD_PERIOD, &data);
+}

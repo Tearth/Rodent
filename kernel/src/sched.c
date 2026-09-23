@@ -74,6 +74,38 @@ void sched_sleep(regs_t *regs, const uint32_t duration)
     sched_next();
 }
 
+void sched_yield_thread(regs_t *regs)
+{
+    threads[current_tid].status = THREAD_STATUS_READY;
+
+    sched_save_thread(regs);
+    sched_next();
+}
+
+void sched_yield_budget(regs_t *regs)
+{
+    if (threads[current_tid].sched_policy == SCHED_POLICY_REAL_TIME)
+    {
+        threads[current_tid].status = THREAD_STATUS_READY;
+        threads[current_tid].budget = 0;
+    }
+
+    sched_save_thread(regs);
+    sched_next();
+}
+
+void sched_yield_period(regs_t *regs)
+{
+    if (threads[current_tid].sched_policy == SCHED_POLICY_REAL_TIME)
+    {
+        threads[current_tid].status = THREAD_STATUS_WAITING;
+        threads[current_tid].awake_time = threads[current_tid].replenishment;
+    }
+
+    sched_save_thread(regs);
+    sched_next();
+}
+
 uint8_t sched_get_current_pid()
 {
     return current_pid;
@@ -101,9 +133,7 @@ bool sched_set_policy(const uint8_t tid, const sched_policy_t policy)
         return false;
     }
 
-    threads[tid].sched_policy = policy;
-
-    return true;
+    return threads[tid].sched_policy = policy, true;
 }
 
 bool sched_get_params(const uint8_t tid, sched_params_t *params)
@@ -135,7 +165,7 @@ bool sched_set_params(const uint8_t tid, const sched_params_t *params)
         case SCHED_POLICY_REAL_TIME:
         {
             threads[tid].priority = params->real_time.priority_high;
-            threads[tid].budget = params->real_time.budget;
+            threads[tid].budget = sched_duration_to_systime(params->real_time.budget);
             threads[tid].deadline = systime + sched_duration_to_systime(params->real_time.deadline);
             threads[tid].replenishment = systime + sched_duration_to_systime(params->real_time.period);
             break;
@@ -179,10 +209,22 @@ static void sched_next()
             // Replenish budget, update deadline and increase priority
             if (systime >= threads[tid].replenishment)
             {
+                const uint64_t budget_systime = sched_duration_to_systime(threads[tid].sched_params.real_time.budget);
+                const uint64_t deadline_systime = sched_duration_to_systime(threads[tid].sched_params.real_time.deadline);
+                const uint64_t period_systime = sched_duration_to_systime(threads[tid].sched_params.real_time.period);
+
                 threads[tid].priority = threads[tid].sched_params.real_time.priority_high;
-                threads[tid].budget = sched_duration_to_systime(threads[tid].sched_params.real_time.budget);
-                threads[tid].deadline += sched_duration_to_systime(threads[tid].sched_params.real_time.deadline);
-                threads[tid].replenishment += sched_duration_to_systime(threads[tid].sched_params.real_time.period);
+                threads[tid].budget = budget_systime;
+                threads[tid].deadline += period_systime;
+                threads[tid].replenishment += period_systime;
+
+                // If thread was stalled and replenishment is not up with sysclock, start with fresh base
+                if (threads[tid].replenishment <= systime)
+                {
+                    threads[tid].deadline = systime + deadline_systime;
+                    threads[tid].replenishment = systime + period_systime;
+                }
+
                 next_irq = MIN(next_irq, threads[tid].replenishment);
             }
 

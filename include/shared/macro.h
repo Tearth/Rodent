@@ -6,5 +6,6 @@
 
 #define HALT() while (1) __asm__ ("");
 #define LEN(a) (sizeof(a) / sizeof(a[0]))
+#define UNUSED __attribute__((unused))
 
 #endif

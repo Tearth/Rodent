@@ -85,4 +85,19 @@ typedef struct syscall_thread_sleep_data
     uint32_t duration;
 } syscall_thread_sleep_data_t;
 
+typedef struct syscall_thread_yield_thread_data
+{
+
+} syscall_thread_yield_thread_data_t;
+
+typedef struct syscall_thread_yield_budget_data
+{
+
+} syscall_thread_yield_budget_data_t;
+
+typedef struct syscall_thread_yield_period_data
+{
+
+} syscall_thread_yield_period_data_t;
+
 #endif

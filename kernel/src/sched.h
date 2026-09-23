@@ -83,6 +83,9 @@ void sched_init(const boot_proc_t *boot_procs);
 void sched_run();
 void sched_timer_handler(regs_t *regs);
 void sched_sleep(regs_t *regs, const uint32_t duration);
+void sched_yield_thread(regs_t *regs);
+void sched_yield_budget(regs_t *regs);
+void sched_yield_period(regs_t *regs);
 
 uint8_t sched_get_current_pid();
 uint8_t sched_get_current_tid();

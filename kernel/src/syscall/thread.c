@@ -1,16 +1,16 @@
 #include "thread.h"
 
-void syscall_thread_get_pid(syscall_thread_get_pid_data_t *data)
+void syscall_thread_get_pid(UNUSED regs_t *regs, syscall_thread_get_pid_data_t *data)
 {
     data->pid = sched_get_current_pid();
 }
 
-void syscall_thread_get_tid(syscall_thread_get_tid_data_t *data)
+void syscall_thread_get_tid(UNUSED regs_t *regs, syscall_thread_get_tid_data_t *data)
 {
     data->tid = sched_get_current_tid();
 }
 
-void syscall_thread_get_sched(syscall_thread_get_sched_data_t *data)
+void syscall_thread_get_sched(UNUSED regs_t *regs, syscall_thread_get_sched_data_t *data)
 {
     const uint8_t tid = sched_get_current_tid();
     sched_params_t params;
@@ -49,7 +49,7 @@ void syscall_thread_get_sched(syscall_thread_get_sched_data_t *data)
     }
 }
 
-void syscall_thread_set_sched(syscall_thread_set_sched_data_t *data)
+void syscall_thread_set_sched(UNUSED regs_t *regs, syscall_thread_set_sched_data_t *data)
 {
     const uint8_t tid = sched_get_current_tid();
     const sched_policy_t policy_old = sched_get_policy(tid);
@@ -102,4 +102,19 @@ void syscall_thread_set_sched(syscall_thread_set_sched_data_t *data)
 void syscall_thread_sleep(regs_t *regs, syscall_thread_sleep_data_t *data)
 {
     sched_sleep(regs, data->duration);
+}
+
+void syscall_thread_yield_thread(regs_t *regs, UNUSED syscall_thread_yield_thread_data_t *data)
+{
+    sched_yield_thread(regs);
+}
+
+void syscall_thread_yield_budget(regs_t *regs, UNUSED syscall_thread_yield_budget_data_t *data)
+{
+    sched_yield_budget(regs);
+}
+
+void syscall_thread_yield_period(regs_t *regs, UNUSED syscall_thread_yield_period_data_t *data)
+{
+    sched_yield_period(regs);
 }
