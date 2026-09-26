@@ -9,6 +9,8 @@
 
 bool arch_init();
 
+uint32_t arch_cpu_get_cid();
+
 void arch_irq_enable();
 void arch_irq_wait();
 void arch_attach_timer_handler(void (*handler)(regs_t *regs));

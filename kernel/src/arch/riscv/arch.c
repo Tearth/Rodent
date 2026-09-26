@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "arch.h"
+#include "cpu.h"
 #include "irq.h"
 #include "log.h"
 #include "pmp.h"
@@ -59,6 +60,11 @@ static bool arch_init_pmp()
     log_fmt(LOG_LEVEL_INFO, " PMP_REGION0 @ 0x", region_from_buf, "-0x", region_to_buf, " (", region_size_buf, " KB)", EOL);
 
     return true;
+}
+
+uint32_t arch_cpu_get_cid()
+{
+    return cpu_get_hart_id();
 }
 
 void arch_irq_enable()

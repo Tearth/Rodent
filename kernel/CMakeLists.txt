@@ -25,6 +25,7 @@ target_link_options(kernel.elf PRIVATE
 if($ENV{TARGET_ARCH} STREQUAL "riscv")
     target_sources(kernel.elf PRIVATE
         src/arch/riscv/arch.c
+        src/arch/riscv/cpu.c
         src/arch/riscv/irq.c
         src/arch/riscv/irq.s
         src/arch/riscv/pmp.c
