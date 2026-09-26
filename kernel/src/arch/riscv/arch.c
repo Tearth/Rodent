@@ -3,6 +3,7 @@
 #include "irq.h"
 #include "log.h"
 #include "pmp.h"
+#include "sync.h"
 #include "uspace.h"
 
 extern uint32_t __kernel_start;
@@ -78,4 +79,14 @@ void arch_attach_timer_handler(void (*handler)(regs_t *regs))
 void arch_attach_syscall_handler(void (*handler)(regs_t *regs))
 {
     irq_attach_syscall_handler(handler);
+}
+
+void arch_mutex_lock(mutex_t *mutex)
+{
+    while (!mutex_lock(mutex));
+}
+
+void arch_mutex_unlock(mutex_t *mutex)
+{
+    mutex_unlock(mutex);
 }
