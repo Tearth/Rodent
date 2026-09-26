@@ -6,6 +6,7 @@ if($ENV{TARGET_MCU} STREQUAL "rp2350")
     add_library(mcu OBJECT
         src/rp2350/clk.c
         src/rp2350/ext.c
+        src/rp2350/fifo.c
         src/rp2350/gpio.c
         src/rp2350/qmi.c
         src/rp2350/reset.c
