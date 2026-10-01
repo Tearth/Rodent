@@ -6,6 +6,7 @@
 #include <shared/def.h>
 #include <shared/macro.h>
 #include "arch.h"
+#include "def.h"
 #include "mcu.h"
 
 typedef enum proc_status
@@ -64,6 +65,7 @@ typedef struct proc
 typedef struct thread
 {
     uint8_t pid;
+    uint32_t cid;
     regs_t regs;
     thread_status_t status;
 
@@ -80,20 +82,23 @@ typedef struct thread
 } thread_t;
 
 void sched_init(const boot_proc_t *boot_procs);
-void sched_run();
+void sched_enable();
+void sched_disable();
+bool sched_is_enabled();
+[[noreturn]] void sched_run();
 
-uint8_t sched_get_current_pid();
-uint8_t sched_get_current_tid();
+uint8_t sched_get_current_pid(const uint32_t cid);
+uint8_t sched_get_current_tid(const uint32_t cid);
 
 sched_policy_t sched_get_policy(const uint8_t tid);
 bool sched_set_policy(const uint8_t tid, const sched_policy_t policy);
 bool sched_get_params(const uint8_t tid, sched_params_t *params);
 bool sched_set_params(const uint8_t tid, const sched_params_t *params);
 
-void sched_timer_handler(regs_t *regs);
-void sched_sleep(regs_t *regs, const uint32_t duration);
-void sched_yield_thread(regs_t *regs);
-void sched_yield_budget(regs_t *regs);
-void sched_yield_period(regs_t *regs);
+void sched_timer_handler(const uint32_t cid, regs_t *regs);
+void sched_sleep(const uint32_t cid, regs_t *regs, const uint32_t duration);
+void sched_yield_thread(const uint32_t cid, regs_t *regs);
+void sched_yield_budget(const uint32_t cid, regs_t *regs);
+void sched_yield_period(const uint32_t cid, regs_t *regs);
 
 #endif

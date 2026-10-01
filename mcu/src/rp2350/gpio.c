@@ -3,19 +3,19 @@
 void gpio_enable(const uint8_t gpio)
 {
     // Clear ISO (Pad Isolation Control)
-    *GPIO_PADS_REG_CTRL(gpio) &= ~(1u << 8);
+    *GPIO_PADS_BANK0_REG_CTRL(gpio) &= ~(1u << 8);
 }
 
 void gpio_disable(const uint8_t gpio)
 {
     // Set ISO (Pad Isolation Control)
-    *GPIO_PADS_REG_CTRL(gpio) |= 1u << 8;
+    *GPIO_PADS_BANK0_REG_CTRL(gpio) |= 1u << 8;
 }
 
 bool gpio_is_enabled(const uint8_t gpio)
 {
     // Read ISO (Pad Isolation Control)
-    return (*GPIO_PADS_REG_CTRL(gpio) & (1u << 8)) == 0;
+    return (*GPIO_PADS_BANK0_REG_CTRL(gpio) & (1u << 8)) == 0;
 }
 
 bool gpio_reset()
@@ -32,6 +32,6 @@ void gpio_set_func(const uint8_t gpio, const gpio_func_t func)
 void gpio_set_mode(const uint8_t gpio, const bool input, const bool output, const bool pull_down, const bool pull_up)
 {
     // Set PDE (Pull Down Enable), PUE (Pull Up Enable), IE (Input Enable), OD (Output Disable)
-    *GPIO_PADS_REG_CTRL(gpio) = (*GPIO_PADS_REG_CTRL(gpio) & ~GPIO_PADS_MODE_MASK) |
+    *GPIO_PADS_BANK0_REG_CTRL(gpio) = (*GPIO_PADS_BANK0_REG_CTRL(gpio) & ~GPIO_PADS_BANK0_MODE_MASK) |
         (pull_down << 2) | (pull_up << 3) | (input << 6) | (!output << 7);
 }

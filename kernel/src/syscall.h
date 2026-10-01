@@ -6,6 +6,6 @@
 #include "arch.h"
 
 void syscall_init();
-void syscall_handler(regs_t *regs);
+void syscall_handler(const uint32_t cid, regs_t *regs);
 
 #endif

@@ -18,8 +18,9 @@ target_include_directories(kernel.elf BEFORE PRIVATE
 target_link_options(kernel.elf PRIVATE
     -T ${CMAKE_CURRENT_SOURCE_DIR}/ld/$ENV{TARGET_MCU}_$ENV{TARGET_ARCH}.ld -nostartfiles
     -Wl,-Map=${CMAKE_BINARY_DIR}/kernel.map,--no-warn-rwx-segments
-    -Wl,--defsym=STACK_SIZE=$ENV{RUNTIME_STACK_SIZE}
+    -Wl,--defsym=CORES=$ENV{CPU_CORES}
     -Wl,--defsym=BASE_ADDR=$ENV{MM_BASE_ADDR}
+    -Wl,--defsym=STACK_SIZE=$ENV{MM_STACK_SIZE}
 )
 
 if($ENV{TARGET_ARCH} STREQUAL "riscv")
@@ -30,6 +31,7 @@ if($ENV{TARGET_ARCH} STREQUAL "riscv")
         src/arch/riscv/irq.s
         src/arch/riscv/pmp.c
         src/arch/riscv/startup.s
+        src/arch/riscv/sync.s
         src/arch/riscv/uspace.s
     )
 endif()
@@ -37,3 +39,11 @@ endif()
 if($ENV{TARGET_MCU} STREQUAL "rp2350")
     target_sources(kernel.elf PRIVATE src/mcu/rp2350.c)
 endif()
+
+set(CPU_CORES $ENV{CPU_CORES})
+set(MM_STACK_SIZE $ENV{MM_STACK_SIZE})
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/def.h.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/def.h
+)

@@ -4,8 +4,8 @@
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
-#define HALT() while (1) __asm__ ("");
+#define NOP() __asm__ ("")
+#define HALT() while (1) NOP();
 #define LEN(a) (sizeof(a) / sizeof(a[0]))
-#define UNUSED __attribute__((unused))
 
 #endif

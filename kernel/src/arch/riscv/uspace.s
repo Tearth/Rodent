@@ -16,6 +16,14 @@
 # - a0 - state
 # Output: none
 uspace_enter:
+    # Store hart-local stack pointer to MSCRATCH
+    csrr    t0, mhartid
+    la      t1, __stack_size
+    mul     t1, t0, t1
+    la      t0, __stack_pointer
+    sub     t0, t0, t1
+    csrw    mscratch, t0
+
     # Restore MEPC
     lw      t0, 0(a0)
     csrw    mepc, t0

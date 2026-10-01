@@ -11,7 +11,7 @@
 
 static bool init_srv(const cfg_boot_t *cfg, const elf_data_t *kernel_data, boot_args_t *args);
 
-__attribute__((noreturn)) int main()
+[[noreturn]] int main()
 {
     cfg_boot_t cfg;
     boot_args_t boot_args;

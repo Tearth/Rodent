@@ -54,4 +54,7 @@ uint8_t uart_read_byte(const uart_t uart);
 void uart_send_byte(const uart_t uart, const uint8_t byte);
 void uart_send_str(const uart_t uart, const char *str);
 
+bool uart_can_read(const uart_t uart);
+bool uart_can_write(const uart_t uart);
+
 #endif

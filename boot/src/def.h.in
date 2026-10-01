@@ -1,7 +1,10 @@
 #ifndef BOOT_DEF_H
 #define BOOT_DEF_H
 
-#define FS_BASE_ADDR @FS_BASE_ADDR@
+// Boot
 #define BOOT_CFG "@BOOT_CFG@"
+
+// Filesystem
+#define FS_BASE_ADDR @FS_BASE_ADDR@
 
 #endif

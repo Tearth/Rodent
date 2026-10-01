@@ -1,6 +1,6 @@
 #include "arch.h"
 
-__attribute__((noreturn)) void jmp(const void *addr, const void *args)
+[[noreturn]] void jmp(const void *addr, const void *args)
 {
     __asm__ volatile (
         "fence.i\n"

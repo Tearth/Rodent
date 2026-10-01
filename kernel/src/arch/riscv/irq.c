@@ -1,5 +1,6 @@
 #include "irq.h"
 
+extern uint32_t __stack_pointer;
 extern void _irq_handler_entry();
 
 static void irq_timer_handler(irq_state_t *state);
@@ -7,8 +8,8 @@ static void irq_user_syscall_handler(irq_state_t *state);
 static void irq_exception_handler(irq_state_t *state);
 static void irq_unsupported_handler(irq_state_t *state);
 
-static void (*timer_handler)(regs_t *regs);
-static void (*syscall_handler)(regs_t *regs);
+static void (*timer_handler)(const uint32_t cid, regs_t *regs);
+static void (*syscall_handler)(const uint32_t cid, regs_t *regs);
 
 bool irq_init()
 {
@@ -34,10 +35,14 @@ bool irq_init()
 
 void irq_enable()
 {
-    // Set MIE (Interrupt Enable) in MSTATUS
     __asm__ volatile (
-        "csrs mstatus, %0"
-    : : "r"(1u << 3));
+        "csrs mstatus, %0\n"
+        "csrw mscratch, %1\n"
+    : :
+    // Set MIE (Interrupt Enable) in MSTATUS
+    "r"(1u << 3),
+    // Write MSCRATCH
+    "r"((uint32_t)&__stack_pointer - cpu_get_hart_id() * STACK_SIZE));
 }
 
 void irq_disable()
@@ -65,12 +70,12 @@ void irq_wait()
     __asm__ volatile ("wfi");
 }
 
-void irq_attach_timer_handler(void (*handler)(regs_t *regs))
+void irq_attach_timer_handler(void (*handler)(const uint32_t cid, regs_t *regs))
 {
     timer_handler = handler;
 }
 
-void irq_attach_syscall_handler(void (*handler)(regs_t *regs))
+void irq_attach_syscall_handler(void (*handler)(const uint32_t cid, regs_t *regs))
 {
     syscall_handler = handler;
 }
@@ -106,7 +111,7 @@ static void irq_user_syscall_handler(irq_state_t *state)
 
     if (syscall_handler != nullptr)
     {
-        syscall_handler(&state->regs);
+        syscall_handler(cpu_get_hart_id(), &state->regs);
     }
 }
 
@@ -114,7 +119,7 @@ static void irq_timer_handler(irq_state_t *state)
 {
     if (timer_handler != nullptr)
     {
-        timer_handler(&state->regs);
+        timer_handler(cpu_get_hart_id(), &state->regs);
     }
 }
 

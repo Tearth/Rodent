@@ -30,7 +30,7 @@ SECTIONS
         . = ALIGN(4);
         *(.sbss*)
         . = ALIGN(16);
-        . += STACK_SIZE;
+        . += STACK_SIZE * CORES;
     }
 
     /* Fill the rest of bss section, so the kernel size will be a power of 2 */
@@ -44,4 +44,5 @@ SECTIONS
     __kernel_end = .;
 
     __stack_pointer = .;
+    __stack_size = STACK_SIZE;
 }

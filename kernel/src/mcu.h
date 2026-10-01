@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-bool mcu_init();
+bool mcu_init(const bool core0);
 
 uint32_t mcu_sysclk_get_freq();
 uint64_t mcu_systime_get_current();

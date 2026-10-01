@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <shared/macro.h>
+#include "cpu.h"
+#include "def.h"
 #include "log.h"
 #include "reg.h"
 #include "uspace.h"
@@ -52,8 +54,8 @@ void irq_disable();
 bool irq_is_enabled();
 
 void irq_wait();
-void irq_attach_timer_handler(void (*handler)(regs_t *regs));
-void irq_attach_syscall_handler(void (*handler)(regs_t *regs));
+void irq_attach_timer_handler(void (*handler)(const uint32_t cid, regs_t *regs));
+void irq_attach_syscall_handler(void (*handler)(const uint32_t cid, regs_t *regs));
 
 void irq_handler(irq_state_t *state);
 

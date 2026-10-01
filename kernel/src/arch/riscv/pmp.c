@@ -167,6 +167,7 @@ uint32_t pmp_read_pmpcfg(const pmp_t region)
 {
     uint32_t pmpcfg;
 
+    // Read PMPCFGX
     switch (region)
     {
         case PMP_REGION0:
@@ -174,7 +175,7 @@ uint32_t pmp_read_pmpcfg(const pmp_t region)
         case PMP_REGION2:
         case PMP_REGION3:
         {
-           __asm__ volatile (
+            __asm__ volatile (
                 "csrr %0, pmpcfg0"
             : "=r"(pmpcfg));
 
@@ -198,6 +199,7 @@ uint32_t pmp_read_pmpcfg(const pmp_t region)
 
 void pmp_write_pmpcfg(const pmp_t region, const uint32_t pmpcfg)
 {
+    // Write PMPCFGX
     switch (region)
     {
         case PMP_REGION0:
@@ -229,6 +231,7 @@ uint32_t pmp_read_pmpaddr(const pmp_t region)
 {
     uint32_t pmpaddr;
 
+    // Read PMPCFGX
     switch (region)
     {
         case PMP_REGION0: __asm__ volatile ("csrr %0, pmpaddr0" : "=r"(pmpaddr)); break;
@@ -246,6 +249,7 @@ uint32_t pmp_read_pmpaddr(const pmp_t region)
 
 void pmp_write_pmpaddr(const pmp_t region, const uint32_t pmpaddr)
 {
+    // Write PMPADDRX
     switch (region)
     {
         case PMP_REGION0: __asm__ volatile ("csrw pmpaddr0, %0" : : "r"(pmpaddr)); break;

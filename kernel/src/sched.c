@@ -1,17 +1,28 @@
 #include "sched.h"
 
+extern uint32_t __stack_pointer;
+
+static bool enabled = false;
+static uint32_t systime_freq = 0;
+
 static proc_t procs[MAX_PROCS] = {};
 static thread_t threads[MAX_THREADS] = {};
-static uint8_t current_pid = UINT8_MAX;
-static uint8_t current_tid = UINT8_MAX;
+static uint8_t current_pid[CPU_CORES];
+static uint8_t current_tid[CPU_CORES];
 
-static void sched_next();
-static void sched_save_thread(const regs_t *regs);
+[[noreturn]] static void sched_next(const uint32_t cid);
+static void sched_save_thread(const uint32_t cid, const regs_t *regs);
 static uint64_t sched_duration_to_systime(const uint32_t duration);
 
 void sched_init(const boot_proc_t *boot_procs)
 {
-    arch_attach_timer_handler(sched_timer_handler);
+    systime_freq = mcu_sysclk_get_freq();
+
+    for (size_t cid = 0; cid < CPU_CORES; cid++)
+    {
+        current_pid[cid] = UINT8_MAX;
+        current_tid[cid] = UINT8_MAX;
+    }
 
     for (size_t i = 0; i < MAX_BOOT_THREADS; i++)
     {
@@ -28,6 +39,7 @@ void sched_init(const boot_proc_t *boot_procs)
         procs[i].size = boot_procs[i].size;
 
         threads[i].pid = i;
+        threads[i].cid = i % CPU_CORES;
         threads[i].regs.pc = (uint32_t)boot_procs[i].entry;
         threads[i].status = THREAD_STATUS_READY;
         threads[i].priority = MAX_PRIORITY;
@@ -43,23 +55,38 @@ void sched_init(const boot_proc_t *boot_procs)
         threads[i].sched_params.round_robin.priority = MAX_PRIORITY;
     }
 
+    arch_attach_timer_handler(sched_timer_handler);
     log_msg(LOG_LEVEL_OK, "Initialized scheduler");
 }
 
-void sched_run()
+void sched_enable()
 {
-    log_msg(LOG_LEVEL_INFO, "Entering uspace");
-    sched_next();
+    enabled = true;
 }
 
-uint8_t sched_get_current_pid()
+void sched_disable()
 {
-    return current_pid;
+    enabled = false;
 }
 
-uint8_t sched_get_current_tid()
+bool sched_is_enabled()
 {
-    return current_tid;
+    return enabled;
+}
+
+[[noreturn]] void sched_run()
+{
+    sched_next(arch_cpu_get_cid());
+}
+
+uint8_t sched_get_current_pid(const uint32_t cid)
+{
+    return current_pid[cid];
+}
+
+uint8_t sched_get_current_tid(const uint32_t cid)
+{
+    return current_tid[cid];
 }
 
 sched_policy_t sched_get_policy(const uint8_t tid)
@@ -122,70 +149,79 @@ bool sched_set_params(const uint8_t tid, const sched_params_t *params)
     return threads[tid].sched_params = *params, true;
 }
 
-void sched_timer_handler(regs_t *regs)
+void sched_timer_handler(const uint32_t cid, regs_t *regs)
 {
-    if (current_tid != UINT8_MAX)
+    if (current_tid[cid] != UINT8_MAX)
     {
-        threads[current_tid].status = THREAD_STATUS_READY;
-        sched_save_thread(regs);
+        threads[current_tid[cid]].status = THREAD_STATUS_READY;
+        sched_save_thread(cid, regs);
     }
 
-    sched_next();
+    sched_next(cid);
 }
 
-void sched_sleep(regs_t *regs, const uint32_t duration)
+void sched_sleep(const uint32_t cid, regs_t *regs, const uint32_t duration)
 {
     const uint64_t systime = mcu_systime_get_current();
 
-    threads[current_tid].status = THREAD_STATUS_WAITING;
-    threads[current_tid].awake_time = systime + sched_duration_to_systime(duration);
+    threads[current_tid[cid]].status = THREAD_STATUS_WAITING;
+    threads[current_tid[cid]].awake_time = systime + sched_duration_to_systime(duration);
 
-    sched_save_thread(regs);
-    sched_next();
+    sched_save_thread(cid, regs);
+    sched_next(cid);
 }
 
-void sched_yield_thread(regs_t *regs)
+void sched_yield_thread(const uint32_t cid, regs_t *regs)
 {
-    threads[current_tid].status = THREAD_STATUS_READY;
+    threads[current_tid[cid]].status = THREAD_STATUS_READY;
 
-    sched_save_thread(regs);
-    sched_next();
+    sched_save_thread(cid, regs);
+    sched_next(cid);
 }
 
-void sched_yield_budget(regs_t *regs)
+void sched_yield_budget(const uint32_t cid, regs_t *regs)
 {
-    if (threads[current_tid].sched_policy == SCHED_POLICY_REAL_TIME)
+    if (threads[current_tid[cid]].sched_policy == SCHED_POLICY_REAL_TIME)
     {
-        threads[current_tid].status = THREAD_STATUS_READY;
-        threads[current_tid].budget = 0;
+        threads[current_tid[cid]].status = THREAD_STATUS_READY;
+        threads[current_tid[cid]].budget = 0;
     }
 
-    sched_save_thread(regs);
-    sched_next();
+    sched_save_thread(cid, regs);
+    sched_next(cid);
 }
 
-void sched_yield_period(regs_t *regs)
+void sched_yield_period(const uint32_t cid, regs_t *regs)
 {
-    if (threads[current_tid].sched_policy == SCHED_POLICY_REAL_TIME)
+    if (threads[current_tid[cid]].sched_policy == SCHED_POLICY_REAL_TIME)
     {
-        threads[current_tid].status = THREAD_STATUS_WAITING;
-        threads[current_tid].awake_time = threads[current_tid].replenishment;
+        threads[current_tid[cid]].status = THREAD_STATUS_WAITING;
+        threads[current_tid[cid]].awake_time = threads[current_tid[cid]].replenishment;
     }
 
-    sched_save_thread(regs);
-    sched_next();
+    sched_save_thread(cid, regs);
+    sched_next(cid);
 }
 
-static void sched_next()
+static void sched_next(const uint32_t cid)
 {
     const uint64_t systime = mcu_systime_get_current();
 
     uint8_t next_tid = UINT8_MAX;
     uint64_t next_irq = UINT64_MAX;
 
+    if (!enabled)
+    {
+        goto idle;
+    }
+
     // Wake up threads from sleeping
     for (size_t tid = 0; tid < MAX_THREADS; tid++)
     {
+        if (threads[tid].cid != cid)
+        {
+            continue;
+        }
         if (threads[tid].status == THREAD_STATUS_WAITING)
         {
             if (systime >= threads[tid].awake_time)
@@ -241,7 +277,7 @@ static void sched_next()
         // Find any thread with real time policy that is ready to run
         for (size_t tid = 0; tid < MAX_THREADS; tid++)
         {
-            if (threads[tid].priority != p)
+            if (threads[tid].cid != cid || threads[tid].priority != p)
             {
                 continue;
             }
@@ -270,7 +306,7 @@ static void sched_next()
             // Find any idle thread ready to run
             for (size_t tid = 0; tid < MAX_THREADS; tid++)
             {
-                if (threads[tid].priority != p)
+                if (threads[tid].cid != cid || threads[tid].priority != p)
                 {
                     continue;
                 }
@@ -314,21 +350,22 @@ static void sched_next()
 
         threads[next_tid].status = THREAD_STATUS_RUNNING;
         threads[next_tid].start_time = mcu_systime_get_current();
-        current_pid = threads[next_tid].pid;
-        current_tid = next_tid;
+        current_pid[cid] = threads[next_tid].pid;
+        current_tid[cid] = next_tid;
 
         mcu_systime_set_comparator(next_irq);
         uspace_enter(&threads[next_tid].regs);
     }
 
+idle:
     if (next_irq == UINT64_MAX)
     {
-        mcu_systime_set_comparator(DEFAULT_SCHED_SLICE);
+        mcu_systime_set_comparator(systime + sched_duration_to_systime(DEFAULT_SCHED_SLICE));
     }
 
     // No available thread was found, wait for the next interrupt
-    current_pid = UINT8_MAX;
-    current_tid = UINT8_MAX;
+    current_pid[cid] = UINT8_MAX;
+    current_tid[cid] = UINT8_MAX;
 
     while (1)
     {
@@ -337,31 +374,28 @@ static void sched_next()
     }
 }
 
-static void sched_save_thread(const regs_t *regs)
+static void sched_save_thread(const uint32_t cid, const regs_t *regs)
 {
     const uint64_t systime = mcu_systime_get_current();
-    const uint64_t delta = systime - threads[current_tid].start_time;
+    const uint64_t delta = systime - threads[current_tid[cid]].start_time;
 
-    threads[current_tid].exit_time = systime;
-    threads[current_tid].regs = *regs;
+    threads[current_tid[cid]].exit_time = systime;
+    threads[current_tid[cid]].regs = *regs;
 
-    if (threads[current_tid].budget > 0)
+    if (threads[current_tid[cid]].budget > 0)
     {
-        if (threads[current_tid].budget >= delta)
+        if (threads[current_tid[cid]].budget >= delta)
         {
-            threads[current_tid].budget -= delta;
+            threads[current_tid[cid]].budget -= delta;
         }
         else
         {
-            threads[current_tid].budget = 0;
+            threads[current_tid[cid]].budget = 0;
         }
     }
 }
 
 static uint64_t sched_duration_to_systime(const uint32_t duration)
 {
-    const uint64_t freq = mcu_sysclk_get_freq();
-    const uint64_t delta = duration * freq / 1000;
-
-    return delta;
+    return duration * systime_freq / 1000;
 }

@@ -3,6 +3,6 @@
 
 #include "reg.h"
 
-__attribute__((noreturn)) void uspace_enter(regs_t *regs);
+[[noreturn]] void uspace_enter(regs_t *regs);
 
 #endif

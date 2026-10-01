@@ -1,0 +1,10 @@
+#ifndef KERNEL_DEF_H
+#define KERNEL_DEF_H
+
+// CPU
+#define CPU_CORES @CPU_CORES@
+
+// Memory
+#define STACK_SIZE @MM_STACK_SIZE@
+
+#endif

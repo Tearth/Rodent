@@ -13,16 +13,19 @@ extern uint32_t __kernel_end;
 static bool arch_init_irq();
 static bool arch_init_pmp();
 
-bool arch_init()
+bool arch_init(const bool core0)
 {
     if (!arch_init_irq())
     {
         return false;
     }
 
-    if (!arch_init_pmp())
+    if (core0)
     {
-        return false;
+        if (!arch_init_pmp())
+        {
+            return false;
+        }
     }
 
     return true;
@@ -30,12 +33,16 @@ bool arch_init()
 
 static bool arch_init_irq()
 {
+    char buf[8];
+
+    itoa(cpu_get_hart_id(), buf, 10);
+
     if (!irq_init())
     {
-        return log_msg(LOG_LEVEL_FAIL, "Failed to initialize interrupts"), false;
+        return log_fmt(LOG_LEVEL_FAIL, "Failed to initialize interrupts on core ", buf, EOL), false;
     }
 
-    return log_msg(LOG_LEVEL_OK, "Initialized interrupts"), true;
+    return log_fmt(LOG_LEVEL_OK, "Initialized interrupts on core ", buf, EOL), true;
 }
 
 static bool arch_init_pmp()
@@ -77,12 +84,12 @@ void arch_irq_wait()
     irq_wait();
 }
 
-void arch_attach_timer_handler(void (*handler)(regs_t *regs))
+void arch_attach_timer_handler(void (*handler)(const uint32_t cid, regs_t *regs))
 {
     irq_attach_timer_handler(handler);
 }
 
-void arch_attach_syscall_handler(void (*handler)(regs_t *regs))
+void arch_attach_syscall_handler(void (*handler)(const uint32_t cid, regs_t *regs))
 {
     irq_attach_syscall_handler(handler);
 }

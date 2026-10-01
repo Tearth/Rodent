@@ -134,7 +134,7 @@ uint8_t uart_read_byte(const uart_t uart)
     const uart_def_t *uart_sel = &uart_defs[uart];
 
     // Wait for RXFE (Receive FIFO Empty) to clear
-    while ((*uart_sel->reg_fr & (1u << 4)) != 0);
+    while (!uart_can_read(uart));
 
     return *uart_sel->reg_dr;
 }
@@ -144,7 +144,7 @@ void uart_send_byte(const uart_t uart, const uint8_t byte)
     const uart_def_t *uart_sel = &uart_defs[uart];
 
     // Wait for TXFF (Transmit FIFO Full) to clear
-    while ((*uart_sel->reg_fr & (1u << 5)) != 0);
+    while (!uart_can_write(uart));
 
     *uart_sel->reg_dr = byte;
 }
@@ -155,4 +155,16 @@ void uart_send_str(const uart_t uart, const char *str)
     {
         uart_send_byte(uart, *ptr);
     }
+}
+
+bool uart_can_read(const uart_t uart)
+{
+    // Read RXFE (Receive FIFO Empty)
+    return (*uart_defs[uart].reg_fr & (1u << 4)) != 0;
+}
+
+bool uart_can_write(const uart_t uart)
+{
+    // Read TXFF (Transmit FIFO Full)
+    return (*uart_defs[uart].reg_fr & (1u << 5)) == 0;
 }

@@ -10,8 +10,8 @@
 #define GPIO_IO_FUNC_MASK 0x0000001f
 
 #define GPIO_PADS_BANK0_BASE 0x40038000
-#define GPIO_PADS_REG_CTRL(gpio) REG((GPIO_PADS_BANK0_BASE + 0x04 + gpio * 0x04))
-#define GPIO_PADS_MODE_MASK 0x000000ff
+#define GPIO_PADS_BANK0_REG_CTRL(gpio) REG((GPIO_PADS_BANK0_BASE + 0x04 + gpio * 0x04))
+#define GPIO_PADS_BANK0_MODE_MASK 0x000000ff
 
 typedef enum gpio_func
 {

@@ -27,14 +27,13 @@
 # Input: none
 # Output: none
 _irq_handler_entry:
-    # Store SP before it's modified
-    csrw    mscratch, sp
+    # Swap SP with hart SP saved in MSCRATCH
+    csrrw   sp, mscratch, sp
 
-    # Switch SP to the kernel one
-    la      sp, __stack_pointer
+    # Reserve space for registers
     addi    sp, sp, -144
 
-    # Store all registers except SP (it's read from MSCRATCH)
+    # Store all registers except SP
     store_regs 1, 31
 
     # Store MEPC, MTVAL, MCAUSE
@@ -53,10 +52,15 @@ _irq_handler_entry:
     lw      t0, 128(sp)
     csrw    mepc, t0
 
+    # Restore SP
+    lw      t0, 8(sp)
+    csrw    mscratch, t0
+
     # Restore all registers except SP
     load_regs 1, 31
 
-    # Switch SP to the user one
-    csrr sp, mscratch
+    # Swap SP with hart SP saved in MSCRATCH
+    addi    sp, sp, 144
+    csrrw   sp, mscratch, sp
 
     mret
