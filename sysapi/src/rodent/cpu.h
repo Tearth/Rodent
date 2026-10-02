@@ -6,5 +6,6 @@
 #include "arch.h"
 
 uint64_t get_systime();
+uint32_t get_cpu_freq();
 
 #endif

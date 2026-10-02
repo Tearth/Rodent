@@ -10,3 +10,14 @@ uint64_t get_systime()
 
     return data.systime;
 }
+
+uint32_t get_cpu_freq()
+{
+    syscall_cpu_get_freq_data_t data =
+    {
+
+    };
+    syscall(SYSCALL_CPU_GET_FREQ, &data);
+
+    return data.freq;
+}
