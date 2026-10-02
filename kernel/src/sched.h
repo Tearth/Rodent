@@ -79,6 +79,8 @@ typedef struct thread
 
     sched_policy_t sched_policy;
     sched_params_t sched_params;
+
+    uint64_t cpu_ticks[CPU_CORES];
 } thread_t;
 
 void sched_init(const boot_proc_t *boot_procs);

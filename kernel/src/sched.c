@@ -53,6 +53,11 @@ void sched_init(const boot_proc_t *boot_procs)
         threads[i].sched_policy = SCHED_POLICY_ROUND_ROBIN;
         threads[i].sched_params.round_robin.slice = DEFAULT_SCHED_SLICE;
         threads[i].sched_params.round_robin.priority = MAX_PRIORITY;
+
+        for (size_t cid = 0; cid < CPU_CORES; cid++)
+        {
+            threads[i].cpu_ticks[cid] = 0;
+        }
     }
 
     arch_attach_timer_handler(sched_timer_handler);
@@ -213,6 +218,11 @@ static void sched_next(const uint32_t cid)
     if (!enabled)
     {
         goto idle;
+    }
+
+    if (threads[current_tid[cid]].start_time > 0)
+    {
+        threads[current_tid[cid]].cpu_ticks[cid] += systime - threads[current_tid[cid]].start_time;
     }
 
     // Wake up threads from sleeping
