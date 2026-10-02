@@ -2,10 +2,12 @@
 #define SHARED_SYSCALL_H
 
 #include <stdint.h>
+#include "syscall/cpu.h"
 #include "syscall/thread.h"
 
 typedef enum syscall
 {
+    SYSCALL_CPU_GET_SYSTIME,
     SYSCALL_THREAD_GET_PID,
     SYSCALL_THREAD_GET_TID,
     SYSCALL_THREAD_GET_SCHED,

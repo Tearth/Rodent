@@ -3,6 +3,7 @@ cmake_policy(SET CMP0069 NEW)
 project(sysapi LANGUAGES C ASM)
 
 add_library(sysapi OBJECT
+    src/rodent/cpu.c
     src/rodent/thread.c
 )
 

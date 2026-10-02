@@ -8,6 +8,7 @@ add_executable(kernel.elf
     src/log.c
     src/sched.c
     src/syscall.c
+    src/syscall/cpu.c
     src/syscall/thread.c
 )
 

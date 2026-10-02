@@ -2,6 +2,7 @@
 #define KERNEL_SYSCALL_H
 
 #include <shared/syscall.h>
+#include "syscall/cpu.h"
 #include "syscall/thread.h"
 #include "arch.h"
 
