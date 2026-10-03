@@ -78,17 +78,27 @@ static void cfg_parse(const char *section, const char *name, const char *value, 
 {
     if (strcmp(section, "kernel") == 0)
     {
-        if (strcmp(name, "path") == 0) memcpy(cfg->kernel_path, value, VALUE_LEN);
+        if (strcmp(name, "path") == 0)
+        {
+            memcpy(cfg->kernel_path, value, VALUE_LEN);
+        }
     }
     else if (strcmp(section, "srv") == 0)
     {
-        if (strcmp(name, "path0") == 0) memcpy(cfg->srv_path[0], value, VALUE_LEN);
-        if (strcmp(name, "path1") == 0) memcpy(cfg->srv_path[1], value, VALUE_LEN);
-        if (strcmp(name, "path2") == 0) memcpy(cfg->srv_path[2], value, VALUE_LEN);
-        if (strcmp(name, "path3") == 0) memcpy(cfg->srv_path[3], value, VALUE_LEN);
-        if (strcmp(name, "path4") == 0) memcpy(cfg->srv_path[4], value, VALUE_LEN);
-        if (strcmp(name, "path5") == 0) memcpy(cfg->srv_path[5], value, VALUE_LEN);
-        if (strcmp(name, "path6") == 0) memcpy(cfg->srv_path[6], value, VALUE_LEN);
-        if (strcmp(name, "path7") == 0) memcpy(cfg->srv_path[7], value, VALUE_LEN);
+        for (size_t i = 0; i < MAX_BOOT_PROCS; i++)
+        {
+            char name_buf[NAME_LEN];
+            char num_buf[8];
+
+            itoa(i, num_buf, 10);
+
+            strcpy(name_buf, "path");
+            strcat(name_buf, num_buf);
+
+            if (strcmp(name, name_buf) == 0)
+            {
+                memcpy(cfg->srv_path[i], value, VALUE_LEN);
+            }
+        }
     }
 }

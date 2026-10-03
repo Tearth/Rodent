@@ -3,7 +3,8 @@
 
 #include <stdarg.h>
 #include <stdint.h>
-#include "def.h"
+
+#define MAX_BOOT_PROCS 8
 
 typedef enum boot_proc_type
 {
@@ -13,7 +14,7 @@ typedef enum boot_proc_type
 
 typedef struct boot_proc
 {
-    char path[MAX_PATH_LEN];
+    char path[UINT8_MAX];
     boot_proc_type_t type;
 
     void *base;
@@ -23,7 +24,7 @@ typedef struct boot_proc
 
 typedef struct boot_args
 {
-    boot_proc_t procs[MAX_BOOT_THREADS];
+    boot_proc_t procs[MAX_BOOT_PROCS];
 } boot_args_t;
 
 #endif

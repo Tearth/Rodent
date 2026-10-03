@@ -24,14 +24,14 @@ void sched_init(const boot_proc_t *boot_procs)
         current_tid[cid] = UINT8_MAX;
     }
 
-    for (size_t i = 0; i < MAX_BOOT_THREADS; i++)
+    for (size_t i = 0; i < MAX_BOOT_PROCS; i++)
     {
         if (boot_procs[i].type == BOOT_PROC_TYPE_NONE)
         {
             continue;
         }
 
-        memcpy(procs[i].path, boot_procs[i].path, MAX_PATH_LEN);
+        memcpy(procs[i].path, boot_procs[i].path, UINT8_MAX);
 
         procs[i].status = PROC_STATUS_RUNNING;
         procs[i].base = boot_procs[i].base;
@@ -42,7 +42,7 @@ void sched_init(const boot_proc_t *boot_procs)
         threads[i].cid = i % CPU_CORES;
         threads[i].regs.pc = (uint32_t)boot_procs[i].entry;
         threads[i].status = THREAD_STATUS_READY;
-        threads[i].priority = MAX_PRIORITY;
+        threads[i].priority = 0;
         threads[i].awake_time = 0;
         threads[i].start_time = 0;
         threads[i].exit_time = 0;
@@ -51,8 +51,8 @@ void sched_init(const boot_proc_t *boot_procs)
         threads[i].replenishment = 0;
 
         threads[i].sched_policy = SCHED_POLICY_ROUND_ROBIN;
-        threads[i].sched_params.round_robin.slice = DEFAULT_SCHED_SLICE;
-        threads[i].sched_params.round_robin.priority = MAX_PRIORITY;
+        threads[i].sched_params.round_robin.slice = 1;
+        threads[i].sched_params.round_robin.priority = 0;
 
         for (size_t cid = 0; cid < CPU_CORES; cid++)
         {
@@ -232,6 +232,7 @@ static void sched_next(const uint32_t cid)
         {
             continue;
         }
+
         if (threads[tid].status == THREAD_STATUS_WAITING)
         {
             if (systime >= threads[tid].awake_time)
@@ -282,7 +283,7 @@ static void sched_next(const uint32_t cid)
         }
     }
 
-    for (uint8_t p = MAX_PRIORITY; p >= MIN_PRIORITY && next_tid == UINT8_MAX; p--)
+    for (size_t p = 0; p < UINT8_MAX && next_tid == UINT8_MAX; p++)
     {
         // Find any thread with real time policy that is ready to run
         for (size_t tid = 0; tid < MAX_THREADS; tid++)
@@ -351,7 +352,7 @@ static void sched_next(const uint32_t cid)
             }
             default:
             {
-                slice = DEFAULT_SCHED_SLICE;
+                slice = 1;
                 break;
             }
         }
@@ -370,7 +371,7 @@ static void sched_next(const uint32_t cid)
 idle:
     if (next_irq == UINT64_MAX)
     {
-        mcu_systime_set_comparator(systime + sched_duration_to_systime(DEFAULT_SCHED_SLICE));
+        mcu_systime_set_comparator(systime + sched_duration_to_systime(1));
     }
 
     // No available thread was found, wait for the next interrupt

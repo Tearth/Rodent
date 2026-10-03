@@ -7,4 +7,8 @@
 // Memory
 #define STACK_SIZE @MM_STACK_SIZE@
 
+// Scheduler
+#define MAX_PROCS @SCHED_MAX_PROCS@
+#define MAX_THREADS @SCHED_MAX_THREADS@
+
 #endif

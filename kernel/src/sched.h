@@ -3,7 +3,6 @@
 
 #include <string.h>
 #include <shared/boot.h>
-#include <shared/def.h>
 #include <shared/macro.h>
 #include "arch.h"
 #include "def.h"
@@ -54,7 +53,7 @@ typedef union sched_params
 
 typedef struct proc
 {
-    char path[MAX_PATH_LEN];
+    char path[UINT8_MAX];
 
     void *base;
     void *entry;

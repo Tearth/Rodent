@@ -2,7 +2,7 @@
 #define BOOT_CFG_H
 
 #include <stddef.h>
-#include <shared/def.h>
+#include <shared/boot.h>
 #include "fs.h"
 #include "log.h"
 
@@ -13,7 +13,7 @@
 typedef struct cfg_boot
 {
     char kernel_path[VALUE_LEN];
-    char srv_path[MAX_BOOT_THREADS][VALUE_LEN];
+    char srv_path[MAX_BOOT_PROCS][VALUE_LEN];
 } cfg_boot_t;
 
 bool cfg_load(const char *path, cfg_boot_t *cfg);

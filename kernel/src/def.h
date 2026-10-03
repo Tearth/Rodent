@@ -7,4 +7,8 @@
 // Memory
 #define STACK_SIZE 0x2000
 
+// Scheduler
+#define MAX_PROCS 16
+#define MAX_THREADS 64
+
 #endif

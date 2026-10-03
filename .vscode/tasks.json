@@ -95,6 +95,10 @@
             "MM_CELL_SIZE": "0x1000",
             "MM_STACK_SIZE": "0x2000",
 
+            // Scheduler
+            "SCHED_MAX_PROCS": "16",
+            "SCHED_MAX_THREADS": "64",
+
             // OpenOCD
             "ADAPTER_TARGET": "rp2350-riscv",
             "ADAPTER_SPEED": "30000"
