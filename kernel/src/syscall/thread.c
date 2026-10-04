@@ -26,19 +26,19 @@ void syscall_thread_get_sched(const uint32_t cid, [[maybe_unused]] regs_t *regs,
         case SCHED_POLICY_ROUND_ROBIN:
         {
             data->policy = SYSCALL_THREAD_SCHED_POLICY_ROUND_ROBIN;
-            data->params.round_robin.slice = params.round_robin.slice;
-            data->params.round_robin.priority = params.round_robin.priority;
+            data->params->round_robin.slice = params.round_robin.slice;
+            data->params->round_robin.priority = params.round_robin.priority;
             break;
         }
         case SCHED_POLICY_REAL_TIME:
         {
             data->policy = SYSCALL_THREAD_SCHED_POLICY_REAL_TIME;
-            data->params.real_time.budget = params.real_time.budget;
-            data->params.real_time.deadline = params.real_time.deadline;
-            data->params.real_time.period = params.real_time.period;
-            data->params.real_time.slice = params.real_time.slice;
-            data->params.real_time.priority_low = params.real_time.priority_low;
-            data->params.real_time.priority_high = params.real_time.priority_high;
+            data->params->real_time.budget = params.real_time.budget;
+            data->params->real_time.deadline = params.real_time.deadline;
+            data->params->real_time.period = params.real_time.period;
+            data->params->real_time.slice = params.real_time.slice;
+            data->params->real_time.priority_low = params.real_time.priority_low;
+            data->params->real_time.priority_high = params.real_time.priority_high;
             break;
         }
         case SCHED_POLICY_INVALID:
@@ -61,19 +61,19 @@ void syscall_thread_set_sched(const uint32_t cid, [[maybe_unused]] regs_t *regs,
         case SYSCALL_THREAD_SCHED_POLICY_ROUND_ROBIN:
         {
             policy = SCHED_POLICY_ROUND_ROBIN;
-            params.round_robin.slice = data->params.round_robin.slice;
-            params.round_robin.priority = data->params.round_robin.priority;
+            params.round_robin.slice = data->params->round_robin.slice;
+            params.round_robin.priority = data->params->round_robin.priority;
             break;
         }
         case SYSCALL_THREAD_SCHED_POLICY_REAL_TIME:
         {
             policy = SCHED_POLICY_REAL_TIME;
-            params.real_time.budget = data->params.real_time.budget;
-            params.real_time.deadline = data->params.real_time.deadline;
-            params.real_time.period = data->params.real_time.period;
-            params.real_time.slice = data->params.real_time.slice;
-            params.real_time.priority_low = data->params.real_time.priority_low;
-            params.real_time.priority_high = data->params.real_time.priority_high;
+            params.real_time.budget = data->params->real_time.budget;
+            params.real_time.deadline = data->params->real_time.deadline;
+            params.real_time.period = data->params->real_time.period;
+            params.real_time.slice = data->params->real_time.slice;
+            params.real_time.priority_low = data->params->real_time.priority_low;
+            params.real_time.priority_high = data->params->real_time.priority_high;
             break;
         }
         case SYSCALL_THREAD_SCHED_POLICY_INVALID:

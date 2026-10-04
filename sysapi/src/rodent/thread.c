@@ -26,12 +26,11 @@ void get_sched(sched_policy_t *policy, sched_params_t *params)
 {
     syscall_thread_get_sched_data_t data =
     {
-
+        .params = params
     };
     syscall(SYSCALL_THREAD_GET_SCHED, &data);
 
     *policy = (sched_policy_t)data.policy;
-    *params = data.params;
 }
 
 bool set_sched(const sched_policy_t policy, const sched_params_t *params)
@@ -39,7 +38,7 @@ bool set_sched(const sched_policy_t policy, const sched_params_t *params)
     syscall_thread_set_sched_data_t data =
     {
         .policy = (syscall_thread_sched_policy_t)policy,
-        .params = *params
+        .params = params
     };
     syscall(SYSCALL_THREAD_SET_SCHED, &data);
 

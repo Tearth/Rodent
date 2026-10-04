@@ -66,14 +66,14 @@ typedef struct syscall_thread_get_sched_data
 {
     // Response
     syscall_thread_sched_policy_t policy;
-    syscall_thread_sched_params_t params;
+    syscall_thread_sched_params_t *params;
 } syscall_thread_get_sched_data_t;
 
 typedef struct syscall_thread_set_sched_data
 {
     // Request
     syscall_thread_sched_policy_t policy;
-    syscall_thread_sched_params_t params;
+    syscall_thread_sched_params_t *params;
 
     // Response
     bool success;
