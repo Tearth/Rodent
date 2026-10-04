@@ -154,6 +154,11 @@ bool sched_set_params(const uint8_t tid, const sched_params_t *params)
     return threads[tid].sched_params = *params, true;
 }
 
+void sched_get_cpu_ticks(const uint8_t tid, uint64_t *ticks)
+{
+    memcpy(ticks, threads[tid].cpu_ticks, sizeof(threads[tid].cpu_ticks));
+}
+
 void sched_timer_handler(const uint32_t cid, regs_t *regs)
 {
     if (current_tid[cid] != UINT8_MAX)

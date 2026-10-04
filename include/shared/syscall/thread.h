@@ -64,6 +64,9 @@ typedef struct syscall_thread_set_priority_data
 
 typedef struct syscall_thread_get_sched_data
 {
+    // Request
+    uint8_t tid;
+
     // Response
     syscall_thread_sched_policy_t policy;
     syscall_thread_sched_params_t *params;
@@ -78,6 +81,15 @@ typedef struct syscall_thread_set_sched_data
     // Response
     bool success;
 } syscall_thread_set_sched_data_t;
+
+typedef struct syscall_thread_get_cpu_ticks_data
+{
+    // Request
+    uint8_t tid;
+
+    // Response
+    uint64_t *ticks;
+} syscall_thread_get_cpu_ticks_data_t;
 
 typedef struct syscall_thread_sleep_data
 {

@@ -96,6 +96,8 @@ bool sched_set_policy(const uint8_t tid, const sched_policy_t policy);
 bool sched_get_params(const uint8_t tid, sched_params_t *params);
 bool sched_set_params(const uint8_t tid, const sched_params_t *params);
 
+void sched_get_cpu_ticks(const uint8_t tid, uint64_t *ticks);
+
 void sched_timer_handler(const uint32_t cid, regs_t *regs);
 void sched_sleep(const uint32_t cid, regs_t *regs, const uint32_t duration);
 void sched_yield_thread(const uint32_t cid, regs_t *regs);

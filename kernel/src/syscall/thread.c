@@ -12,16 +12,15 @@ void syscall_thread_get_tid(const uint32_t cid, [[maybe_unused]] regs_t *regs, s
 
 void syscall_thread_get_sched(const uint32_t cid, [[maybe_unused]] regs_t *regs, syscall_thread_get_sched_data_t *data)
 {
-    const uint8_t tid = sched_get_current_tid(cid);
     sched_params_t params;
 
-    if (!sched_get_params(tid, &params))
+    if (!sched_get_params(data->tid, &params))
     {
         data->policy = SYSCALL_THREAD_SCHED_POLICY_INVALID;
         return;
     }
 
-    switch (sched_get_policy(tid))
+    switch (sched_get_policy(data->tid))
     {
         case SCHED_POLICY_ROUND_ROBIN:
         {
@@ -97,6 +96,11 @@ void syscall_thread_set_sched(const uint32_t cid, [[maybe_unused]] regs_t *regs,
     }
 
     data->success = true;
+}
+
+void syscall_thread_get_cpu_ticks(const uint32_t cid, [[maybe_unused]] regs_t *regs, syscall_thread_get_cpu_ticks_data_t *data)
+{
+    sched_get_cpu_ticks(data->tid, data->ticks);
 }
 
 void syscall_thread_sleep(const uint32_t cid, regs_t *regs, syscall_thread_sleep_data_t *data)

@@ -22,10 +22,11 @@ uint8_t get_tid()
     return data.tid;
 }
 
-void get_sched(sched_policy_t *policy, sched_params_t *params)
+void get_sched(const uint8_t tid, sched_policy_t *policy, sched_params_t *params)
 {
     syscall_thread_get_sched_data_t data =
     {
+        .tid = tid,
         .params = params
     };
     syscall(SYSCALL_THREAD_GET_SCHED, &data);
@@ -43,6 +44,16 @@ bool set_sched(const sched_policy_t policy, const sched_params_t *params)
     syscall(SYSCALL_THREAD_SET_SCHED, &data);
 
     return data.success;
+}
+
+void get_cpu_ticks(const uint8_t tid, uint64_t *ticks)
+{
+    syscall_thread_get_cpu_ticks_data_t data =
+    {
+        .tid = tid,
+        .ticks = ticks
+    };
+    syscall(SYSCALL_THREAD_GET_CPU_TICKS, &data);
 }
 
 void sleep(const uint32_t duration)
