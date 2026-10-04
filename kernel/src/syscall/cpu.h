@@ -7,6 +7,7 @@
 #include "sched.h"
 
 void syscall_cpu_get_systime(const uint32_t cid, regs_t *regs, syscall_cpu_get_systime_data_t *data);
+void syscall_cpu_get_cores(const uint32_t cid, regs_t *regs, syscall_cpu_get_cores_data_t *data);
 void syscall_cpu_get_freq(const uint32_t cid, regs_t *regs, syscall_cpu_get_freq_data_t *data);
 
 #endif

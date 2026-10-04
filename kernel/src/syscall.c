@@ -10,6 +10,7 @@ void syscall_handler(const uint32_t cid, regs_t *regs)
     switch ((syscall_t)regs->a0)
     {
         case SYSCALL_CPU_GET_SYSTIME: syscall_cpu_get_systime(cid, regs, (syscall_cpu_get_systime_data_t *)regs->a1); break;
+        case SYSCALL_CPU_GET_CORES: syscall_cpu_get_cores(cid, regs, (syscall_cpu_get_cores_data_t *)regs->a1); break;
         case SYSCALL_CPU_GET_FREQ: syscall_cpu_get_freq(cid, regs, (syscall_cpu_get_freq_data_t *)regs->a1); break;
         case SYSCALL_THREAD_GET_PID: syscall_thread_get_pid(cid, regs, (syscall_thread_get_pid_data_t *)regs->a1); break;
         case SYSCALL_THREAD_GET_TID: syscall_thread_get_tid(cid, regs, (syscall_thread_get_tid_data_t *)regs->a1); break;
