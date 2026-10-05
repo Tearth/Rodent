@@ -2,7 +2,7 @@
 
 uint64_t get_systime()
 {
-    syscall_cpu_get_systime_data_t data =
+    volatile syscall_cpu_get_systime_data_t data =
     {
 
     };
@@ -13,7 +13,7 @@ uint64_t get_systime()
 
 uint8_t get_cpu_cores()
 {
-    syscall_cpu_get_cores_data_t data =
+    volatile syscall_cpu_get_cores_data_t data =
     {
 
     };
@@ -24,7 +24,7 @@ uint8_t get_cpu_cores()
 
 uint32_t get_cpu_freq()
 {
-    syscall_cpu_get_freq_data_t data =
+    volatile syscall_cpu_get_freq_data_t data =
     {
 
     };

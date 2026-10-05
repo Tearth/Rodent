@@ -2,7 +2,7 @@
 
 uint8_t get_pid()
 {
-    syscall_thread_get_pid_data_t data =
+    volatile syscall_thread_get_pid_data_t data =
     {
 
     };
@@ -13,7 +13,7 @@ uint8_t get_pid()
 
 uint8_t get_tid()
 {
-    syscall_thread_get_tid_data_t data =
+    volatile syscall_thread_get_tid_data_t data =
     {
 
     };
@@ -24,7 +24,7 @@ uint8_t get_tid()
 
 void get_sched(const uint8_t tid, sched_policy_t *policy, sched_params_t *params)
 {
-    syscall_thread_get_sched_data_t data =
+    volatile syscall_thread_get_sched_data_t data =
     {
         .tid = tid,
         .params = params
@@ -36,7 +36,7 @@ void get_sched(const uint8_t tid, sched_policy_t *policy, sched_params_t *params
 
 bool set_sched(const sched_policy_t policy, const sched_params_t *params)
 {
-    syscall_thread_set_sched_data_t data =
+    volatile syscall_thread_set_sched_data_t data =
     {
         .policy = (syscall_thread_sched_policy_t)policy,
         .params = params
@@ -48,7 +48,7 @@ bool set_sched(const sched_policy_t policy, const sched_params_t *params)
 
 void get_cpu_ticks(const uint8_t tid, uint64_t *ticks)
 {
-    syscall_thread_get_cpu_ticks_data_t data =
+    volatile syscall_thread_get_cpu_ticks_data_t data =
     {
         .tid = tid,
         .ticks = ticks
@@ -58,7 +58,7 @@ void get_cpu_ticks(const uint8_t tid, uint64_t *ticks)
 
 void sleep(const uint32_t duration)
 {
-    syscall_thread_sleep_data_t data =
+    volatile syscall_thread_sleep_data_t data =
     {
         .duration = duration
     };
@@ -67,7 +67,7 @@ void sleep(const uint32_t duration)
 
 void yield_thread()
 {
-    syscall_thread_yield_thread_data_t data =
+    volatile syscall_thread_yield_thread_data_t data =
     {
 
     };
@@ -76,7 +76,7 @@ void yield_thread()
 
 void yield_budget()
 {
-    syscall_thread_yield_budget_data_t data =
+    volatile syscall_thread_yield_budget_data_t data =
     {
 
     };
@@ -85,7 +85,7 @@ void yield_budget()
 
 void yield_period()
 {
-    syscall_thread_yield_period_data_t data =
+    volatile syscall_thread_yield_period_data_t data =
     {
 
     };

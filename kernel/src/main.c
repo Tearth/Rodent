@@ -8,7 +8,7 @@
 #include "syscall.h"
 
 mutex_t kmain_mutex = {};
-uint32_t cores_to_init = CPU_CORES;
+volatile uint32_t cores_to_init = CPU_CORES;
 
 static void core_finish_init();
 static void core_wait_for_all();
