@@ -225,7 +225,7 @@ static void sched_next(const uint32_t cid)
         goto idle;
     }
 
-    if (threads[current_tid[cid]].start_time > 0)
+    if (current_tid[cid] != UINT8_MAX && threads[current_tid[cid]].start_time > 0)
     {
         threads[current_tid[cid]].cpu_ticks[cid] += systime - threads[current_tid[cid]].start_time;
     }
