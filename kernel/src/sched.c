@@ -413,5 +413,5 @@ static void sched_save_thread(const uint32_t cid, const regs_t *regs)
 
 static uint64_t sched_duration_to_systime(const uint32_t duration)
 {
-    return duration * systime_freq / 1000;
+    return (uint64_t)duration * systime_freq / 1000;
 }
