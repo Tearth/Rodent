@@ -36,13 +36,13 @@ bool irq_init()
 void irq_enable()
 {
     __asm__ volatile (
-        "csrs mstatus, %0\n"
-        "csrw mscratch, %1\n"
+        "csrw mscratch, %0\n"
+        "csrs mstatus, %1\n"
     : :
-    // Set MIE (Interrupt Enable) in MSTATUS
-    "r"(1u << 3),
     // Write MSCRATCH
-    "r"((uint32_t)&__stack_pointer - cpu_get_hart_id() * STACK_SIZE));
+    "r"((uint32_t)&__stack_pointer - cpu_get_hart_id() * STACK_SIZE),
+    // Set MIE (Interrupt Enable) in MSTATUS
+    "r"(1u << 3));
 }
 
 void irq_disable()
