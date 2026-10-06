@@ -288,7 +288,7 @@ static void sched_next(const uint32_t cid)
         }
     }
 
-    for (size_t p = 0; p < UINT8_MAX && next_tid == UINT8_MAX; p++)
+    for (size_t p = 0; p <= UINT8_MAX && next_tid == UINT8_MAX; p++)
     {
         // Find any thread with real time policy that is ready to run
         for (size_t tid = 0; tid < MAX_THREADS; tid++)
@@ -374,7 +374,11 @@ static void sched_next(const uint32_t cid)
     }
 
 idle:
-    if (next_irq == UINT64_MAX)
+    if (next_irq != UINT64_MAX)
+    {
+        mcu_systime_set_comparator(next_irq);
+    }
+    else
     {
         mcu_systime_set_comparator(systime + sched_duration_to_systime(1));
     }
