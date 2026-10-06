@@ -10,7 +10,7 @@ void syscall_thread_get_tid(const uint32_t cid, [[maybe_unused]] regs_t *regs, s
     data->tid = sched_get_current_tid(cid);
 }
 
-void syscall_thread_get_sched(const uint32_t cid, [[maybe_unused]] regs_t *regs, syscall_thread_get_sched_data_t *data)
+void syscall_thread_get_sched([[maybe_unused]] const uint32_t cid, [[maybe_unused]] regs_t *regs, syscall_thread_get_sched_data_t *data)
 {
     sched_params_t params;
 
@@ -98,7 +98,7 @@ void syscall_thread_set_sched(const uint32_t cid, [[maybe_unused]] regs_t *regs,
     data->success = true;
 }
 
-void syscall_thread_get_cpu_ticks(const uint32_t cid, [[maybe_unused]] regs_t *regs, syscall_thread_get_cpu_ticks_data_t *data)
+void syscall_thread_get_cpu_ticks([[maybe_unused]] const uint32_t cid, [[maybe_unused]] regs_t *regs, syscall_thread_get_cpu_ticks_data_t *data)
 {
     sched_get_cpu_ticks(data->tid, data->ticks);
 }

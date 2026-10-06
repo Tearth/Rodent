@@ -3,6 +3,6 @@
 
 #include <shared/syscall.h>
 
-void syscall(const syscall_t type, void *data);
+void syscall(const syscall_t type, volatile void *data);
 
 #endif
