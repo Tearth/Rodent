@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/boot/src",
                 "${workspaceFolder}/include",
-                "${workspaceFolder}/lib/littlefs/src",
+                "${workspaceFolder}/lib/littlefs",
                 "${workspaceFolder}/kernel/src",
                 "${workspaceFolder}/mcu/src",
                 "${workspaceFolder}/sysapi/src",

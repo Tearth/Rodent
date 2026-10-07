@@ -38,8 +38,8 @@ endif()
 if($ENV{FS_TYPE} STREQUAL "lfs")
     target_sources(bootloader.elf PRIVATE
         src/fs/lfs.c
-        ../lib/littlefs/src/lfs.c
-        ../lib/littlefs/src/lfs_util.c
+        ../lib/littlefs/lfs.c
+        ../lib/littlefs/lfs_util.c
     )
 
     target_compile_definitions(bootloader.elf PRIVATE
