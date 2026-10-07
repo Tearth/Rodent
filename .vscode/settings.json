@@ -4,5 +4,7 @@
         "**/.vscode/**",
         "**/node_modules/**",
         "**/lib/**"
-    ]
+    ],
+    "git.detectSubmodules": false,
+    "git.ignoreSubmodules": true
 }
