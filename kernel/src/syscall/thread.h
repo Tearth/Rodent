@@ -1,5 +1,5 @@
-#ifndef KERNEL_THREAD_H
-#define KERNEL_THREAD_H
+#ifndef KERNEL_SYSCALL_THREAD_H
+#define KERNEL_SYSCALL_THREAD_H
 
 #include <shared/macro.h>
 #include <shared/syscall.h>

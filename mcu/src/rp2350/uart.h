@@ -1,5 +1,5 @@
-#ifndef MCU_UART_H
-#define MCU_UART_H
+#ifndef MCU_RP2350_UART_H
+#define MCU_RP2350_UART_H
 
 #include <stdint.h>
 #include "clk.h"

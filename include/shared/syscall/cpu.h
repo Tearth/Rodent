@@ -1,5 +1,5 @@
-#ifndef SHARED_CPU_H
-#define SHARED_CPU_H
+#ifndef SHARED_SYSCALL_CPU_H
+#define SHARED_SYSCALL_CPU_H
 
 typedef struct syscall_cpu_get_systime_data
 {

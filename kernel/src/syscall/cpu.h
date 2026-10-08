@@ -1,5 +1,5 @@
-#ifndef KERNEL_CPU_H
-#define KERNEL_CPU_H
+#ifndef KERNEL_SYSCALL_CPU_H
+#define KERNEL_SYSCALL_CPU_H
 
 #include <shared/macro.h>
 #include <shared/syscall.h>

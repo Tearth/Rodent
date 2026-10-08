@@ -1,5 +1,5 @@
-#ifndef MCU_GPIO_H
-#define MCU_GPIO_H
+#ifndef MCU_RP2350_GPIO_H
+#define MCU_RP2350_GPIO_H
 
 #include <stdint.h>
 #include "common.h"

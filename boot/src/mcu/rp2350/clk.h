@@ -1,5 +1,5 @@
-#ifndef BOOT_CLK_H
-#define BOOT_CLK_H
+#ifndef BOOT_MCU_RP2350_CLK_H
+#define BOOT_MCU_RP2350_CLK_H
 
 #include <stddef.h>
 #include <stdint.h>

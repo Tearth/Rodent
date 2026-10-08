@@ -1,5 +1,5 @@
-#ifndef MCU_FIFO_H
-#define MCU_FIFO_H
+#ifndef MCU_RP2350_FIFO_H
+#define MCU_RP2350_FIFO_H
 
 #include <stdint.h>
 #include "common.h"

@@ -1,5 +1,5 @@
-#ifndef SYSAPI_THREAD_H
-#define SYSAPI_THREAD_H
+#ifndef SYSAPI_RODENT_THREAD_H
+#define SYSAPI_RODENT_THREAD_H
 
 #include <stdint.h>
 #include <shared/syscall.h>

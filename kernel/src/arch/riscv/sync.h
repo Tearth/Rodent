@@ -1,5 +1,5 @@
-#ifndef KERNEL_SYNC_H
-#define KERNEL_SYNC_H
+#ifndef KERNEL_ARCH_RISCV_SYNC_H
+#define KERNEL_ARCH_RISCV_SYNC_H
 
 #include <stddef.h>
 #include <stdint.h>

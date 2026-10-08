@@ -1,5 +1,5 @@
-#ifndef KERNEL_USPACE_H
-#define KERNEL_USPACE_H
+#ifndef KERNEL_ARCH_RISCV_USPACE_H
+#define KERNEL_ARCH_RISCV_USPACE_H
 
 #include "reg.h"
 

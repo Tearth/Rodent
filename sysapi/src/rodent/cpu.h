@@ -1,5 +1,5 @@
-#ifndef SYSAPI_CPU_H
-#define SYSAPI_CPU_H
+#ifndef SYSAPI_RODENT_CPU_H
+#define SYSAPI_RODENT_CPU_H
 
 #include <stdint.h>
 #include <shared/syscall.h>

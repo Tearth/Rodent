@@ -1,5 +1,5 @@
-#ifndef BOOT_FLASH_H
-#define BOOT_FLASH_H
+#ifndef BOOT_MCU_RP2350_FLASH_H
+#define BOOT_MCU_RP2350_FLASH_H
 
 #include <stddef.h>
 #include <rp2350/qmi.h>

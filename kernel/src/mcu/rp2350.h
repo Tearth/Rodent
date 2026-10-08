@@ -1,5 +1,5 @@
-#ifndef KERNEL_RP2350_H
-#define KERNEL_RP2350_H
+#ifndef KERNEL_MCU_RP2350_H
+#define KERNEL_MCU_RP2350_H
 
 #include <stdlib.h>
 #include <rp2350/clk.h>

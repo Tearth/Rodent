@@ -1,5 +1,5 @@
-#ifndef KERNEL_REG_H
-#define KERNEL_REG_H
+#ifndef KERNEL_ARCH_RISCV_REG_H
+#define KERNEL_ARCH_RISCV_REG_H
 
 #include <stdint.h>
 

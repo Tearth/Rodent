@@ -1,5 +1,5 @@
-#ifndef BOOT_UART_H
-#define BOOT_UART_H
+#ifndef BOOT_MCU_RP2350_UART_H
+#define BOOT_MCU_RP2350_UART_H
 
 #include <stddef.h>
 #include <stdint.h>

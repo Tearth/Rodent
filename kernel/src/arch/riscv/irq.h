@@ -1,5 +1,5 @@
-#ifndef KERNEL_IRQ_H
-#define KERNEL_IRQ_H
+#ifndef KERNEL_ARCH_RISCV_IRQ_H
+#define KERNEL_ARCH_RISCV_IRQ_H
 
 #include <stdint.h>
 #include <stdlib.h>

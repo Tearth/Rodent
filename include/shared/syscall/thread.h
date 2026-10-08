@@ -1,5 +1,5 @@
-#ifndef SHARED_THREAD_H
-#define SHARED_THREAD_H
+#ifndef SHARED_SYSCALL_THREAD_H
+#define SHARED_SYSCALL_THREAD_H
 
 #include <stdint.h>
 

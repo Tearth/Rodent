@@ -1,5 +1,5 @@
-#ifndef KERNEL_PMP_H
-#define KERNEL_PMP_H
+#ifndef KERNEL_ARCH_RISCV_PMP_H
+#define KERNEL_ARCH_RISCV_PMP_H
 
 #include <stdint.h>
 

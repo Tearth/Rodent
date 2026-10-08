@@ -1,5 +1,5 @@
-#ifndef MCU_QMI_H
-#define MCU_QMI_H
+#ifndef MCU_RP2350_QMI_H
+#define MCU_RP2350_QMI_H
 
 #include <stddef.h>
 #include <stdint.h>
